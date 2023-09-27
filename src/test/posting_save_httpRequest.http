@@ -1,0 +1,24 @@
+### Send POST request with json body
+POST http://localhost:8080/record
+Content-Type: application/json
+
+[
+  {
+    "id": 4,
+    "dateTime": "2023-09-25T19:10:24.310288",
+    "lat": 37.5428541,
+    "lng": 127.0711728
+  },
+  {
+    "id": 5,
+    "dateTime": "2023-09-25T19:10:24.310288",
+    "lat": 37.5428541,
+    "lng": 127.0711728
+  },
+  {
+    "id": 6,
+    "dateTime": "2023-09-25T19:10:24.310288",
+    "lat": 37.5428541,
+    "lng": 127.0711728
+  }
+]
