@@ -5,5 +5,3 @@ spring:
       local1: db-local1
       local2: db-local2
     include: db
-
-

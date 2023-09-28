@@ -7,6 +7,14 @@ spring:
     activate:
       on-profile: db-local1
 
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/vecto
+    username: root
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
 
 --- # local2 설정(손찬혁)
 spring:
