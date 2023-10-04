@@ -15,6 +15,7 @@ import com.konkuk.vecto.sns.dto.request.RecordSaveRequest;
 import com.konkuk.vecto.sns.dto.response.MoveRecordResponse;
 import com.konkuk.vecto.sns.service.RecordService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
