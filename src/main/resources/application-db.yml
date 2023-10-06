@@ -8,17 +8,14 @@ spring:
       on-profile: db-local1
 
   datasource:
-    url: jdbc:mysql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
-    username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
+    url: jdbc:mysql://127.0.0.1:3306/vecto
+    username: root
+    password: 1234
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
 
-server:
-  port: 5000
-  
 --- # local2 설정(손찬혁)
 spring:
   config:
