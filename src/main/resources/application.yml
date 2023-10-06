@@ -1,7 +1,31 @@
+#default 공통설정
+jwt-secret-key: "exampleSecretKey"
+
+--- # local1 설정(기본 설정, 백종현)
 spring:
-  profiles:
-    active: local1
-    group:
-      local1: db-local1
-      local2: db-local2
-    include: db
+  config:
+    activate:
+      on-profile: db-local1
+
+  datasource:
+    url: jdbc:mysql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 5000
+  
+--- # local2 설정(손찬혁)
+spring:
+  config:
+    activate:
+      on-profile: db-local2
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
