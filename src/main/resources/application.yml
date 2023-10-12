@@ -1,6 +1,17 @@
 #default 공통설정
 jwt-secret-key: "exampleSecretKey"
 
+
+cloud:
+  aws:
+    s3:
+      accessKey: ${ACCESS_KEY}
+      secretKey: ${SECRET_KEY}
+      region: ap-northeast-2
+
+server:
+  port: 5000
+
 --- # local1 설정(기본 설정, 백종현)
 spring:
   config:
@@ -16,9 +27,7 @@ spring:
       ddl-auto: update
     show-sql: true
 
-server:
-  port: 5000
-  
+
 --- # local2 설정(손찬혁)
 spring:
   config:
