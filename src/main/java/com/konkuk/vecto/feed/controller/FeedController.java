@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/record")
+@RequestMapping("/feed")
 @RequiredArgsConstructor
 public class FeedController {
 
