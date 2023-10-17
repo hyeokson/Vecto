@@ -27,7 +27,7 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
                                         AuthenticationException exception) throws IOException {
 
         // [STEP1] 클라이언트로 전달 할 응답 값을 구성합니다.
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = null;
         String failMsg = "";
 
         // [STEP2] 발생한 Exception 에 대해서 확인합니다.
@@ -56,9 +56,10 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
         PrintWriter printWriter = response.getWriter();
 
         HashMap<String, Object> resultMap = new HashMap<>();
-        resultMap.put("userInfo", null);
-        resultMap.put("resultCode", 401);
-        resultMap.put("failMsg", failMsg);
+
+        resultMap.put("message", failMsg);
+        resultMap.put("code", "401");
+        resultMap.put("status", 401);
         jsonObject = new JSONObject(resultMap);
 
         log.error("failMsg : {}", exception);

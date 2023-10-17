@@ -18,11 +18,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -32,25 +36,19 @@ import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    @Autowired
+public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+
     private UserDetailsService userService;
+
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserDetailsService userService) {
+        super(authenticationManager);
+        this.userService = userService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        // 1. 토큰이 필요하지 않은 API URL에 대해서 배열로 구성합니다.
-        List<String> list = Arrays.asList(
-                "/login",
-                "/register"
-        );
-
-        // 2. 토큰이 필요하지 않은 API URL의 경우 => 로직 처리 없이 다음 필터로 이동
-        if (list.contains(request.getRequestURI())) {
-            chain.doFilter(request, response);
-            return;
-        }
 
         // [STEP1] Client에서 API를 요청할때 Header를 확인합니다.
         String header = request.getHeader(AuthConstants.AUTH_HEADER);
@@ -75,6 +73,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(
                                 new UsernamePasswordAuthenticationToken(userDetailsDto, userDetailsDto.getPassword(), userDetailsDto.getAuthorities()));
 
+                        // ArgumentResolver에 userId 넘기기
+                        request.setAttribute("UserInfo", userId);
+
                         chain.doFilter(request, response);
                     } else {
                         // 사용자 아이디가 없는 경우
@@ -83,7 +84,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     }
                     // 토큰이 유효하지 않은 경우
                 } else {
-                    throw new BusinessExceptionHandler("토큰의 유효기간이 만료되었습니다.");
+                    throw new BusinessExceptionHandler("토큰이 잘못되었거나 유효기간이 만료되었습니다.");
                 }
             }
             // [STEP2-1] 토큰이 존재하지 않는 경우
@@ -94,7 +95,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             // Token 내에 Exception이 발생 하였을 경우 => 클라이언트에 응답값을 반환하고 종료합니다.
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
-            response.setStatus(403);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             PrintWriter printWriter = response.getWriter();
             JSONObject jsonObject = jsonResponseWrapper(e);
             printWriter.print(jsonObject);
@@ -112,8 +113,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private JSONObject jsonResponseWrapper(Exception e) {
 
         HashMap<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("resultCode", 401);
         jsonMap.put("failMsg", e.getMessage());
+        jsonMap.put("code", "403");
+        jsonMap.put("status", 403);
         JSONObject jsonObject = new JSONObject(jsonMap);
         log.error("failMsg {}", e);
         return jsonObject;

@@ -1,5 +1,6 @@
 package com.konkuk.vecto.security.dto;
 
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,16 +14,19 @@ public class UserRegisterRequest {
     private String userId;
 
     // 사용자 패스워드
+    // 카카오 유저는 비밀번호 x
     private String userPw;
 
-    // 사용자 이름
-    private String userNm;
+    // 로그인 유형(vecto or kakao)
+    private String provider;
 
-    // 사용자 전화번호
-    private String phoneNm;
+    // 사용자 닉네임
+    private String nickName;
 
-    // 사용자 권한
-    private String role;
+    // 사용자 이메일
+    // 카카오 유저는 이메일 x
+    private String email;
+
 
     public void setUserPw(String userPw){
         this.userPw=userPw;

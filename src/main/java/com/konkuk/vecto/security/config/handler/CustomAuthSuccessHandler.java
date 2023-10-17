@@ -29,25 +29,21 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
                                         Authentication authentication) throws IOException {
         log.info("3.1. CustomLoginSuccessHandler");
 
-        // [STEP1] 사용자와 관련된 정보를 모두 조회합니다.
+        // 사용자와 관련된 정보를 모두 조회합니다.
         User user = ((UserDetailsDto) authentication.getPrincipal()).getUser();
-
-        // [STEP2] 조회한 데이터를 JSONObject 형태로 파싱을 수행합니다.
-        JSONObject userVoObj = (JSONObject) ConvertUtil.convertObjectToJsonObject(user);
-
 
         HashMap<String, Object> responseMap = new HashMap<>();
 
         JSONObject jsonObject;
 
         // [STEP3] 응답 값을 구성합니다.
-        responseMap.put("userInfo", userVoObj);
-        responseMap.put("resultCode", 200);
-        responseMap.put("failMsg", null);
-        jsonObject = new JSONObject(responseMap);
+
 
         String token = TokenUtils.generateJwtToken(user);
-        jsonObject.put("token", token);
+        responseMap.put("token", token);
+        responseMap.put("code", "200");
+        responseMap.put("status", 200);
+        jsonObject = new JSONObject(responseMap);
         response.addHeader(AuthConstants.AUTH_HEADER, AuthConstants.TOKEN_TYPE + " " + token);
 
 

@@ -65,7 +65,7 @@ public class TokenUtils {
 
             log.info("expireTime :" + claims.getExpiration());
             log.info("userId :" + claims.get("userId"));
-            log.info("userNm :" + claims.get("userNm"));
+            log.info("nickName :" + claims.get("nickName"));
 
             return true;
         } catch (ExpiredJwtException e) {
@@ -122,14 +122,14 @@ public class TokenUtils {
      * @return Map<String, Object>
      */
     private static Map<String, Object> createClaims(User user) {
-        // 공개 클레임에 사용자의 이름과 비밀번호를 설정하여 정보를 조회할 수 있다.
+        // 공개 클레임에 사용자의 아이디와 닉네임을 설정하여 정보를 조회할 수 있다.
         Map<String, Object> claims = new HashMap<>();
 
         log.info("userId : {}", user.getUserId());
-        log.info("userNm : {}", user.getUserNm());
+        log.info("nickName : {}", user.getNickName());
 
         claims.put("userId", user.getUserId());
-        claims.put("userNm", user.getUserNm());
+        claims.put("nickName", user.getNickName());
         return claims;
     }
 

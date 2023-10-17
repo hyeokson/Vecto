@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  * Success CodeList : 성공 코드를 관리한다.
  * Success Code Constructor: 성공 코드를 사용하기 위한 생성자를 구성한다.
  *
- * @author lee
+ *
  */
 
 @Getter
@@ -31,7 +31,7 @@ public enum SuccessCode {
     // 삽입 성공 코드 (HTTP Response: 201 Created)
     INSERT(201, "201", "INSERT SUCCESS"),
     // 수정 성공 코드 (HTTP Response: 201 Created)
-    UPDATE(204, "204", "UPDATE SUCCESS"),
+    UPDATE(201, "201", "UPDATE SUCCESS"),
 
     ; // End
 

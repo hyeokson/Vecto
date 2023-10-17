@@ -30,7 +30,7 @@ public class UserDetailsDto implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUserNm();
+        return user.getUserId();
     }
 
     @Override
