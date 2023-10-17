@@ -1,6 +1,13 @@
 #default 공통설정
 jwt-secret-key: "exampleSecretKey"
 
+cloud:
+  aws:
+    s3:
+      accessKey: ${ACCESS_KEY}
+      secretKey: ${SECRET_KEY}
+      region: ap-northeast-2
+
 --- # AWS DB 설정
 spring:
   config:

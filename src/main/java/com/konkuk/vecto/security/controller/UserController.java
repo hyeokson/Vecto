@@ -1,43 +1,32 @@
 package com.konkuk.vecto.security.controller;
 
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
-import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
-import com.konkuk.vecto.security.dto.UserRegisterRequest;
-import com.konkuk.vecto.security.dto.UserUpdateRequest;
+import com.konkuk.vecto.security.dto.UserRequest;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import com.konkuk.vecto.security.service.UserService;
-import com.konkuk.vecto.security.validator.UserRegisterValidator;
-import com.konkuk.vecto.security.validator.UserUpdateValidator;
-import jakarta.validation.Valid;
+import com.konkuk.vecto.security.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    private final UserRegisterValidator userRegisterValidator;
-    private final UserUpdateValidator userUpdateValidator;
+    private final UserValidator userValidator;
 
     @PostMapping("/user")
-    public ResponseEntity<ResponseCode<String>> registerUser(@RequestBody UserRegisterRequest userRegisterRequest,
+    public ResponseEntity<ResponseCode<String>> registerUser(@RequestBody UserRequest userRegisterRequest,
                                                      BindingResult bindingResult) throws BindException{
-
-        userRegisterValidator.validate(userRegisterRequest, bindingResult);
+        userRegisterRequest.setRequestType("register");
+        userValidator.validate(userRegisterRequest, bindingResult);
         if(bindingResult.hasErrors())
             throw new BindException(bindingResult);
 
@@ -52,9 +41,10 @@ public class UserController {
 
     @PatchMapping("/user")
     public ResponseEntity<ResponseCode<String>> updateUserInfo(@UserInfo String userId,
-                                                       @RequestBody UserUpdateRequest userUpdateRequest,
+                                                       @RequestBody UserRequest userUpdateRequest,
                                                        BindingResult bindingResult) throws BindException{
-        userUpdateValidator.validate(userUpdateRequest, bindingResult);
+        userUpdateRequest.setRequestType("update");
+        userValidator.validate(userUpdateRequest, bindingResult);
         if(bindingResult.hasErrors())
             throw new BindException(bindingResult);
 

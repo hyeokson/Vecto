@@ -1,15 +1,12 @@
 package com.konkuk.vecto.security.dto;
 
-import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @NoArgsConstructor
 @Getter
-public class UserRegisterRequest {
+public class UserRequest {
     // 사용자 아이디
     private String userId;
 
@@ -27,8 +24,15 @@ public class UserRegisterRequest {
     // 카카오 유저는 이메일 x
     private String email;
 
+    private String requestType;
+
 
     public void setUserPw(String userPw){
         this.userPw=userPw;
     }
+
+    public void setRequestType(String requestType){
+        this.requestType = requestType;
+    }
+
 }

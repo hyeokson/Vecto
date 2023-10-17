@@ -1,6 +1,6 @@
 package com.konkuk.vecto.security.domain;
 
-import com.konkuk.vecto.security.dto.UserRegisterRequest;
+import com.konkuk.vecto.security.dto.UserRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,12 +42,12 @@ public class User {
         this.email=email;
     }
 
-    public User(UserRegisterRequest userRegisterRequest){
-        this.provider=userRegisterRequest.getProvider();
-        this.userId=userRegisterRequest.getUserId();
-        this.userPw=userRegisterRequest.getUserPw();
-        this.nickName=userRegisterRequest.getNickName();
-        this.email = userRegisterRequest.getEmail();
+    public User(UserRequest userRequest){
+        this.provider= userRequest.getProvider();
+        this.userId= userRequest.getUserId();
+        this.userPw= userRequest.getUserPw();
+        this.nickName= userRequest.getNickName();
+        this.email = userRequest.getEmail();
     }
 
 }

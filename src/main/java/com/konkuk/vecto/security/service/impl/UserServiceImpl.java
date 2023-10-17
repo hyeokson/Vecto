@@ -1,10 +1,8 @@
 package com.konkuk.vecto.security.service.impl;
 
-import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
 import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
-import com.konkuk.vecto.security.dto.UserRegisterRequest;
-import com.konkuk.vecto.security.dto.UserUpdateRequest;
+import com.konkuk.vecto.security.dto.UserRequest;
 import com.konkuk.vecto.security.repository.UserRepository;
 import com.konkuk.vecto.security.service.UserService;
 import jakarta.transaction.Transactional;
@@ -14,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -34,7 +31,7 @@ public class UserServiceImpl implements UserService {
     //user 객체 등록(회원가입)
     //아이디 또는 이메일이 DB에 이미 존재하면 exception 발생
     @Override
-    public void save(UserRegisterRequest userRegisterRequest){
+    public void save(UserRequest userRegisterRequest){
 
         Optional<User> user1 = repository.findByUserId(userRegisterRequest.getUserId());
 
@@ -48,7 +45,7 @@ public class UserServiceImpl implements UserService {
             if(user2.isPresent())
                 throw new IllegalArgumentException("회원 이메일이 중복입니다.");
 
-            String userPw=userRegisterRequest.getUserPw();
+            String userPw= userRegisterRequest.getUserPw();
             userRegisterRequest.setUserPw(passwordEncoder.encode(userPw));
         }
         User user = new User(userRegisterRequest);
@@ -59,25 +56,25 @@ public class UserServiceImpl implements UserService {
     //회원정보가 존재하지 않으면 exception 발생
     @Override
     public UserInfoResponse findUser(String userId){
-        Optional<User> user_temp = repository.findByUserId(userId);
-        if(user_temp.isEmpty()) {
+        Optional<User> userTemp = repository.findByUserId(userId);
+        if(userTemp.isEmpty()) {
             log.info("error userId: {}", userId);
             throw new IllegalArgumentException("회원정보가 존재하지 않습니다.");
         }
-        User user = user_temp.get();
+        User user = userTemp.get();
         return new UserInfoResponse(user);
     }
 
     //유저 정보 업데이트
     //회원정보가 존재하지 않으면 exception 발생
     @Override
-    public void updateUser(String userId, UserUpdateRequest userUpdateRequest){
-        Optional<User> user_temp = repository.findByUserId(userId);
-        if(user_temp.isEmpty()){
+    public void updateUser(String userId, UserRequest userUpdateRequest){
+        Optional<User> userTemp = repository.findByUserId(userId);
+        if(userTemp.isEmpty()){
             log.info("error userId: {}", userId);
             throw new IllegalArgumentException("회원정보가 존재하지 않습니다.");
         }
-        User user = user_temp.get();
+        User user = userTemp.get();
 
         // userId 수정
         if(StringUtils.isNotBlank(userUpdateRequest.getUserId())){
