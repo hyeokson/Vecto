@@ -1,11 +1,8 @@
-package com.konkuk.vecto.sns.dto.response;
+package com.konkuk.vecto.feed.dto.request;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.konkuk.vecto.sns.domain.MoveRecord;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
-public class MoveRecordResponse {
+public class FeedSaveRequest {
 
 	private Long id;
 
@@ -25,10 +22,4 @@ public class MoveRecordResponse {
 	private Float lng;
 	private Float lat;
 
-	public MoveRecordResponse(MoveRecord moveRecord) {
-		this.id = moveRecord.getOrderNum();
-		this.dateTime = moveRecord.getDateTime();
-		this.lng = moveRecord.getLongitude();
-		this.lat = moveRecord.getLatitude();
-	}
 }
