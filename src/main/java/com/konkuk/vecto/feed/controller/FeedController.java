@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
-import com.konkuk.vecto.feed.dto.response.MovementCoordinateResponse;
+import com.konkuk.vecto.feed.dto.response.FeedResponse;
 import com.konkuk.vecto.feed.service.FeedService;
 
 import jakarta.validation.Valid;
@@ -32,7 +32,7 @@ public class FeedController {
 
 
 	@GetMapping("/{feedId}")
-	public List<MovementCoordinateResponse> getPosting(@PathVariable Long feedId) {
+	public FeedResponse getPosting(@PathVariable Long feedId) {
 		return feedService.getFeed(feedId);
 	}
 }

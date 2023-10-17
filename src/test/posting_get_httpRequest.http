@@ -1,2 +1,2 @@
 ### Send GET request
-GET http://localhost:8080/record/1
+GET http://localhost:5000/feed/1

@@ -37,14 +37,14 @@ public class FeedMovement {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime dateTime;
 
-	private Float longitude;
-	private Float latitude;
+	private Float lng;
+	private Float lat;
 
 	public FeedMovement(Long index, Movement movement) {
 		this.orderNum = index;
 		this.dateTime = movement.getEnterTime();
-		this.longitude = movement.getLng();
-		this.latitude = movement.getLat();
+		this.lng = movement.getLng();
+		this.lat = movement.getLat();
 	}
 
 	public void setFeed(Feed feed) {
