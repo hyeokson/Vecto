@@ -19,9 +19,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-/**
- * 아이디와 비밀번호 기반의 데이터를 Form 데이터로 전송을 받아 '인증'을 담당하는 필터입니다.
- */
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -49,10 +46,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
             User user = objectMapper.readValue(request.getInputStream(), User.class);
-            log.info("1.CustomAuthenticationFilter :: userId:" + user.getUserId() + " userPw:" + user.getUserPw());
 
-            // ID와 패스워드를 기반으로 토큰 발급
-            return new UsernamePasswordAuthenticationToken(user.getUserId(), user.getUserPw());
+            // vecto 로그인
+            if(user.getUserPw() != null) {
+                log.info("1.CustomAuthenticationFilter :: userId:" + user.getUserId() + " userPw:" + user.getUserPw());
+                // ID와 패스워드를 기반으로 토큰 발급
+                return new UsernamePasswordAuthenticationToken(user.getUserId(), user.getUserPw());
+            }
+            // kakao 로그인
+            else{
+                log.info("1.CustomAuthenticationFilter :: userId:" + user.getUserId());
+                return new UsernamePasswordAuthenticationToken(user.getUserId(), null);
+            }
+
         } catch (IOException e) {
             log.error("ErrorMsg: {}", e);
             return null;

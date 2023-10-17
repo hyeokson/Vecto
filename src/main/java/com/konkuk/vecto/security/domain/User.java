@@ -1,13 +1,11 @@
 package com.konkuk.vecto.security.domain;
 
-import com.konkuk.vecto.security.dto.UserRegisterRequest;
+import com.konkuk.vecto.security.dto.UserRequest;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Entity
 @Table(name="USERINFO")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,32 +19,35 @@ public class User {
     private String userId;
 
     // 사용자 패스워드
+    // kakao 유저는 비밀번호 x
     private String userPw;
 
-    // 사용자 이름
-    private String userNm;
+    //로그인 유형 (vecto or kakao)
+    private String provider;
 
-    // 사용자 전화번호
-    private String phoneNm;
+    // 사용자 닉네임
+    private String nickName;
 
-    // 사용자 권한(defalut = "USER")
-    private String role;
+    // 사용자 이메일
+    // kakao 유저는 이메일 x
+    private String email;
 
     @Builder
-    User(Long id, String userId, String userPw, String userNm,String phoneNm, String role) {
+    User(Long id, String provider, String userId, String userPw, String nickName,String phoneNm, String email) {
         this.id = id;
+        this.provider = provider;
         this.userId = userId;
         this.userPw = userPw;
-        this.userNm = userNm;
-        this.phoneNm = phoneNm;
+        this.nickName = nickName;
+        this.email=email;
     }
 
-    public User(UserRegisterRequest userRegisterRequest){
-        this.userId=userRegisterRequest.getUserId();
-        this.userPw=userRegisterRequest.getUserPw();
-        this.userNm = userRegisterRequest.getUserNm();
-        this.phoneNm = userRegisterRequest.getPhoneNm();
-        this.role=userRegisterRequest.getRole();
+    public User(UserRequest userRequest){
+        this.provider= userRequest.getProvider();
+        this.userId= userRequest.getUserId();
+        this.userPw= userRequest.getUserPw();
+        this.nickName= userRequest.getNickName();
+        this.email = userRequest.getEmail();
     }
 
 }

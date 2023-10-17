@@ -33,18 +33,29 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 
-        // 'AuthenticaionFilter' 에서 생성된 토큰으로부터 아이디와 비밀번호를 조회함
-        String userId = token.getName();
-        String userPw = (String) token.getCredentials();
+        // vecto 로그인
+        if(token.getCredentials()!=null) {
+            // 'AuthenticaionFilter' 에서 생성된 토큰으로부터 아이디와 비밀번호를 조회함
+            String userId = token.getName();
+            String userPw = (String) token.getCredentials();
 
-        // Spring Security - UserDetailsService를 통해 DB에서 아이디로 사용자 조회
-        UserDetailsDto userDetailsDto = (UserDetailsDto) userDetailsService.loadUserByUsername(userId);
+            // Spring Security - UserDetailsService를 통해 DB에서 아이디로 사용자 조회
+            UserDetailsDto userDetailsDto = (UserDetailsDto) userDetailsService.loadUserByUsername(userId);
 
-        // 비밀번호가 일치하지 않을 경우 BadCredentialsException 터뜨리기
-        if (!(passwordEncoder.matches(userPw, userDetailsDto.getPassword()))) {
-            throw new BadCredentialsException(userId);
+            // 비밀번호가 일치하지 않을 경우 BadCredentialsException 터뜨리기
+            if (!(passwordEncoder.matches(userPw, userDetailsDto.getPassword()))) {
+                throw new BadCredentialsException(userId);
+            }
+            return new UsernamePasswordAuthenticationToken(userDetailsDto, userPw, userDetailsDto.getAuthorities());
         }
-        return new UsernamePasswordAuthenticationToken(userDetailsDto, userPw, userDetailsDto.getAuthorities());
+        // kakao 로그인
+        else{
+            String userId = token.getName();
+
+            // Spring Security - UserDetailsService를 통해 DB에서 아이디로 사용자 조회
+            UserDetailsDto userDetailsDto = (UserDetailsDto) userDetailsService.loadUserByUsername(userId);
+            return new UsernamePasswordAuthenticationToken(userDetailsDto, null, userDetailsDto.getAuthorities());
+        }
     }
 
     @Override
