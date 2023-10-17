@@ -48,20 +48,10 @@ public class WebSecurityConfig {
      */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) ->{
-
-            web.ignoring().requestMatchers(HttpMethod.POST, "/user");
-
-            web.ignoring().requestMatchers(// >>> swagger 인가 무시
-                    "/swagger-resources/**",
-                    "/swagger-ui.html",
-                    "/webjars/**",
-                    "/swagger/**",
-                    "/error");
-
-            // 정적 자원에 대해서 Security를 적용하지 않음으로 설정
-            web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-        };
+        // 정적 자원에 대해서 Security를 적용하지 않음으로 설정
+        return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+            .and()
+            .ignoring().requestMatchers("/**");
     }
 
     /**
@@ -170,7 +160,6 @@ public class WebSecurityConfig {
      *
      * @return JwtAuthorizationFilter
      */
-    //@Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
         return new JwtAuthorizationFilter(authenticationManager(), userDetailsService);
     }
