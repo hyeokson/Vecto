@@ -25,14 +25,14 @@ public class FeedController {
 	private final FeedService feedService;
 
 	@PostMapping
-	public ResponseEntity<Void> saveMoveHistory(@Valid @RequestBody final List<FeedSaveRequest> feedSaveRequest) {
-		feedService.saveMoveHistory(feedSaveRequest);
-		return ResponseEntity.ok(null);
+	public ResponseEntity<Long> saveMoveHistory(@Valid @RequestBody final FeedSaveRequest feedSaveRequest) {
+		Long feedId = feedService.saveFeed(feedSaveRequest);
+		return ResponseEntity.ok(feedId);
 	}
 
 
-	@GetMapping("/{postingId}")
-	public List<MovementCoordinateResponse> getPosting(@PathVariable Long postingId) {
-		return feedService.getPosting(postingId);
+	@GetMapping("/{feedId}")
+	public List<MovementCoordinateResponse> getPosting(@PathVariable Long feedId) {
+		return feedService.getFeed(feedId);
 	}
 }

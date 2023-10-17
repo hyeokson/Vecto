@@ -1,11 +1,5 @@
 package com.konkuk.vecto.feed.domain;
 
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,11 +11,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MovementCoordinate {
+public class FeedImage {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,25 +22,18 @@ public class MovementCoordinate {
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "posting_id")
+	@JoinColumn(name = "feed_id")
 	private Feed feed;
 
 	private Long orderNum;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime dateTime;
-
-	private Float longitude;
-	private Float latitude;
-
-	public MovementCoordinate(FeedSaveRequest feedSaveRequests) {
-		this.orderNum = feedSaveRequests.getId();
-		this.dateTime = feedSaveRequests.getDateTime();
-		this.longitude = feedSaveRequests.getLng();
-		this.latitude = feedSaveRequests.getLat();
-	}
+	private String url;
 
 	public void setFeed(Feed feed) {
 		this.feed = feed;
+	}
+	public FeedImage(Long index, String image) {
+		this.orderNum = index;
+		this.url = image;
 	}
 }

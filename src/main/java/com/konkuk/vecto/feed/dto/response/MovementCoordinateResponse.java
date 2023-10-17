@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.konkuk.vecto.feed.domain.MovementCoordinate;
+import com.konkuk.vecto.feed.domain.FeedMovement;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,10 +24,10 @@ public class MovementCoordinateResponse {
 	private Float lng;
 	private Float lat;
 
-	public MovementCoordinateResponse(MovementCoordinate movementCoordinate) {
-		this.id = movementCoordinate.getOrderNum();
-		this.dateTime = movementCoordinate.getDateTime();
-		this.lng = movementCoordinate.getLongitude();
-		this.lat = movementCoordinate.getLatitude();
+	public MovementCoordinateResponse(FeedMovement feedMovement) {
+		this.id = feedMovement.getOrderNum();
+		this.dateTime = feedMovement.getDateTime();
+		this.lng = feedMovement.getLongitude();
+		this.lat = feedMovement.getLatitude();
 	}
 }

@@ -1,13 +1,18 @@
 package com.konkuk.vecto.feed.service;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.BiFunction;
+import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.konkuk.vecto.feed.domain.MovementCoordinate;
+import com.konkuk.vecto.feed.domain.FeedImage;
+import com.konkuk.vecto.feed.domain.FeedMovement;
 import com.konkuk.vecto.feed.domain.Feed;
+import com.konkuk.vecto.feed.domain.FeedPlace;
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.response.MovementCoordinateResponse;
 import com.konkuk.vecto.feed.repository.FeedRepository;
@@ -23,21 +28,37 @@ public class FeedService {
 	private final FeedRepository feedRepository;
 
 	@Transactional
-	public void saveMoveHistory(List<FeedSaveRequest> feedSaveRequest) {
-		List<MovementCoordinate> movementCoordinates = feedSaveRequest.stream()
-			.map(MovementCoordinate::new)
-			.collect(Collectors.toList());
+	public Long saveFeed(FeedSaveRequest feedSaveRequest) {
+		// TODO: 현재는 매번 날려서 저장하는 방식. 이를 Bulk Insert 형태로 변경해야함.
+		List<FeedMovement> feedMovements = dtoToEntityIncludeIndex(feedSaveRequest.getMovements(), FeedMovement::new);
+		List<FeedImage> feedImages = dtoToEntityIncludeIndex(feedSaveRequest.getImages(), FeedImage::new);
+		List<FeedPlace> feedPlaces = dtoToEntityIncludeIndex(feedSaveRequest.getPlaces(), FeedPlace::new);
 
-		Feed feed = Feed.of(movementCoordinates);
+		Feed feed = Feed.builder()
+			.title(feedSaveRequest.getTitle())
+			.content(feedSaveRequest.getContent())
+			.uploadTime(feedSaveRequest.getUploadTime())
+			.feedMovements(feedMovements)
+			.feedImages(feedImages)
+			.feedPlaces(feedPlaces)
+			.build();
 
-		feedRepository.save(feed);
+		return feedRepository.save(feed).getId();
 	}
 
-	public List<MovementCoordinateResponse> getPosting(Long postingId) {
-		Feed feed = feedRepository.findById(postingId).orElseThrow();
-		List<MovementCoordinate> movementCoordinates = feed.getMovementCoordinates();
-		return movementCoordinates.stream()
+	// 리스트의 순서를 껴넣어서, DTO를 엔티티로 변환해주는 함수
+	private static <T, R> List<R> dtoToEntityIncludeIndex(List<T> items, BiFunction<Long, T, R> mapper) {
+		return IntStream.range(0, items.size())
+			.mapToObj(index -> mapper.apply((long) index, items.get(index)))
+			.collect(toList());
+	}
+
+
+	public List<MovementCoordinateResponse> getFeed(Long feedId) {
+		Feed feed = feedRepository.findById(feedId).orElseThrow();
+		List<FeedMovement> feedMovements = feed.getFeedMovements();
+		return feedMovements.stream()
 			.map(MovementCoordinateResponse::new)
-			.collect(Collectors.toList());
+			.collect(toList());
 	}
 }
