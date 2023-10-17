@@ -13,7 +13,7 @@ public interface UserService {
 
     UserInfoResponse findUser(String userId);
 
-    void updateUser(String userId, UserRequest userUpdateRequest);
+    Optional<String> updateUser(String userId, UserRequest userUpdateRequest);
 
     void deleteUser(String userId);
 }

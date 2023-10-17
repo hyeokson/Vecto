@@ -3,15 +3,20 @@ package com.konkuk.vecto.security.service.impl;
 import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
 import com.konkuk.vecto.security.dto.UserRequest;
+import com.konkuk.vecto.security.model.common.codes.AuthConstants;
+import com.konkuk.vecto.security.model.common.utils.TokenUtils;
 import com.konkuk.vecto.security.repository.UserRepository;
 import com.konkuk.vecto.security.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -68,8 +73,10 @@ public class UserServiceImpl implements UserService {
     //유저 정보 업데이트
     //회원정보가 존재하지 않으면 exception 발생
     @Override
-    public void updateUser(String userId, UserRequest userUpdateRequest){
+    public Optional<String> updateUser(String userId, UserRequest userUpdateRequest){
         Optional<User> userTemp = repository.findByUserId(userId);
+        boolean isJwtChanged = false;
+
         if(userTemp.isEmpty()){
             log.info("error userId: {}", userId);
             throw new IllegalArgumentException("회원정보가 존재하지 않습니다.");
@@ -83,6 +90,7 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException("회원 아이디가 중복입니다.");
 
             user.setUserId(userUpdateRequest.getUserId());
+            isJwtChanged = true;
         }
 
         // userPw 수정
@@ -94,6 +102,7 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isNotBlank(userUpdateRequest.getNickName())){
 
             user.setNickName(userUpdateRequest.getNickName());
+            isJwtChanged = true;
         }
 
         // Email 수정
@@ -105,6 +114,13 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userUpdateRequest.getEmail());
         }
 
+        // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
+        if(isJwtChanged) {
+            String token = TokenUtils.generateJwtToken(user);
+            return Optional.of(token);
+        }
+
+        return Optional.of(null);
     }
 
     @Override

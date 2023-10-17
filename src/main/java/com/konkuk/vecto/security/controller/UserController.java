@@ -15,6 +15,8 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @RequiredArgsConstructor
 public class UserController {
@@ -48,7 +50,16 @@ public class UserController {
         if(bindingResult.hasErrors())
             throw new BindException(bindingResult);
 
-        userService.updateUser(userId, userUpdateRequest);
+        Optional<String> token = userService.updateUser(userId, userUpdateRequest);
+
+        // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
+        if(token.isPresent()) {
+            ResponseCode<String> responseCode = new ResponseCode<String>(SuccessCode.UPDATE);
+            responseCode.setToken(token.get());
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseCode);
+        }
+
+        // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseCode<String>(SuccessCode.UPDATE));
     }
 
