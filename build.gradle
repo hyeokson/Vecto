@@ -45,6 +45,9 @@ dependencies {
 
 	// aws 모듈을 사용
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// smtp 모듈
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

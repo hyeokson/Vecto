@@ -1,12 +1,19 @@
 package com.konkuk.vecto.security.controller;
 
+import com.konkuk.vecto.mail.service.MailService;
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
+import com.konkuk.vecto.security.dto.MailCodeRequest;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
 import com.konkuk.vecto.security.dto.UserRequest;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import com.konkuk.vecto.security.service.UserService;
+import com.konkuk.vecto.security.service.VerificationCodeService;
 import com.konkuk.vecto.security.validator.UserValidator;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +31,8 @@ public class UserController {
 
     private final UserService userService;
     private final UserValidator userValidator;
+    private final MailService mailService;
+    private final VerificationCodeService verificationCodeService;
 
     @PostMapping("/user")
     public ResponseEntity<ResponseCode<String>> registerUser(@RequestBody UserRequest userRegisterRequest,
@@ -69,9 +79,19 @@ public class UserController {
         return ResponseEntity.ok(new ResponseCode<String>(SuccessCode.DELETE));
     }
 
-    @GetMapping("/test")
+    @PostMapping("/mail")
+    @Operation(summary = "이메일 코드 요청", description = "이메일로 코드요청을 받습니다.")
+    @ApiResponse(responseCode = "200", description = "이메일 전송 성공 시 상태코드 200을 보냅니다.")
     @ResponseBody
-    public String test() {
-        return "success";
+    public void ImageUpload(@RequestBody @Valid MailCodeRequest mailCodeRequest) {
+        // 인증 랜덤 6자리 수 추출
+        int randomInt = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        mailService.sendVerificationMail(mailCodeRequest.getEmail(), randomInt);
+
+        if(userService.isRegisterUser(mailCodeRequest.getEmail())) {
+            throw new RuntimeException("이미 회원가입된 이메일입니다.");
+        }
+
+        verificationCodeService.saveCode(mailCodeRequest.getEmail(), randomInt);
     }
 }
