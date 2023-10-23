@@ -58,7 +58,7 @@ public class UserValidatorFunc {
     public void validateNickName(String nickName, Errors errors, String validator){
         if (validator.equals("register") && (nickName==null || nickName.isEmpty()) ||
                 validator.equals("update") && nickName!=null && nickName.isEmpty())
-            errors.rejectValue("nickName", "NotEmpty", "사용자 이름을 적어주세요.");
+            errors.rejectValue("nickName", "NotEmpty", "사용자 닉네임을 적어주세요.");
         else if(nickName!=null && !nickName.isEmpty()){
             pattern = Pattern.compile(NICKNAME_REGEX);
             matcher = pattern.matcher(nickName);

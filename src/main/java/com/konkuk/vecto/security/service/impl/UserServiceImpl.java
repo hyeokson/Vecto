@@ -19,10 +19,11 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Optional;
 
-@Service
+
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
+@Service
 public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository repository;
@@ -121,6 +122,24 @@ public class UserServiceImpl implements UserService {
         }
 
         return Optional.of(null);
+    }
+
+    @Override
+    public void updateFcmToken(String userId, Optional<String> fcmToken){
+        Optional<User> userTemp = repository.findByUserId(userId);
+
+        if(userTemp.isEmpty()){
+            log.info("error userId: {}", userId);
+            throw new IllegalArgumentException("회원정보가 존재하지 않습니다.");
+        }
+
+        User user = userTemp.get();
+        if(fcmToken.isPresent() && !fcmToken.get().equals(user.getFcmToken())){
+            user.setFcmToken(fcmToken.get());
+        }
+        else if(fcmToken.isEmpty()){
+            user.setFcmToken(null);
+        }
     }
 
     @Override

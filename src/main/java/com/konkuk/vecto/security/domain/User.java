@@ -32,6 +32,8 @@ public class User {
     // kakao 유저는 이메일 x
     private String email;
 
+    private String fcmToken;
+
     @Builder
     User(Long id, String provider, String userId, String userPw, String nickName,String phoneNm, String email) {
         this.id = id;

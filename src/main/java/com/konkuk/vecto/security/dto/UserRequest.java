@@ -24,6 +24,7 @@ public class UserRequest {
     // 카카오 유저는 이메일 x
     private String email;
 
+    // "register" or "update"
     private String requestType;
 
 

@@ -5,6 +5,7 @@ import com.konkuk.vecto.security.config.filter.JwtAuthorizationFilter;
 import com.konkuk.vecto.security.config.handler.CustomAuthFailureHandler;
 import com.konkuk.vecto.security.config.handler.CustomAuthSuccessHandler;
 import com.konkuk.vecto.security.config.handler.CustomAuthenticationProvider;
+import com.konkuk.vecto.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;

@@ -59,7 +59,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CREATED).body(responseCode);
         }
 
-        // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseCode<String>(SuccessCode.UPDATE));
     }
 
@@ -69,9 +68,4 @@ public class UserController {
         return ResponseEntity.ok(new ResponseCode<String>(SuccessCode.DELETE));
     }
 
-    @GetMapping("/test")
-    @ResponseBody
-    public String test() {
-        return "success";
-    }
 }
