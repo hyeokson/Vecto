@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.konkuk.vecto.feed.common.TimeDifferenceCalcuator;
+import com.konkuk.vecto.feed.domain.Comment;
 import com.konkuk.vecto.feed.domain.FeedImage;
 import com.konkuk.vecto.feed.domain.FeedMovement;
 import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.domain.FeedPlace;
+import com.konkuk.vecto.feed.dto.request.CommentRequest;
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
+import com.konkuk.vecto.feed.dto.response.CommentsResponse;
 import com.konkuk.vecto.feed.dto.response.FeedResponse;
 import com.konkuk.vecto.feed.repository.FeedRepository;
 
@@ -67,7 +70,17 @@ public class FeedService {
 			.places(places)
 			.movements(movements)
 			.images(images)
+			.commentCount(feed.getComments().size())
 			.build();
+	}
+
+	@Transactional
+	public void saveComment(CommentRequest commentRequest, String userId) {
+		Long feedId = commentRequest.getFeedId();
+		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+		Comment comment = new Comment(feed, userId, commentRequest.getContent());
+		feed.addComment(comment);
+
 	}
 
 	// 리스트의 순서를 껴넣어서, DTO를 엔티티로 변환해주는 함수
@@ -75,5 +88,16 @@ public class FeedService {
 		return IntStream.range(0, items.size())
 			.mapToObj(index -> mapper.apply((long)index, items.get(index)))
 			.toList();
+	}
+
+	public CommentsResponse getFeedComments(Long feedId) {
+		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+
+		return new CommentsResponse(feed.getComments()
+			.stream()
+			.map(comment -> new CommentsResponse.CommentResponse(comment.getUserId(),
+				comment.getComment(),
+				timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt())))
+			.toList());
 	}
 }
