@@ -43,7 +43,9 @@ public class UserController {
 
         // TODO : 여기에 회원가입 Code validate하는 부분 추가할 것.
         // 카카오 회원가입인 경우는 validate를 안해야함.
-        // userValidator.validate(userRegisterRequest, bindingResult);
+        // verificationCodeService.isValidCode(userRegisterRequest.getEmail(), userRegisterRequest.getCode());
+        
+        userValidator.validate(userRegisterRequest, bindingResult);
 
 
         if(bindingResult.hasErrors())

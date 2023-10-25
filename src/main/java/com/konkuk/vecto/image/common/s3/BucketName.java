@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum BucketName {
 
-	Feed("vecto-feed-image");
+	Feed("vecto-feed-image"),
+	Profile("vecto-profile-image");
 
 	private final String bucketName;
 

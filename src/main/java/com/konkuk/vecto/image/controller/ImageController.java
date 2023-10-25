@@ -5,17 +5,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.konkuk.vecto.image.common.dto.Image;
 import com.konkuk.vecto.image.service.ImageService;
+import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -31,14 +30,14 @@ public class ImageController {
 	public List<String> ImageUpload(
 		@Parameter(description = "multipart/form-data 형식의 이미지 리스트를 input으로 받습니다. 이때 key 값은 multipartFile 입니다.")
 		@RequestPart("image") List<MultipartFile> image) {
-		return imageService.uploadImage(image)
+		return imageService.uploadFeedImages(image)
 			.stream()
 			.map(Image::getS3FullUrl)
 			.collect(Collectors.toList());
 	}
 
 	@PostMapping("/upload/profile")
-	public String userProfileImageUpload() {
-		return null;
+	public String userProfileImageUpload(@UserInfo String userId, @RequestPart("image") MultipartFile image) {
+		return imageService.uploadProfileImage(userId, image).getUrl();
 	}
 }

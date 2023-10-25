@@ -129,6 +129,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean updateUserProfileImage(String userId, String imageUrl) {
+        User user = repository.findByUserId(userId).orElseThrow(
+            () -> new IllegalArgumentException("회원정보가 존재하지 않습니다."));
+        user.updateProfileImageUrl(imageUrl);
+        return Boolean.TRUE;
+    }
+
+    @Override
     public void deleteUser(String userId){
         repository.delete(repository.findByUserId(userId).orElseThrow(
                 ()->new IllegalArgumentException("회원정보가 존재하지 않습니다.")));

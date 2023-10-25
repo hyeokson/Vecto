@@ -32,6 +32,7 @@ public class User {
     // kakao 유저는 이메일 x
     private String email;
 
+    private String profileImageUrl;
     @Builder
     User(Long id, String provider, String userId, String userPw, String nickName,String phoneNm, String email) {
         this.id = id;
@@ -50,4 +51,7 @@ public class User {
         this.email = userRequest.getEmail();
     }
 
+    public void updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
 }
