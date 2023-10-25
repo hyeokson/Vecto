@@ -13,6 +13,8 @@ public interface UserService {
 
     UserInfoResponse findUser(String userId);
 
+    Boolean isRegisterUser(String emailName);
+
     Optional<String> updateUser(String userId, UserRequest userUpdateRequest);
 
     void deleteUser(String userId);
