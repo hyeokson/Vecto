@@ -29,6 +29,9 @@ public enum SuccessCode {
 
     CHECK(200, "200", "CHECK SUCCESS"),
 
+    // 로그인 성공 코드 (HTTP Response: 200 OK)
+    LOGIN(200, "200", "LOGIN SUCCESS"),
+
     // 삽입 성공 코드 (HTTP Response: 201 Created)
     INSERT(201, "201", "INSERT SUCCESS"),
     // 수정 성공 코드 (HTTP Response: 201 Created)

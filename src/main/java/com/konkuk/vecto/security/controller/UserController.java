@@ -1,16 +1,16 @@
 package com.konkuk.vecto.security.controller;
 
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
-import com.konkuk.vecto.security.dto.UserIdDto;
-import com.konkuk.vecto.security.dto.UserInfoResponse;
-import com.konkuk.vecto.security.dto.UserRegisterDto;
-import com.konkuk.vecto.security.dto.UserUpdateDto;
+import com.konkuk.vecto.security.dto.*;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import com.konkuk.vecto.security.service.UserService;
+import com.konkuk.vecto.security.service.impl.LoginService;
+import com.konkuk.vecto.security.validator.LoginValidator;
 import com.konkuk.vecto.security.validator.UserRegisterValidator;
 import com.konkuk.vecto.security.validator.UserUpdateValidator;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -23,8 +23,23 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final LoginService loginService;
     private final UserRegisterValidator userRegisterValidator;
     private final UserUpdateValidator userUpdateValidator;
+    private final LoginValidator loginValidator;
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<String> login(@RequestBody LoginDto loginDto, BindingResult bindingResult) throws BindException{
+        loginValidator.validate(loginDto, bindingResult);
+        if(bindingResult.hasErrors())
+            throw new BindException(bindingResult);
+
+        String jwtToken = loginService.login(loginDto);
+        ResponseCode<String> responseCode = new ResponseCode<>(SuccessCode.LOGIN);
+        responseCode.setToken(jwtToken);
+        return responseCode;
+    }
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
