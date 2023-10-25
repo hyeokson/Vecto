@@ -52,7 +52,7 @@ public class WebSecurityConfig {
         // 정적 자원에 대해서 Security를 적용하지 않음으로 설정
         return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
             .and()
-            .ignoring().requestMatchers(HttpMethod.POST,"/user");
+            .ignoring().requestMatchers(HttpMethod.POST,"/user").requestMatchers("/**");
     }
 
     /**
