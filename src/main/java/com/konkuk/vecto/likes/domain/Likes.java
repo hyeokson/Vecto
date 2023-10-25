@@ -16,11 +16,11 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(
+@Table(name = "likes",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name="likes_uk",
-                        columnNames = {"feed_id", "user_Id"}
+                        columnNames = {"feed_id", "user_id"}
                 )
         }
 )
@@ -30,14 +30,12 @@ public class Likes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="feed_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Feed feed;
 
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name="user_id", referencedColumnName = "userId")
-    @ManyToOne
+    @JoinColumn(name="user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @CreationTimestamp

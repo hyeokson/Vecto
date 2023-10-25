@@ -15,7 +15,7 @@ import java.util.List;
 
 //에러를 처리하는 ContollerAdvice
 @Slf4j
-@ControllerAdvice(assignableTypes = {UserController.class})
+@ControllerAdvice
 public class UserControllerExceptionHandler {
 
     //validation 오류가 발생했을 때 에러 메시지를 반환

@@ -67,11 +67,11 @@ public class UserValidatorFunc {
                 errors.rejectValue("nickName", "Pattern", "사용자 닉네임은 알파벳, 한글, 숫자만 허용합니다. (1~10자리)");}
     }
 
+    // 회원가입(vecto) 일 경우에만 이메일 검증
     public void validateEmail(String email, Errors errors, String validator){
-        if (validator.equals("register") && (email==null || email.isEmpty()) ||
-                validator.equals("update") && email!=null && email.isEmpty())
+        if (email==null || email.isEmpty())
             errors.rejectValue("email", "NotEmpty", "사용자 이메일을 적어주세요.");
-        else if(email!=null && !email.isEmpty()){
+        else {
             pattern = Pattern.compile(EMAIL_REGEX);
             matcher = pattern.matcher(email);
 

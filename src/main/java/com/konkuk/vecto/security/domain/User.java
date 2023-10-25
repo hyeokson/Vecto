@@ -1,13 +1,23 @@
 package com.konkuk.vecto.security.domain;
 
-import com.konkuk.vecto.security.dto.UserRequest;
+import com.konkuk.vecto.likes.domain.Likes;
+import com.konkuk.vecto.security.dto.UserRegisterDto;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name="USERINFO")
+@Table(name="userinfo",
+        uniqueConstraints = {
+        @UniqueConstraint(
+                name="userinfo_uk",
+                columnNames = {"userId", "email"}
+        )
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
@@ -15,7 +25,11 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Likes> likes = new ArrayList<>();
+
     // 사용자 아이디
+
     private String userId;
 
     // 사용자 패스워드
@@ -44,12 +58,12 @@ public class User {
         this.email=email;
     }
 
-    public User(UserRequest userRequest){
-        this.provider= userRequest.getProvider();
-        this.userId= userRequest.getUserId();
-        this.userPw= userRequest.getUserPw();
-        this.nickName= userRequest.getNickName();
-        this.email = userRequest.getEmail();
+    public User(UserRegisterDto userRegisterDto){
+        this.provider= userRegisterDto.getProvider();
+        this.userId= userRegisterDto.getUserId();
+        this.userPw= userRegisterDto.getUserPw();
+        this.nickName= userRegisterDto.getNickName();
+        this.email = userRegisterDto.getEmail();
     }
 
 }

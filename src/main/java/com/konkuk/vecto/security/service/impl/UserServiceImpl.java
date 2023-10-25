@@ -2,8 +2,8 @@ package com.konkuk.vecto.security.service.impl;
 
 import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
-import com.konkuk.vecto.security.dto.UserRequest;
-import com.konkuk.vecto.security.model.common.codes.AuthConstants;
+import com.konkuk.vecto.security.dto.UserRegisterDto;
+import com.konkuk.vecto.security.dto.UserUpdateDto;
 import com.konkuk.vecto.security.model.common.utils.TokenUtils;
 import com.konkuk.vecto.security.repository.UserRepository;
 import com.konkuk.vecto.security.service.UserService;
@@ -11,12 +11,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -37,24 +34,24 @@ public class UserServiceImpl implements UserService {
     //user 객체 등록(회원가입)
     //아이디 또는 이메일이 DB에 이미 존재하면 exception 발생
     @Override
-    public void save(UserRequest userRegisterRequest){
+    public void save(UserRegisterDto userRegisterDto){
 
-        Optional<User> user1 = repository.findByUserId(userRegisterRequest.getUserId());
+        Optional<User> user1 = repository.findByUserId(userRegisterDto.getUserId());
 
         if(user1.isPresent())
             throw new IllegalArgumentException("회원 아이디가 중복입니다.");
 
         //kakao 유저는 email, password 존재 x
-        if(userRegisterRequest.getProvider().equals("vecto")){
-            Optional<User> user2 = repository.findByEmail(userRegisterRequest.getEmail());
+        if(userRegisterDto.getProvider().equals("vecto")){
+            Optional<User> user2 = repository.findByEmail(userRegisterDto.getEmail());
 
             if(user2.isPresent())
                 throw new IllegalArgumentException("회원 이메일이 중복입니다.");
 
-            String userPw= userRegisterRequest.getUserPw();
-            userRegisterRequest.setUserPw(passwordEncoder.encode(userPw));
+            String userPw= userRegisterDto.getUserPw();
+            userRegisterDto.setUserPw(passwordEncoder.encode(userPw));
         }
-        User user = new User(userRegisterRequest);
+        User user = new User(userRegisterDto);
         repository.save(user);
     }
 
@@ -74,7 +71,7 @@ public class UserServiceImpl implements UserService {
     //유저 정보 업데이트
     //회원정보가 존재하지 않으면 exception 발생
     @Override
-    public Optional<String> updateUser(String userId, UserRequest userUpdateRequest){
+    public Optional<String> updateUser(String userId, UserUpdateDto userUpdateDto){
         Optional<User> userTemp = repository.findByUserId(userId);
         boolean isJwtChanged = false;
 
@@ -85,34 +82,25 @@ public class UserServiceImpl implements UserService {
         User user = userTemp.get();
 
         // userId 수정
-        if(StringUtils.isNotBlank(userUpdateRequest.getUserId())){
-            Optional<User> user1 = repository.findByUserId(userUpdateRequest.getUserId());
+        if(StringUtils.isNotBlank(userUpdateDto.getUserId())){
+            Optional<User> user1 = repository.findByUserId(userUpdateDto.getUserId());
             if(user1.isPresent())
                 throw new IllegalArgumentException("회원 아이디가 중복입니다.");
 
-            user.setUserId(userUpdateRequest.getUserId());
+            user.setUserId(userUpdateDto.getUserId());
             isJwtChanged = true;
         }
 
         // userPw 수정
-        if(StringUtils.isNotBlank(userUpdateRequest.getUserPw())){
-            user.setUserPw(passwordEncoder.encode(userUpdateRequest.getUserPw()));
+        if(StringUtils.isNotBlank(userUpdateDto.getUserPw())){
+            user.setUserPw(passwordEncoder.encode(userUpdateDto.getUserPw()));
         }
 
         // Nickname 수정
-        if(StringUtils.isNotBlank(userUpdateRequest.getNickName())){
+        if(StringUtils.isNotBlank(userUpdateDto.getNickName())){
 
-            user.setNickName(userUpdateRequest.getNickName());
+            user.setNickName(userUpdateDto.getNickName());
             isJwtChanged = true;
-        }
-
-        // Email 수정
-        if(StringUtils.isNotBlank(userUpdateRequest.getEmail())){
-            Optional<User> user2 = repository.findByEmail(userUpdateRequest.getEmail());
-            if(user2.isPresent())
-                throw new IllegalArgumentException("회원 이메일이 중복입니다.");
-
-            user.setEmail(userUpdateRequest.getEmail());
         }
 
         // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
@@ -146,5 +134,12 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String userId){
         repository.delete(repository.findByUserId(userId).orElseThrow(
                 ()->new IllegalArgumentException("회원정보가 존재하지 않습니다.")));
+    }
+
+    @Override
+    public void checkUserId(String userId){
+        Optional<User> user = repository.findByUserId(userId);
+        if(user.isPresent())
+            throw new IllegalArgumentException("회원 아이디가 중복입니다.");
     }
 }
