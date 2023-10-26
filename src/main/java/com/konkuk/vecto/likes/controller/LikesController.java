@@ -8,24 +8,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class LikesController {
-    LikesService likesService;
+    private final LikesService likesService;
 
     @PostMapping("/feed/{feedId}/likes")
-    public ResponseEntity<ResponseCode<String>> likes(@PathVariable Long feedId, @UserInfo String userId){
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseCode<String> likes(@PathVariable("feedId") Long feedId, @UserInfo String userId){
         likesService.saveLikes(feedId, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseCode<>(SuccessCode.INSERT));
+        return new ResponseCode<>(SuccessCode.INSERT);
     }
 
     @DeleteMapping("/feed/{feedId}/likes")
-    public ResponseEntity<ResponseCode<String>> unLikes(@PathVariable Long feedId, @UserInfo String userId){
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<String> unLikes(@PathVariable("feedId") Long feedId, @UserInfo String userId){
         likesService.deleteLikes(feedId, userId);
-        return ResponseEntity.ok().body(new ResponseCode<>(SuccessCode.DELETE));
+        return new ResponseCode<>(SuccessCode.DELETE);
     }
 }

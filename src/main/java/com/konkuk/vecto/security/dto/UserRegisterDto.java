@@ -3,10 +3,9 @@ package com.konkuk.vecto.security.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @NoArgsConstructor
 @Getter
-public class UserRequest {
+public class UserRegisterDto {
     // 사용자 아이디
     private String userId;
 
@@ -24,16 +23,8 @@ public class UserRequest {
     // 카카오 유저는 이메일 x
     private String email;
 
-    // "register" or "update"
-    private String requestType;
-
-
+    private Integer code;
     public void setUserPw(String userPw){
         this.userPw=userPw;
     }
-
-    public void setRequestType(String requestType){
-        this.requestType = requestType;
-    }
-
 }

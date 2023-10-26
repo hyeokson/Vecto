@@ -2,24 +2,23 @@ package com.konkuk.vecto.security.controller;
 
 import com.konkuk.vecto.mail.service.MailService;
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
-import com.konkuk.vecto.security.dto.MailCodeRequest;
-import com.konkuk.vecto.security.dto.UserInfoResponse;
-import com.konkuk.vecto.security.dto.UserRequest;
+import com.konkuk.vecto.security.dto.*;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import com.konkuk.vecto.security.service.UserService;
+import com.konkuk.vecto.security.service.impl.LoginService;
+import com.konkuk.vecto.security.validator.LoginValidator;
+import com.konkuk.vecto.security.validator.UserRegisterValidator;
+import com.konkuk.vecto.security.validator.UserUpdateValidator;
+import lombok.RequiredArgsConstructor;
+import com.konkuk.vecto.security.dto.MailCodeRequest;
+import com.konkuk.vecto.security.dto.UserInfoResponse;
 import com.konkuk.vecto.security.service.VerificationCodeService;
-import com.konkuk.vecto.security.validator.UserValidator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
-import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -27,64 +26,89 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    private final UserValidator userValidator;
+    private final LoginService loginService;
+    private final UserRegisterValidator userRegisterValidator;
+    private final UserUpdateValidator userUpdateValidator;
+    private final LoginValidator loginValidator;
     private final MailService mailService;
     private final VerificationCodeService verificationCodeService;
 
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<String> login(@RequestBody LoginDto loginDto, BindingResult bindingResult) throws BindException{
+        loginValidator.validate(loginDto, bindingResult);
+        if(bindingResult.hasErrors()) {
+            throw new BindException(bindingResult);
+        }
+
+        String jwtToken = loginService.login(loginDto);
+        ResponseCode<String> responseCode = new ResponseCode<>(SuccessCode.LOGIN);
+        responseCode.setToken(jwtToken);
+        return responseCode;
+    }
+
     @PostMapping("/user")
-    public ResponseEntity<ResponseCode<String>> registerUser(@RequestBody UserRequest userRegisterRequest,
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseCode<String> registerUser(@RequestBody UserRegisterDto userRegisterDto,
                                                      BindingResult bindingResult) throws BindException{
-        userRegisterRequest.setRequestType("register");
 
-        // TODO : 여기에 회원가입 Code validate하는 부분 추가할 것.
-        // 카카오 회원가입인 경우는 validate를 안해야함.
-        // 예시) verificationCodeService.isValidCode(userRegisterRequest.getEmail(), userRegisterRequest.getCode());
-        
-        userValidator.validate(userRegisterRequest, bindingResult);
+        if (!userRegisterDto.getProvider().equals("kakao")) {
+            verificationCodeService.isValidCode(userRegisterDto.getEmail(), userRegisterDto.getCode());
+        }
 
-
+        userRegisterValidator.validate(userRegisterDto, bindingResult);
         if(bindingResult.hasErrors())
             throw new BindException(bindingResult);
 
-        userService.save(userRegisterRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseCode<String>(SuccessCode.INSERT));
+        userService.save(userRegisterDto);
+        return new ResponseCode<String>(SuccessCode.INSERT);
     }
     @GetMapping("/user")
-    public ResponseEntity<ResponseCode<UserInfoResponse>> getUserInfo(@UserInfo String userId){
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<UserInfoResponse> getUserInfo(@UserInfo String userId){
         UserInfoResponse userInfoResponse = userService.findUser(userId);
-        return ResponseEntity.ok(new ResponseCode<UserInfoResponse>(200,"200", userInfoResponse));
+        return new ResponseCode<UserInfoResponse>(200,"200", userInfoResponse);
     }
 
     @PatchMapping("/user")
-    public ResponseEntity<ResponseCode<String>> updateUserInfo(@UserInfo String userId,
-                                                       @RequestBody UserRequest userUpdateRequest,
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseCode<String> updateUserInfo(@UserInfo String userId,
+                                                       @RequestBody UserUpdateDto userUpdateDto,
                                                        BindingResult bindingResult) throws BindException{
-        userUpdateRequest.setRequestType("update");
-        userValidator.validate(userUpdateRequest, bindingResult);
+
+        userUpdateValidator.validate(userUpdateDto, bindingResult);
         if(bindingResult.hasErrors())
             throw new BindException(bindingResult);
 
-        Optional<String> token = userService.updateUser(userId, userUpdateRequest);
+        Optional<String> token = userService.updateUser(userId, userUpdateDto);
 
         // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
         if(token.isPresent()) {
             ResponseCode<String> responseCode = new ResponseCode<String>(SuccessCode.UPDATE);
             responseCode.setToken(token.get());
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseCode);
+            return responseCode;
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseCode<String>(SuccessCode.UPDATE));
+        return new ResponseCode<String>(SuccessCode.UPDATE);
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<ResponseCode<String>> deleteUserInfo(@UserInfo String userId){
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<String> deleteUserInfo(@UserInfo String userId){
         userService.deleteUser(userId);
-        return ResponseEntity.ok(new ResponseCode<String>(SuccessCode.DELETE));
+        return new ResponseCode<String>(SuccessCode.DELETE);
+    }
+
+    @PostMapping("/userId/check")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<String> checkUserId(@RequestBody UserIdDto userIdDto){
+        userService.checkUserId(userIdDto.getUserId());
+        return new ResponseCode<>(SuccessCode.CHECK);
     }
 
 

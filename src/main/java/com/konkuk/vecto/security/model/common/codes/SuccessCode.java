@@ -27,6 +27,10 @@ public enum SuccessCode {
     // 전송 성공 코드 (HTTP Response: 200 OK)
     SEND(200, "200", "SEND SUCCESS"),
 
+    CHECK(200, "200", "CHECK SUCCESS"),
+
+    // 로그인 성공 코드 (HTTP Response: 200 OK)
+    LOGIN(200, "200", "LOGIN SUCCESS"),
 
     // 삽입 성공 코드 (HTTP Response: 201 Created)
     INSERT(201, "201", "INSERT SUCCESS"),

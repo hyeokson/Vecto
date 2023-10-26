@@ -30,19 +30,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         log.info("3.1. CustomLoginSuccessHandler");
 
-        // Fcm 토큰 업데이트
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
-        User user = objectMapper.readValue(request.getInputStream(), User.class);
-        Optional<String> fcmToken = Optional.of(user.getFcmToken());
-        userService.updateFcmToken(user.getUserId(), fcmToken);
+
+        Optional<String> fcmToken = Optional.of((String)request.getAttribute("fcmToken"));
+        userService.updateFcmToken((String)request.getAttribute("userId"), fcmToken);
 
         // 사용자와 관련된 정보를 모두 조회합니다.
         User dbUser = ((UserDetailsDto) authentication.getPrincipal()).getUser();
