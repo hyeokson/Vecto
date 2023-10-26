@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class LikesController {
-    LikesService likesService;
+    private final LikesService likesService;
 
     @PostMapping("/feed/{feedId}/likes")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseCode<String> likes(@PathVariable Long feedId, @UserInfo String userId){
+    public ResponseCode<String> likes(@PathVariable("feedId") Long feedId, @UserInfo String userId){
         likesService.saveLikes(feedId, userId);
         return new ResponseCode<>(SuccessCode.INSERT);
     }
 
     @DeleteMapping("/feed/{feedId}/likes")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<String> unLikes(@PathVariable Long feedId, @UserInfo String userId){
+    public ResponseCode<String> unLikes(@PathVariable("feedId") Long feedId, @UserInfo String userId){
         likesService.deleteLikes(feedId, userId);
         return new ResponseCode<>(SuccessCode.DELETE);
     }
