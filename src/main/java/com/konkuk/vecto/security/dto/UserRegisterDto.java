@@ -23,6 +23,7 @@ public class UserRegisterDto {
     // 카카오 유저는 이메일 x
     private String email;
 
+    private Integer code;
     public void setUserPw(String userPw){
         this.userPw=userPw;
     }

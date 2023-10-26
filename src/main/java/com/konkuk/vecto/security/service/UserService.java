@@ -15,6 +15,8 @@ public interface UserService {
     UserInfoResponse findUser(String userId);
 
     Optional<String> updateUser(String userId, UserUpdateDto userUpdateDto);
+    Boolean isRegisterUser(String emailName);
+
 
     void updateFcmToken(String userId, Optional<String> fmcToken);
 

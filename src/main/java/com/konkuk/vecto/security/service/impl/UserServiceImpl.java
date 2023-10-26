@@ -68,6 +68,11 @@ public class UserServiceImpl implements UserService {
         return new UserInfoResponse(user);
     }
 
+    @Override
+    public Boolean isRegisterUser(String emailName) {
+        return repository.findByEmail(emailName).isPresent();
+    }
+
     //유저 정보 업데이트
     //회원정보가 존재하지 않으면 exception 발생
     @Override

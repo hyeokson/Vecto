@@ -1,5 +1,6 @@
 package com.konkuk.vecto.security.controller;
 
+import com.konkuk.vecto.mail.service.MailService;
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
 import com.konkuk.vecto.security.dto.*;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
@@ -10,13 +11,20 @@ import com.konkuk.vecto.security.validator.LoginValidator;
 import com.konkuk.vecto.security.validator.UserRegisterValidator;
 import com.konkuk.vecto.security.validator.UserUpdateValidator;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
+import com.konkuk.vecto.security.dto.MailCodeRequest;
+import com.konkuk.vecto.security.dto.UserInfoResponse;
+import com.konkuk.vecto.security.service.VerificationCodeService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,13 +35,16 @@ public class UserController {
     private final UserRegisterValidator userRegisterValidator;
     private final UserUpdateValidator userUpdateValidator;
     private final LoginValidator loginValidator;
+    private final MailService mailService;
+    private final VerificationCodeService verificationCodeService;
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> login(@RequestBody LoginDto loginDto, BindingResult bindingResult) throws BindException{
         loginValidator.validate(loginDto, bindingResult);
-        if(bindingResult.hasErrors())
+        if(bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
+        }
 
         String jwtToken = loginService.login(loginDto);
         ResponseCode<String> responseCode = new ResponseCode<>(SuccessCode.LOGIN);
@@ -45,6 +56,10 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseCode<String> registerUser(@RequestBody UserRegisterDto userRegisterDto,
                                                      BindingResult bindingResult) throws BindException{
+
+        if (!userRegisterDto.getProvider().equals("kakao")) {
+            verificationCodeService.isValidCode(userRegisterDto.getEmail(), userRegisterDto.getCode());
+        }
 
         userRegisterValidator.validate(userRegisterDto, bindingResult);
         if(bindingResult.hasErrors())
@@ -96,4 +111,20 @@ public class UserController {
         return new ResponseCode<>(SuccessCode.CHECK);
     }
 
+
+    @PostMapping("/mail")
+    @Operation(summary = "이메일 코드 요청", description = "이메일로 코드요청을 받습니다.")
+    @ApiResponse(responseCode = "200", description = "이메일 전송 성공 시 상태코드 200을 보냅니다.")
+    @ResponseBody
+    public void ImageUpload(@RequestBody @Valid MailCodeRequest mailCodeRequest) {
+        // 인증 랜덤 6자리 수 추출
+        int randomInt = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        mailService.sendVerificationMail(mailCodeRequest.getEmail(), randomInt);
+
+        if(userService.isRegisterUser(mailCodeRequest.getEmail())) {
+            throw new RuntimeException("이미 회원가입된 이메일입니다.");
+        }
+
+        verificationCodeService.saveCode(mailCodeRequest.getEmail(), randomInt);
+    }
 }

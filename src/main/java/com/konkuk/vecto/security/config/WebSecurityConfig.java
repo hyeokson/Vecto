@@ -42,7 +42,8 @@ public class WebSecurityConfig {
             .and()
             .ignoring().requestMatchers(HttpMethod.POST,"/user").requestMatchers("/swagger-ui/**")
                 .requestMatchers("/swagger").requestMatchers("/v3/**")
-                .requestMatchers("/userId/check").requestMatchers("/login");
+                .requestMatchers("/userId/check").requestMatchers("/login")
+                .requestMatchers("/mail");
     }
 
     /**
