@@ -1,5 +1,6 @@
 package com.konkuk.vecto.feed.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +27,8 @@ public class FeedController {
 	private final FeedService feedService;
 
 	@PostMapping
-	public ResponseEntity<Long> saveMoveHistory(@Valid @RequestBody final FeedSaveRequest feedSaveRequest) {
-		Long feedId = feedService.saveFeed(feedSaveRequest);
+	public ResponseEntity<Long> saveMoveHistory(@Valid @RequestBody final FeedSaveRequest feedSaveRequest, @Parameter(hidden = true) @UserInfo String userId) {
+		Long feedId = feedService.saveFeed(feedSaveRequest, userId);
 		return ResponseEntity.ok(feedId);
 	}
 
@@ -38,7 +39,7 @@ public class FeedController {
 	}
 
 	@PostMapping("/comment")
-	public void saveComment(@Valid @RequestBody final CommentRequest commentRequest, @UserInfo String userId) {
+	public void saveComment(@Valid @RequestBody final CommentRequest commentRequest, @Parameter(hidden = true) @UserInfo String userId) {
 		feedService.saveComment(commentRequest, userId);
 	}
 

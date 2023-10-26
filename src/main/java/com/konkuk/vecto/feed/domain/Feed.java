@@ -47,15 +47,18 @@ public class Feed {
 	@OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<Comment> comments = new ArrayList<>();
 
-  @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<Likes> likes = new ArrayList<>();
+
+	private String userId;
 
 	@Builder
 	public Feed(String title, String content, LocalDateTime uploadTime, List<FeedMovement> feedMovements,
-		List<FeedImage> feedImages, List<FeedPlace> feedPlaces) {
+		List<FeedImage> feedImages, List<FeedPlace> feedPlaces, String userId) {
 		this.title = title;
 		this.content = content;
 		this.uploadTime = uploadTime;
+		this.userId = userId;
 		setFeedMovements(feedMovements);
 		setFeedImages(feedImages);
 		setFeedPlaces(feedPlaces);

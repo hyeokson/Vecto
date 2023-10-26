@@ -31,7 +31,7 @@ public class FeedService {
 	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
 
 	@Transactional
-	public Long saveFeed(FeedSaveRequest feedSaveRequest) {
+	public Long saveFeed(FeedSaveRequest feedSaveRequest, String userId) {
 		// TODO: 현재는 매번 날려서 저장하는 방식. 이를 Bulk Insert 형태로 변경해야함.
 		List<FeedMovement> feedMovements = dtoToEntityIncludeIndex(feedSaveRequest.getMovements(), FeedMovement::new);
 		List<FeedImage> feedImages = dtoToEntityIncludeIndex(feedSaveRequest.getImages(), FeedImage::new);
@@ -44,6 +44,7 @@ public class FeedService {
 			.feedMovements(feedMovements)
 			.feedImages(feedImages)
 			.feedPlaces(feedPlaces)
+			.userId(userId)
 			.build();
 
 		return feedRepository.save(feed).getId();

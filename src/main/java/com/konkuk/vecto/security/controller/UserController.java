@@ -10,6 +10,7 @@ import com.konkuk.vecto.security.service.impl.LoginService;
 import com.konkuk.vecto.security.validator.LoginValidator;
 import com.konkuk.vecto.security.validator.UserRegisterValidator;
 import com.konkuk.vecto.security.validator.UserUpdateValidator;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import com.konkuk.vecto.security.dto.MailCodeRequest;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
@@ -57,27 +58,28 @@ public class UserController {
     public ResponseCode<String> registerUser(@RequestBody UserRegisterDto userRegisterDto,
                                                      BindingResult bindingResult) throws BindException{
 
-        if (!userRegisterDto.getProvider().equals("kakao")) {
-            verificationCodeService.isValidCode(userRegisterDto.getEmail(), userRegisterDto.getCode());
-        }
 
         userRegisterValidator.validate(userRegisterDto, bindingResult);
         if(bindingResult.hasErrors())
             throw new BindException(bindingResult);
+
+        if (!userRegisterDto.getProvider().equals("kakao")) {
+            verificationCodeService.isValidCode(userRegisterDto.getEmail(), userRegisterDto.getCode());
+        }
 
         userService.save(userRegisterDto);
         return new ResponseCode<String>(SuccessCode.INSERT);
     }
     @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<UserInfoResponse> getUserInfo(@UserInfo String userId){
+    public ResponseCode<UserInfoResponse> getUserInfo(@Parameter(hidden = true) @UserInfo String userId){
         UserInfoResponse userInfoResponse = userService.findUser(userId);
         return new ResponseCode<UserInfoResponse>(200,"200", userInfoResponse);
     }
 
     @PatchMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseCode<String> updateUserInfo(@UserInfo String userId,
+    public ResponseCode<String> updateUserInfo(@Parameter(hidden = true) @UserInfo String userId,
                                                        @RequestBody UserUpdateDto userUpdateDto,
                                                        BindingResult bindingResult) throws BindException{
 
@@ -99,7 +101,7 @@ public class UserController {
 
     @DeleteMapping("/user")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<String> deleteUserInfo(@UserInfo String userId){
+    public ResponseCode<String> deleteUserInfo(@Parameter(hidden = true) @UserInfo String userId){
         userService.deleteUser(userId);
         return new ResponseCode<String>(SuccessCode.DELETE);
     }
