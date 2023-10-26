@@ -42,6 +42,9 @@ public class FeedResponse {
 	@JsonProperty("visit")
 	private List<Place> places = new ArrayList<>();
 
+	@JsonProperty("commentCount")
+	private Integer commentCount;
+
 	@Getter
 	public static class Movement {
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

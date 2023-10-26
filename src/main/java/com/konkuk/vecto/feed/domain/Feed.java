@@ -45,6 +45,9 @@ public class Feed {
 	private List<FeedPlace> feedPlaces = new ArrayList<>();
 
 	@OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+	private List<Comment> comments = new ArrayList<>();
+
+  @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<Likes> likes = new ArrayList<>();
 
 	@Builder
@@ -57,6 +60,10 @@ public class Feed {
 		setFeedImages(feedImages);
 		setFeedPlaces(feedPlaces);
 
+	}
+
+	public void addComment(Comment comment) {
+		this.comments.add(comment);
 	}
 
 	private void setFeedPlaces(List<FeedPlace> feedPlaces) {
