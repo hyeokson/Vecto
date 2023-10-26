@@ -32,7 +32,7 @@ public class FeedController {
 
 
 	@GetMapping("/{feedId}")
-	public FeedResponse getPosting(@PathVariable Long feedId) {
+	public FeedResponse getPosting(@PathVariable("feedId") Long feedId) {
 		return feedService.getFeed(feedId);
 	}
 }
