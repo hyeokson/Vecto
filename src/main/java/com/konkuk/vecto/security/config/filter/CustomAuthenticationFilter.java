@@ -44,9 +44,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+            // objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
             User user = objectMapper.readValue(request.getInputStream(), User.class);
-
+            request.setAttribute("fcmToken", user.getFcmToken());
+            request.setAttribute("userId", user.getUserId());
             // vecto 로그인
             if(user.getUserPw() != null) {
                 log.info("1.CustomAuthenticationFilter :: userId:" + user.getUserId() + " userPw:" + user.getUserPw());

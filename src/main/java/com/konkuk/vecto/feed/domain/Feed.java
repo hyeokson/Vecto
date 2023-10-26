@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.konkuk.vecto.likes.domain.Likes;
 import org.junit.runner.Computer;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,9 @@ public class Feed {
 
 	@OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<Comment> comments = new ArrayList<>();
+
+  @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+	private List<Likes> likes = new ArrayList<>();
 
 	@Builder
 	public Feed(String title, String content, LocalDateTime uploadTime, List<FeedMovement> feedMovements,

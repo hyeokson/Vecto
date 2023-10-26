@@ -1,6 +1,8 @@
 package com.konkuk.vecto.security.config.handler;
 
 import com.konkuk.vecto.security.dto.UserDetailsDto;
+import com.konkuk.vecto.security.service.UserService;
+import com.konkuk.vecto.security.service.impl.UserServiceImpl;
 import jakarta.annotation.Resource;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
 
 
     @Override

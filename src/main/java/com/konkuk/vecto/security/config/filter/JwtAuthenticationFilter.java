@@ -36,12 +36,11 @@ import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private UserDetailsService userService;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserDetailsService userService) {
-        super(authenticationManager);
+    public JwtAuthenticationFilter(UserDetailsService userService) {
         this.userService = userService;
     }
 
@@ -113,11 +112,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private JSONObject jsonResponseWrapper(Exception e) {
 
         HashMap<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("failMsg", e.getMessage());
+        jsonMap.put("message", e.getMessage());
         jsonMap.put("code", "403");
         jsonMap.put("status", 403);
         JSONObject jsonObject = new JSONObject(jsonMap);
-        log.error("failMsg {}", e);
+        log.error("failMsg ", e);
         return jsonObject;
     }
 }
