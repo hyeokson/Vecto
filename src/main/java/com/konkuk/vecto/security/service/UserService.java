@@ -17,5 +17,7 @@ public interface UserService {
 
     Optional<String> updateUser(String userId, UserRequest userUpdateRequest);
 
+    void updateFcmToken(String userId, Optional<String> fmcToken);
+
     void deleteUser(String userId);
 }

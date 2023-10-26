@@ -78,7 +78,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CREATED).body(responseCode);
         }
 
-        // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseCode<String>(SuccessCode.UPDATE));
     }
 
@@ -87,6 +86,7 @@ public class UserController {
         userService.deleteUser(userId);
         return ResponseEntity.ok(new ResponseCode<String>(SuccessCode.DELETE));
     }
+
 
     @PostMapping("/mail")
     @Operation(summary = "이메일 코드 요청", description = "이메일로 코드요청을 받습니다.")

@@ -21,14 +21,6 @@ public class UserValidator extends UserValidatorFunc implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         UserRequest req = (UserRequest) target;
-        Pattern pattern = null;
-        Matcher matcher = null;
-
-        String USERID_REGEX = "^[A-Za-z0-9]{4,20}$";
-        String KAKAOID_REGEX = "^[0-9]{0,19}$";
-        String USERPW_REGEX = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[~`!@#$%^&*()-_+=])[A-Za-z\\d~`!@#$%^&*()-_+=]{8,20}$";
-        String NICKNAME_REGEX = "^[A-Za-z0-9가-힣]{1,10}$";
-        String EMAIL_REGEX = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$";
 
         if(req.getProvider() == null || req.getProvider().isEmpty()) {
             errors.rejectValue("provider", "NotEmpty",
