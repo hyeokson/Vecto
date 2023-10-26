@@ -20,6 +20,8 @@ public interface UserService {
 
     void updateFcmToken(String userId, Optional<String> fmcToken);
 
+    Boolean updateUserProfileImage(String userId, String imageUrl);
+
     void deleteUser(String userId);
 
     void checkUserId(String userId);

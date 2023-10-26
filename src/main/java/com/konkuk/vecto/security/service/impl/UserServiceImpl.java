@@ -118,6 +118,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean updateUserProfileImage(String userId, String imageUrl) {
+        User user = repository.findByUserId(userId).orElseThrow(
+            () -> new IllegalArgumentException("회원정보가 존재하지 않습니다."));
+        user.updateProfileImageUrl(imageUrl);
+        return Boolean.TRUE;
+    }
+    
+  
+    @Override
     public void updateFcmToken(String userId, Optional<String> fcmToken){
         Optional<User> userTemp = repository.findByUserId(userId);
 

@@ -46,6 +46,8 @@ public class User {
     // kakao 유저는 이메일 x
     private String email;
 
+    private String profileImageUrl;
+  
     private String fcmToken;
 
     @Builder
@@ -66,4 +68,7 @@ public class User {
         this.email = userRegisterDto.getEmail();
     }
 
+    public void updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
 }
