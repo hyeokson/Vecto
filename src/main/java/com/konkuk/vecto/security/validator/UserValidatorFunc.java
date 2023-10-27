@@ -14,15 +14,15 @@ public class UserValidatorFunc {
     String NICKNAME_REGEX = "^[A-Za-z0-9가-힣]{1,10}$";
     String EMAIL_REGEX = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$";
 
+    String CODE_REGEX = "^[0-9]{1,9}$";
+
     Pattern pattern = null;
     Matcher matcher = null;
 
     public void validateUserId(String userId, Errors errors, String validator, String provider){
         if (validator.equals("register") && (userId==null || userId.isEmpty()) ||
                 validator.equals("update") && userId!=null && userId.isEmpty()) {
-            if(provider.equals("vecto"))
                 errors.rejectValue("userId", "NotEmpty", "사용자 아이디를 적어주세요.");
-            else if(provider.equals("kakao"))
                 errors.rejectValue("userId", "NotEmpty", "카카오 아이디를 적어주세요.");
         }
         else if(userId!=null && !userId.isEmpty()){
@@ -76,6 +76,21 @@ public class UserValidatorFunc {
             matcher = pattern.matcher(email);
 
             if (!matcher.matches())
-                errors.rejectValue("email", "Email", "이메일 형식과 맞지 않습니다.");}
+                errors.rejectValue("email", "Pattern", "이메일 형식과 맞지 않습니다.");}
+    }
+
+    public void validateCode(Integer code, Errors errors, String validator){
+        if(validator == "register"){
+            if(code == null || code.toString().isEmpty())
+                errors.rejectValue("code", "NotEmpty", "이메일 인증값을 적어주세요.");
+            else{
+                pattern = Pattern.compile(CODE_REGEX);
+                matcher = pattern.matcher(code.toString());
+
+                if (!matcher.matches())
+                    errors.rejectValue("code", "Pattern", "이메일 인증값은 숫자만 허용합니다.");
+
+            }
+        }
     }
 }

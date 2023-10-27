@@ -34,7 +34,8 @@ public class UserRegisterValidator extends UserValidatorFunc implements Validato
 
             validateEmail(req.getEmail(), errors, "register");
 
-            if ( req.getCode() == null) errors.rejectValue("code", "NotEmpty", "일반 로그인에는 이메일 코드가 필요합니다.");
+            validateCode(req.getCode(), errors, "register");
+
 
         } else if (req.getProvider().equals("kakao")) {
 

@@ -3,6 +3,7 @@ package com.konkuk.vecto.security.controller;
 import com.konkuk.vecto.mail.service.MailService;
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
 import com.konkuk.vecto.security.dto.*;
+import com.konkuk.vecto.security.model.common.codes.ErrorCode;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import com.konkuk.vecto.security.service.UserService;
@@ -119,13 +120,13 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "이메일 전송 성공 시 상태코드 200을 보냅니다.")
     @ResponseBody
     public void ImageUpload(@RequestBody @Valid MailCodeRequest mailCodeRequest) {
-        // 인증 랜덤 6자리 수 추출
-        int randomInt = ThreadLocalRandom.current().nextInt(100000, 1000000);
-        mailService.sendVerificationMail(mailCodeRequest.getEmail(), randomInt);
-
         if(userService.isRegisterUser(mailCodeRequest.getEmail())) {
             throw new RuntimeException("이미 회원가입된 이메일입니다.");
         }
+
+        // 인증 랜덤 6자리 수 추출
+        int randomInt = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        mailService.sendVerificationMail(mailCodeRequest.getEmail(), randomInt);
 
         verificationCodeService.saveCode(mailCodeRequest.getEmail(), randomInt);
     }

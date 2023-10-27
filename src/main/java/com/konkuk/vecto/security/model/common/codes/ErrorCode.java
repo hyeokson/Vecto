@@ -76,17 +76,35 @@ public enum ErrorCode {
      * ******************************* Custom Error CodeList ***************************************
      */
 
-    // Business Exception Error
-    BUSINESS_EXCEPTION_ERROR(200, "B999", "Business Exception Error"),
+    PROVIDER_NOT_EMPTY_ERROR(400, "E001", "로그인 유형을 입력해주세요."),
+    PROVIDER_PATTERN_ERROR(400, "E002", "로그인 유형은 \"vecto\" 또는 \"kakao\" 로 입력해주세요."),
+    USERID_VECTO_NOT_EMPTY_ERROR(400, "E003", "사용자 아이디를 적어주세요."),
+    USERID_KAKAO_NOT_EMPTY_ERROR(400, "E003", "카카오 아이디를 적어주세요."),
+    USERID_VECTO_PATTERN_ERROR(400, "E003", "사용자 아이디는 알파벳, 숫자만 허용합니다. (4~20자리)"),
+    USERID_KAKAO_PATTERN_ERROR(400, "E003", "카카오 아이디는 Long 타입 범위의 숫자만 허용합니다."),
+    USERPW_NOT_EMPTY_ERROR(400, "E003", "사용자 비밀번호를 적어주세요."),
+    USERPW_PATTERN_ERROR(400, "E003", "사용자 비밀번호는 알파벳, 숫자, 특수문자를 무조건 포함해야 합니다. (8~20자리)"),
+    NICKNAME_NOT_EMPTY_ERROR(400, "E003", "사용자 닉네임을 적어주세요."),
+    NICKNAME_PATTERN_ERROR(400, "E003", "사용자 닉네임은 알파벳, 한글, 숫자만 허용합니다. (1~10자리)"),
+    EMAIL_NOT_EMPTY_ERROR(400, "E003", "사용자 이메일을 적어주세요."),
+    EMAIL_PATTERN_ERROR(400, "E003", "이메일 형식과 맞지 않습니다."),
+    CODE_NOT_EMPTY_ERROR(400, "E003", "이메일 인증번호를 적어주세요."),
+    CODE_PATTERN_ERROR(400, "E003", "이메일 인증번호는 숫자만 허용합니다."),
 
-    // Transaction Insert Error
-    INSERT_ERROR(200, "9999", "Insert Transaction Error Exception"),
+    FCM_TOKEN_NOT_EMPTY_ERROR(400, "E003", "FCM Token 값을 적어주세요."),
+    CODE_EMAIL_INVALID_ERROR(400, "", "인증번호가 만료되었거나 이메일이 존재하지 않습니다."),
+    USERID_DUPLICATED_ERROR(400, "", "사용자 아이디가 중복입니다."),
+    EMAIL_DUPLICATED_ERROR(400, "", "사용자 이메일이 중복입니다."),
+    USER_NOT_FOUND_ERROR(400, "", "사용자 정보가 존재하지 않습니다."),
 
-    // Transaction Update Error
-    UPDATE_ERROR(200, "9999", "Update Transaction Error Exception"),
+    JWT_TOKEN_INVALID_ERROR(400, "", "잘못된 JWT 토큰입니다."),
 
-    // Transaction Delete Error
-    DELETE_ERROR(200, "9999", "Delete Transaction Error Exception"),
+    USERID_INVALID_ERROR(400, "", "사용자 아이디가 일치하지 않습니다."),
+    USERPW_INVALID_ERROR(400, "", "사용자 비밀번호가 일치하지 않습니다."),
+
+
+
+
 
     ; // End
 

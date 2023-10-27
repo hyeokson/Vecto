@@ -26,9 +26,9 @@ public class LoginService {
         Optional<User> user = userRepository.findByUserId(userId);
 
         if(user.isEmpty())
-            throw new AuthenticationServiceException("아이디 정보가 일치하지 않습니다.");
+            throw new AuthenticationServiceException("사용자 아이디가 일치하지 않습니다.");
         else if (userPw!=null && !(passwordEncoder.matches(userPw, user.get().getUserPw())))
-            throw new BadCredentialsException("비밀번호 정보가 일치하지 않습니다.");
+            throw new BadCredentialsException("사용자 비밀번호가 일치하지 않습니다.");
 
         // FCM Token 저장
         user.get().setFcmToken(fcmToken);
