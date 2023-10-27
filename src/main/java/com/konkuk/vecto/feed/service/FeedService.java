@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,5 +102,15 @@ public class FeedService {
 				comment.getComment(),
 				timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt())))
 			.toList());
+	}
+
+	public List<Long> getDefaultFeedList(Integer page) {
+		Pageable pageable = PageRequest.of(page, 5);
+		return feedRepository.findAllByOrderByLikeCountDesc(pageable).getContent()
+			.stream().map(Feed::getId).toList();
+	}
+
+	public List<Long> getPersonalFeedList(Integer page, String userId) {
+		return getDefaultFeedList(page);
 	}
 }

@@ -50,6 +50,7 @@ public class Feed {
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<Likes> likes = new ArrayList<>();
 
+	private Integer likeCount;
 	private String userId;
 
 	@Builder
@@ -59,12 +60,16 @@ public class Feed {
 		this.content = content;
 		this.uploadTime = uploadTime;
 		this.userId = userId;
+		this.likeCount = 0;
 		setFeedMovements(feedMovements);
 		setFeedImages(feedImages);
 		setFeedPlaces(feedPlaces);
 
 	}
 
+	public void addLikeCount() {
+		this.likeCount += 1;
+	}
 	public void addComment(Comment comment) {
 		this.comments.add(comment);
 	}
