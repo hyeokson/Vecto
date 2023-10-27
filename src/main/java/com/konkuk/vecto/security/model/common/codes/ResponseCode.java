@@ -2,7 +2,6 @@ package com.konkuk.vecto.security.model.common.codes;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +30,12 @@ public class ResponseCode<T> {
         this.status = successCode.getStatus();
         this.code = successCode.getCode();
         this.message = (T)successCode.getMessage();
+    }
+
+    public ResponseCode(ErrorCode errorCode){
+        this.status = errorCode.getStatus();
+        this.code = errorCode.getCode();
+        this.message = (T)errorCode.getMessage();
     }
 
     public void setToken(String token){
