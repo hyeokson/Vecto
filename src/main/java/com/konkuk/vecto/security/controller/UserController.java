@@ -69,13 +69,13 @@ public class UserController {
         }
 
         userService.save(userRegisterDto);
-        return new ResponseCode<String>(SuccessCode.INSERT);
+        return new ResponseCode<>(SuccessCode.REGISTER);
     }
     @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<UserInfoResponse> getUserInfo(@Parameter(hidden = true) @UserInfo String userId){
         UserInfoResponse userInfoResponse = userService.findUser(userId);
-        return new ResponseCode<UserInfoResponse>(200,"200", userInfoResponse);
+        return new ResponseCode<>(200,"200", userInfoResponse);
     }
 
     @PatchMapping("/user")
@@ -97,21 +97,21 @@ public class UserController {
             return responseCode;
         }
 
-        return new ResponseCode<String>(SuccessCode.UPDATE);
+        return new ResponseCode<>(SuccessCode.UPDATE);
     }
 
     @DeleteMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> deleteUserInfo(@Parameter(hidden = true) @UserInfo String userId){
         userService.deleteUser(userId);
-        return new ResponseCode<String>(SuccessCode.DELETE);
+        return new ResponseCode<>(SuccessCode.DELETE);
     }
 
     @PostMapping("/userId/check")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> checkUserId(@RequestBody UserIdDto userIdDto){
         userService.checkUserId(userIdDto.getUserId());
-        return new ResponseCode<>(SuccessCode.CHECK);
+        return new ResponseCode<>(SuccessCode.USERID_CHECK);
     }
 
 
@@ -121,7 +121,7 @@ public class UserController {
     @ResponseBody
     public void ImageUpload(@RequestBody @Valid MailCodeRequest mailCodeRequest) {
         if(userService.isRegisterUser(mailCodeRequest.getEmail())) {
-            throw new RuntimeException("이미 회원가입된 이메일입니다.");
+            throw new IllegalArgumentException("EMAIL_DUPLICATED_ERROR");
         }
 
         // 인증 랜덤 6자리 수 추출

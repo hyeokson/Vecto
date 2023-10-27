@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userService.login(user)
                 .map(u -> new UserDetailsDto(u, Collections.singleton(
                         new SimpleGrantedAuthority("ROLE_USER"))))
-                .orElseThrow(() -> new AuthenticationServiceException("잘못된 JWT 토큰입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("JWT_TOKEN_NOT_MATCH_ERROR"));
 
     }
 

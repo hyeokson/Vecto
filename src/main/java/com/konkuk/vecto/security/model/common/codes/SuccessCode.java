@@ -19,23 +19,18 @@ public enum SuccessCode {
     /**
      * ******************************* Success CodeList ***************************************
      */
-    // 조회 성공 코드 (HTTP Response: 200 OK)
-    SELECT(200, "200", "SELECT SUCCESS"),
-    // 삭제 성공 코드 (HTTP Response: 200 OK)
-    DELETE(200, "200", "DELETE SUCCESS"),
-
-    // 전송 성공 코드 (HTTP Response: 200 OK)
-    SEND(200, "200", "SEND SUCCESS"),
-
-    CHECK(200, "200", "CHECK SUCCESS"),
-
     // 로그인 성공 코드 (HTTP Response: 200 OK)
-    LOGIN(200, "200", "LOGIN SUCCESS"),
+    LOGIN(200, "S000", "로그인 성공"),
+    // 회원가입 성공 코드 (HTTP Response: 201 Created)
+    REGISTER(201, "S001", "회원가입 성공"),
+    // 사용자 정보 수정 성공 코드 (HTTP Response: 201 Created)
+    UPDATE(201, "S002", "사용자 정보 수정 성공"),
+    // 사용자 정보 삭제 성공 코드 (HTTP Response: 200 OK)
+    DELETE(200, "S003", "사용자 정보 삭제 성공"),
 
-    // 삽입 성공 코드 (HTTP Response: 201 Created)
-    INSERT(201, "201", "INSERT SUCCESS"),
-    // 수정 성공 코드 (HTTP Response: 201 Created)
-    UPDATE(201, "201", "UPDATE SUCCESS"),
+    // userId 중복 검사 통과 (HTTP Response: 200 OK)
+    USERID_CHECK(200, "S004", "사용자 아이디 중복검사 성공")
+
 
     ; // End
 
