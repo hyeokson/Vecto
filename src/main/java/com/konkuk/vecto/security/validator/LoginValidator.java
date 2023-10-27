@@ -23,10 +23,10 @@ public class LoginValidator implements Validator {
 
         if(userId == null || userId.isBlank())
             errors.rejectValue("userId", "NotEmpty",
-                "사용자 아이디를 적어주세요.");
+                "USERID_VECTO_NOT_EMPTY_ERROR");
         if(fcmToken == null || fcmToken.isBlank())
             errors.rejectValue("fcmToken", "NotEmpty",
-                "FCM Token 값을 적어주세요.");
+                "FCM_TOKEN_NOT_EMPTY_ERROR");
 
 
     }

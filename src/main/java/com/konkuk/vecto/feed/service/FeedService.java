@@ -78,7 +78,7 @@ public class FeedService {
 	@Transactional
 	public void saveComment(CommentRequest commentRequest, String userId) {
 		Long feedId = commentRequest.getFeedId();
-		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 		Comment comment = new Comment(feed, userId, commentRequest.getContent());
 		feed.addComment(comment);
 
@@ -92,7 +92,7 @@ public class FeedService {
 	}
 
 	public CommentsResponse getFeedComments(Long feedId) {
-		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 
 		return new CommentsResponse(feed.getComments()
 			.stream()

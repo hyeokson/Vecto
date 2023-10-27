@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuppressWarnings("unchecked")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseCode<T> {
 
@@ -15,12 +14,11 @@ public class ResponseCode<T> {
 
     private String code;
 
-    private T message;
+    private String message;
 
-    // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
-    private String token;
+    private T result;
 
-    public ResponseCode(int status, String code, T message) {
+    public ResponseCode(int status, String code, String message) {
         this.code = code;
         this.message = message;
         this.status = status;
@@ -29,17 +27,17 @@ public class ResponseCode<T> {
     public ResponseCode(SuccessCode successCode){
         this.status = successCode.getStatus();
         this.code = successCode.getCode();
-        this.message = (T)successCode.getMessage();
+        this.message = successCode.getMessage();
     }
 
     public ResponseCode(ErrorCode errorCode){
         this.status = errorCode.getStatus();
         this.code = errorCode.getCode();
-        this.message = (T)errorCode.getMessage();
+        this.message = errorCode.getMessage();
     }
 
-    public void setToken(String token){
-        this.token = token;
+    public void setResult(T result){
+        this.result = result;
     }
 
 }

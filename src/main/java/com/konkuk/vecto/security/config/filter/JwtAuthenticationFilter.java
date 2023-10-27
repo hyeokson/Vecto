@@ -1,9 +1,12 @@
 package com.konkuk.vecto.security.config.filter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.konkuk.vecto.security.config.exception.BusinessExceptionHandler;
 import com.konkuk.vecto.security.dto.UserDetailsDto;
 import com.konkuk.vecto.security.model.common.codes.AuthConstants;
 import com.konkuk.vecto.security.model.common.codes.ErrorCode;
+import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.utils.TokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -78,26 +81,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         chain.doFilter(request, response);
                     } else {
                         // 사용자 아이디가 없는 경우
-                        throw new BusinessExceptionHandler("잘못된 JWT 토큰입니다.");
+                        throw new IllegalArgumentException("JWT_TOKEN_NOT_MATCH_ERROR");
 
                     }
                     // 토큰이 유효하지 않은 경우
                 } else {
-                    throw new BusinessExceptionHandler("토큰이 잘못되었거나 유효기간이 만료되었습니다.");
+                    throw new IllegalArgumentException("JWT_TOKEN_INVALID_ERROR");
                 }
             }
             // [STEP2-1] 토큰이 존재하지 않는 경우
             else {
-                throw new BusinessExceptionHandler("토큰이 존재하지 않습니다.");
+                throw new IllegalArgumentException("JWT_TOKEN_IS_NULL_ERROR");
             }
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             // Token 내에 Exception이 발생 하였을 경우 => 클라이언트에 응답값을 반환하고 종료합니다.
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             PrintWriter printWriter = response.getWriter();
-            JSONObject jsonObject = jsonResponseWrapper(e);
-            printWriter.print(jsonObject);
+            String responseCode = jsonResponseWrapper(e);
+            printWriter.print(responseCode);
             printWriter.flush();
             printWriter.close();
         }
@@ -109,14 +112,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param e Exception
      * @return JSONObject
      */
-    private JSONObject jsonResponseWrapper(Exception e) {
-
-        HashMap<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("message", e.getMessage());
-        jsonMap.put("code", "403");
-        jsonMap.put("status", 403);
-        JSONObject jsonObject = new JSONObject(jsonMap);
-        log.error("failMsg ", e);
-        return jsonObject;
+    private String jsonResponseWrapper(Exception e) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(new ResponseCode<>(ErrorCode.valueOf(e.getMessage())));
     }
 }

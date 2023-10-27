@@ -18,11 +18,11 @@ import lombok.Setter;
 @Setter
 public class CommentRequest {
 
-	@Positive
+	@Positive(message = "FEED_ID_POSITIVE_ERROR")
 	@JsonProperty("feedId")
 	private Long feedId;
 
-	@NotBlank(message = "댓글 내용은 비울 수 없습니다.")
+	@NotBlank(message = "COMMENT_NOT_BLANK_ERROR")
 	@JsonProperty("content")
 	private String content;
 }

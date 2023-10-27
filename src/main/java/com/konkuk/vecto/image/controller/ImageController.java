@@ -3,6 +3,9 @@ package com.konkuk.vecto.image.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.konkuk.vecto.image.common.dto.ImageUrlResponse;
+import com.konkuk.vecto.security.model.common.codes.ResponseCode;
+import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -27,17 +30,28 @@ public class ImageController {
 	@PostMapping(value = "/upload/feed", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "이미지 스냅샷 저장 메소드", description = "이미지 스냅샷을 저장하는 메소드입니다.")
 	@ApiResponse(responseCode = "200", description = "이미지 업로드 완료 후, 각각 이미지의 url list를 json 형식으로 반환합니다.")
-	public List<String> ImageUpload(
+	public ResponseCode<ImageUrlResponse> ImageUpload(
 		@Parameter(description = "multipart/form-data 형식의 이미지 리스트를 input으로 받습니다. 이때 key 값은 multipartFile 입니다.")
 		@RequestPart("image") List<MultipartFile> image) {
-		return imageService.uploadFeedImages(image)
+
+		ImageUrlResponse imageUrlResponse = new ImageUrlResponse();
+		imageUrlResponse.setUrl(imageService.uploadFeedImages(image)
 			.stream()
 			.map(Image::getS3FullUrl)
-			.collect(Collectors.toList());
+			.collect(Collectors.toList()));
+
+		ResponseCode<ImageUrlResponse> responseCode = new ResponseCode<>(SuccessCode.FEED_IMAGE_SAVE);
+		responseCode.setResult(imageUrlResponse);
+		return responseCode;
 	}
 
 	@PostMapping("/upload/profile")
-	public String userProfileImageUpload(@UserInfo String userId, @RequestPart("image") MultipartFile image) {
-		return imageService.uploadProfileImage(userId, image).getUrl();
+	public ResponseCode<ImageUrlResponse> userProfileImageUpload(@UserInfo String userId, @RequestPart("image") MultipartFile image) {
+		ImageUrlResponse imageUrlResponse = new ImageUrlResponse();
+		imageUrlResponse.setUrl(imageService.uploadProfileImage(userId, image).getUrl());
+
+		ResponseCode<ImageUrlResponse> responseCode = new ResponseCode<>(SuccessCode.PROFILE_IMAGE_SAVE);
+		responseCode.setResult(imageUrlResponse);
+		return responseCode;
 	}
 }

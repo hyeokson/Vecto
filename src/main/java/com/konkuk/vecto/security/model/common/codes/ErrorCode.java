@@ -109,13 +109,28 @@ public enum ErrorCode {
     USER_NOT_FOUND_ERROR(400, "E020", "사용자 정보가 존재하지 않습니다."),
 
     // JWT 에러
-    JWT_TOKEN_NOT_MATCH_ERROR(400, "E021", "JWT 토큰에 해당하는 사용자 정보가 없습니다."),
-    JWT_TOKEN_INVALID_ERROR(400, "E022", "JWT 토큰이 잘못되었거나 유효기간이 만료되었습니다."),
-    JWT_TOKEN_IS_NULL_ERROR(400, "E023", "JWT 토큰이 존재하지 않습니다."),
+    JWT_TOKEN_NOT_MATCH_ERROR(403, "E021", "JWT 토큰에 해당하는 사용자 정보가 없습니다."),
+    JWT_TOKEN_INVALID_ERROR(403, "E022", "JWT 토큰이 잘못되었거나 유효기간이 만료되었습니다."),
+    JWT_TOKEN_IS_NULL_ERROR(403, "E023", "JWT 토큰이 존재하지 않습니다."),
 
     // 로그인 에러
     USERID_INVALID_ERROR(401, "E024", "사용자 아이디가 일치하지 않습니다."),
-    USERPW_INVALID_ERROR(401, "E025", "사용자 비밀번호가 일치하지 않습니다.")
+    USERPW_INVALID_ERROR(401, "E025", "사용자 비밀번호가 일치하지 않습니다."),
+
+    // 인증번호 메일 송신 에러
+    MAIL_SERVICE_ERROR(404, "E026", "인증번호를 보낼 수 없습니다."),
+
+    // 피드 조회 에러
+    FEED_NOT_FOUND_ERROR(400, "E027", "존재하지 않는 피드입니다."),
+
+    //댓글 not blank 에러
+    COMMENT_NOT_BLANK_ERROR(400, "E028", "댓글을 적어주세요."),
+
+    //피드 Id positive 에러
+    FEED_ID_POSITIVE_ERROR(400, "E029", "피드 Id는 양수입니다."),
+
+    //피드 제목 not blank 에러
+    FEED_TITLE_NOT_BLANK_ERROR(400, "E029", "피드 제목을 적어주세요."),
 
 
 

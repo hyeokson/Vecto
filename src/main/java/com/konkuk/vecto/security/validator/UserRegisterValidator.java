@@ -20,7 +20,7 @@ public class UserRegisterValidator extends UserValidatorFunc implements Validato
 
         if(req.getProvider() == null || req.getProvider().isEmpty()) {
             errors.rejectValue("provider", "NotEmpty",
-                    "로그인 유형을 입력해주세요.");
+                    "PROVIDER_NOT_EMPTY_ERROR");
             return;
         }
 
@@ -45,7 +45,7 @@ public class UserRegisterValidator extends UserValidatorFunc implements Validato
 
         } else {
             errors.rejectValue("provider", "Pattern",
-                    "로그인 유형은 \"vecto\" 또는 \"kakao\" 로 입력해주세요.");
+                    "PROVIDER_PATTERN_ERROR");
         }
 
     }
