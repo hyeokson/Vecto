@@ -130,7 +130,7 @@ public enum ErrorCode {
     FEED_ID_POSITIVE_ERROR(400, "E029", "피드 Id는 양수입니다."),
 
     //피드 제목 not blank 에러
-    FEED_TITLE_NOT_BLANK_ERROR(400, "E029", "피드 제목을 적어주세요."),
+    FEED_TITLE_NOT_BLANK_ERROR(400, "E030", "피드 제목을 적어주세요."),
 
 
 
