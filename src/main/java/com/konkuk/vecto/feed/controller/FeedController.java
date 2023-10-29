@@ -1,5 +1,7 @@
 package com.konkuk.vecto.feed.controller;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import com.konkuk.vecto.feed.service.FeedService;
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -43,9 +46,16 @@ public class FeedController {
 		feedService.saveComment(commentRequest, userId);
 	}
 
-	@GetMapping("/comments/{feedId}")
+	@GetMapping("/{feedId}/comments")
 	public CommentsResponse saveComment(@PathVariable Long feedId) {
 		return feedService.getFeedComments(feedId);
 	}
 
+	@GetMapping("/feedList")
+	public List<Long> getFeedList(@NotNull Integer page, @Parameter(hidden = true) @UserInfo String userId) {
+		if (userId == null) {
+			return feedService.getDefaultFeedList(page);
+		}
+		return feedService.getPersonalFeedList(page, userId);
+	}
 }

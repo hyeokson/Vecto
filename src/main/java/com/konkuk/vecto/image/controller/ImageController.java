@@ -36,8 +36,8 @@ public class ImageController {
 			.collect(Collectors.toList());
 	}
 
-	@PostMapping("/upload/profile")
-	public String userProfileImageUpload(@UserInfo String userId, @RequestPart("image") MultipartFile image) {
-		return imageService.uploadProfileImage(userId, image).getUrl();
+	@PostMapping(value = "/upload/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String userProfileImageUpload(@Parameter(hidden = true) @UserInfo String userId, @RequestPart("image") MultipartFile image) {
+		return imageService.uploadProfileImage(userId, image).getS3FullUrl();
 	}
 }

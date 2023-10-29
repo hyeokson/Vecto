@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.konkuk.vecto.likes.domain.Likes;
-import org.junit.runner.Computer;
+
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Service;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -50,6 +49,7 @@ public class Feed {
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<Likes> likes = new ArrayList<>();
 
+	private Integer likeCount;
 	private String userId;
 
 	@Builder
@@ -59,10 +59,19 @@ public class Feed {
 		this.content = content;
 		this.uploadTime = uploadTime;
 		this.userId = userId;
+		this.likeCount = 0;
 		setFeedMovements(feedMovements);
 		setFeedImages(feedImages);
 		setFeedPlaces(feedPlaces);
 
+	}
+
+	public void increaseLikeCount() {
+		this.likeCount += 1;
+	}
+
+	public void decreaseLikeCount() {
+		this.likeCount -= 1;
 	}
 
 	public void addComment(Comment comment) {

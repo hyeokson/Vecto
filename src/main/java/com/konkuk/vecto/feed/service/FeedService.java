@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.response.CommentsResponse;
 import com.konkuk.vecto.feed.dto.response.FeedResponse;
 import com.konkuk.vecto.feed.repository.FeedRepository;
+import com.konkuk.vecto.security.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,7 @@ public class FeedService {
 
 	private final FeedRepository feedRepository;
 	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
+	private final UserService userService;
 
 	@Transactional
 	public Long saveFeed(FeedSaveRequest feedSaveRequest, String userId) {
@@ -72,6 +76,7 @@ public class FeedService {
 			.movements(movements)
 			.images(images)
 			.commentCount(feed.getComments().size())
+			.userId(userService.findUser(feed.getUserId()).getNickName())
 			.build();
 	}
 
@@ -96,9 +101,19 @@ public class FeedService {
 
 		return new CommentsResponse(feed.getComments()
 			.stream()
-			.map(comment -> new CommentsResponse.CommentResponse(comment.getUserId(),
+			.map(comment -> new CommentsResponse.CommentResponse(userService.findUser(comment.getUserId()).getNickName(),
 				comment.getComment(),
 				timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt())))
 			.toList());
+	}
+
+	public List<Long> getDefaultFeedList(Integer page) {
+		Pageable pageable = PageRequest.of(page, 5);
+		return feedRepository.findAllByOrderByLikeCountDesc(pageable).getContent()
+			.stream().map(Feed::getId).toList();
+	}
+
+	public List<Long> getPersonalFeedList(Integer page, String userId) {
+		return getDefaultFeedList(page);
 	}
 }

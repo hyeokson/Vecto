@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
+// @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserInfoResponse {
     // 사용자 아이디
     private String userId;
@@ -22,10 +22,12 @@ public class UserInfoResponse {
     // 카카오 유저는 이메일 x
     private String email;
 
+    private String profileUrl;
     public UserInfoResponse(User user){
         this.userId = user.getUserId();
         this.provider = user.getProvider();
         this.nickName = user.getNickName();
         this.email = user.getEmail();
+        this.profileUrl = user.getProfileImageUrl();
     }
 }
