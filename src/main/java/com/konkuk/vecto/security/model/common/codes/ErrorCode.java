@@ -75,18 +75,65 @@ public enum ErrorCode {
     /**
      * ******************************* Custom Error CodeList ***************************************
      */
+    // 공통 검증 에러
+    PROVIDER_NOT_EMPTY_ERROR(400, "E001", "로그인 유형을 입력해주세요."),
+    PROVIDER_PATTERN_ERROR(400, "E002", "로그인 유형은 \"vecto\" 또는 \"kakao\" 로 입력해주세요."),
 
-    // Business Exception Error
-    BUSINESS_EXCEPTION_ERROR(200, "B999", "Business Exception Error"),
+    USERID_VECTO_NOT_EMPTY_ERROR(400, "E003", "사용자 아이디를 적어주세요."),
+    USERID_KAKAO_NOT_EMPTY_ERROR(400, "E004", "카카오 아이디를 적어주세요."),
+    USERID_VECTO_PATTERN_ERROR(400, "E005", "사용자 아이디는 알파벳, 숫자만 허용합니다. (4~20자리)"),
+    USERID_KAKAO_PATTERN_ERROR(400, "E006", "카카오 아이디는 Long 타입 범위의 숫자만 허용합니다."),
 
-    // Transaction Insert Error
-    INSERT_ERROR(200, "9999", "Insert Transaction Error Exception"),
+    USERPW_NOT_EMPTY_ERROR(400, "E007", "사용자 비밀번호를 적어주세요."),
+    USERPW_PATTERN_ERROR(400, "E008", "사용자 비밀번호는 알파벳, 숫자, 특수문자를 무조건 포함해야 합니다. (8~20자리)"),
 
-    // Transaction Update Error
-    UPDATE_ERROR(200, "9999", "Update Transaction Error Exception"),
+    NICKNAME_NOT_EMPTY_ERROR(400, "E009", "사용자 닉네임을 적어주세요."),
+    NICKNAME_PATTERN_ERROR(400, "E010", "사용자 닉네임은 알파벳, 한글, 숫자만 허용합니다. (1~10자리)"),
 
-    // Transaction Delete Error
-    DELETE_ERROR(200, "9999", "Delete Transaction Error Exception"),
+    EMAIL_NOT_EMPTY_ERROR(400, "E012", "사용자 이메일을 적어주세요."),
+    EMAIL_PATTERN_ERROR(400, "E013", "이메일 형식과 맞지 않습니다."),
+
+    CODE_NOT_EMPTY_ERROR(400, "E014", "이메일 인증번호를 적어주세요."),
+    CODE_PATTERN_ERROR(400, "E015", "이메일 인증번호는 숫자만 허용합니다."),
+
+    FCM_TOKEN_NOT_EMPTY_ERROR(400, "E016", "FCM Token 값을 적어주세요."),
+
+    // 이메일 인증번호 검증 에러
+    CODE_EMAIL_INVALID_ERROR(400, "E017", "인증번호가 만료되었거나 이메일이 존재하지 않습니다."),
+
+    // 사용자 정보 중복 에러
+    USERID_DUPLICATED_ERROR(400, "E018", "사용자 아이디가 중복입니다."),
+    EMAIL_DUPLICATED_ERROR(400, "E019", "사용자 이메일이 중복입니다."),
+
+    // 사용자 정보 조회 에러
+    USER_NOT_FOUND_ERROR(400, "E020", "사용자 정보가 존재하지 않습니다."),
+
+    // JWT 에러
+    JWT_TOKEN_NOT_MATCH_ERROR(403, "E021", "JWT 토큰에 해당하는 사용자 정보가 없습니다."),
+    JWT_TOKEN_INVALID_ERROR(403, "E022", "JWT 토큰이 잘못되었거나 유효기간이 만료되었습니다."),
+    JWT_TOKEN_IS_NULL_ERROR(403, "E023", "JWT 토큰이 존재하지 않습니다."),
+
+    // 로그인 에러
+    USERID_INVALID_ERROR(401, "E024", "사용자 아이디가 일치하지 않습니다."),
+    USERPW_INVALID_ERROR(401, "E025", "사용자 비밀번호가 일치하지 않습니다."),
+
+    // 인증번호 메일 송신 에러
+    MAIL_SERVICE_ERROR(404, "E026", "인증번호를 보낼 수 없습니다."),
+
+    // 피드 조회 에러
+    FEED_NOT_FOUND_ERROR(400, "E027", "존재하지 않는 피드입니다."),
+
+    //댓글 not blank 에러
+    COMMENT_NOT_BLANK_ERROR(400, "E028", "댓글을 적어주세요."),
+
+    //피드 Id positive 에러
+    FEED_ID_POSITIVE_ERROR(400, "E029", "피드 Id는 양수입니다."),
+
+    //피드 제목 not blank 에러
+    FEED_TITLE_NOT_BLANK_ERROR(400, "E030", "피드 제목을 적어주세요."),
+
+
+
 
     ; // End
 

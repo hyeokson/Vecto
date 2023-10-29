@@ -39,14 +39,14 @@ public class UserServiceImpl implements UserService {
         Optional<User> user1 = repository.findByUserId(userRegisterDto.getUserId());
 
         if(user1.isPresent())
-            throw new IllegalArgumentException("회원 아이디가 중복입니다.");
+            throw new IllegalArgumentException("USERID_DUPLICATED_ERROR");
 
         //kakao 유저는 email, password 존재 x
         if(userRegisterDto.getProvider().equals("vecto")){
             Optional<User> user2 = repository.findByEmail(userRegisterDto.getEmail());
 
             if(user2.isPresent())
-                throw new IllegalArgumentException("회원 이메일이 중복입니다.");
+                throw new IllegalArgumentException("EMAIL_DUPLICATED_ERROR");
 
             String userPw= userRegisterDto.getUserPw();
             userRegisterDto.setUserPw(passwordEncoder.encode(userPw));
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userTemp = repository.findByUserId(userId);
         if(userTemp.isEmpty()) {
             log.info("error userId: {}", userId);
-            throw new IllegalArgumentException("회원정보가 존재하지 않습니다.");
+            throw new IllegalArgumentException("USER_NOT_FOUND_ERROR");
         }
         User user = userTemp.get();
         return new UserInfoResponse(user);
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
         if(userTemp.isEmpty()){
             log.info("error userId: {}", userId);
-            throw new IllegalArgumentException("회원정보가 존재하지 않습니다.");
+            throw new IllegalArgumentException("USER_NOT_FOUND_ERROR");
         }
         User user = userTemp.get();
 
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isNotBlank(userUpdateDto.getUserId())){
             Optional<User> user1 = repository.findByUserId(userUpdateDto.getUserId());
             if(user1.isPresent())
-                throw new IllegalArgumentException("회원 아이디가 중복입니다.");
+                throw new IllegalArgumentException("USERID_DUPLICATED_ERROR");
 
             user.setUserId(userUpdateDto.getUserId());
             isJwtChanged = true;
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean updateUserProfileImage(String userId, String imageUrl) {
         User user = repository.findByUserId(userId).orElseThrow(
-            () -> new IllegalArgumentException("회원정보가 존재하지 않습니다."));
+            () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR"));
         user.updateProfileImageUrl(imageUrl);
         return Boolean.TRUE;
     }
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
         if(userTemp.isEmpty()){
             log.info("error userId: {}", userId);
-            throw new IllegalArgumentException("회원정보가 존재하지 않습니다.");
+            throw new IllegalArgumentException("USER_NOT_FOUND_ERROR");
         }
 
         User user = userTemp.get();
@@ -147,13 +147,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userId){
         repository.delete(repository.findByUserId(userId).orElseThrow(
-                ()->new IllegalArgumentException("회원정보가 존재하지 않습니다.")));
+                ()->new IllegalArgumentException("USER_NOT_FOUND_ERROR")));
     }
 
     @Override
     public void checkUserId(String userId){
         Optional<User> user = repository.findByUserId(userId);
         if(user.isPresent())
-            throw new IllegalArgumentException("회원 아이디가 중복입니다.");
+            throw new IllegalArgumentException("USERID_DUPLICATED_ERROR");
     }
 }

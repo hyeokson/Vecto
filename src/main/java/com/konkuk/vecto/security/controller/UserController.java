@@ -3,6 +3,7 @@ package com.konkuk.vecto.security.controller;
 import com.konkuk.vecto.mail.service.MailService;
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
 import com.konkuk.vecto.security.dto.*;
+import com.konkuk.vecto.security.model.common.codes.ErrorCode;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import com.konkuk.vecto.security.service.UserService;
@@ -49,7 +50,7 @@ public class UserController {
 
         String jwtToken = loginService.login(loginDto);
         ResponseCode<String> responseCode = new ResponseCode<>(SuccessCode.LOGIN);
-        responseCode.setToken(jwtToken);
+        responseCode.setResult(jwtToken);
         return responseCode;
     }
 
@@ -68,13 +69,16 @@ public class UserController {
         }
 
         userService.save(userRegisterDto);
-        return new ResponseCode<String>(SuccessCode.INSERT);
+        return new ResponseCode<>(SuccessCode.REGISTER);
     }
     @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<UserInfoResponse> getUserInfo(@Parameter(hidden = true) @UserInfo String userId){
         UserInfoResponse userInfoResponse = userService.findUser(userId);
-        return new ResponseCode<UserInfoResponse>(200,"200", userInfoResponse);
+
+        ResponseCode<UserInfoResponse> responseCode = new ResponseCode<>(SuccessCode.USERINFO_GET);
+        responseCode.setResult(userInfoResponse);
+        return responseCode;
     }
 
     @PatchMapping("/user")
@@ -91,26 +95,26 @@ public class UserController {
 
         // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
         if(token.isPresent()) {
-            ResponseCode<String> responseCode = new ResponseCode<String>(SuccessCode.UPDATE);
-            responseCode.setToken(token.get());
+            ResponseCode<String> responseCode = new ResponseCode<String>(SuccessCode.USERINFO_UPDATE);
+            responseCode.setResult(token.get());
             return responseCode;
         }
 
-        return new ResponseCode<String>(SuccessCode.UPDATE);
+        return new ResponseCode<>(SuccessCode.USERINFO_UPDATE);
     }
 
     @DeleteMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> deleteUserInfo(@Parameter(hidden = true) @UserInfo String userId){
         userService.deleteUser(userId);
-        return new ResponseCode<String>(SuccessCode.DELETE);
+        return new ResponseCode<>(SuccessCode.USERINFO_DELETE);
     }
 
     @PostMapping("/userId/check")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> checkUserId(@RequestBody UserIdDto userIdDto){
         userService.checkUserId(userIdDto.getUserId());
-        return new ResponseCode<>(SuccessCode.CHECK);
+        return new ResponseCode<>(SuccessCode.USERID_CHECK);
     }
 
 
@@ -118,15 +122,17 @@ public class UserController {
     @Operation(summary = "이메일 코드 요청", description = "이메일로 코드요청을 받습니다.")
     @ApiResponse(responseCode = "200", description = "이메일 전송 성공 시 상태코드 200을 보냅니다.")
     @ResponseBody
-    public void ImageUpload(@RequestBody @Valid MailCodeRequest mailCodeRequest) {
+    public ResponseCode<String> sendVerificationMail(@RequestBody @Valid MailCodeRequest mailCodeRequest) {
+        if(userService.isRegisterUser(mailCodeRequest.getEmail())) {
+            throw new IllegalArgumentException("EMAIL_DUPLICATED_ERROR");
+        }
+
         // 인증 랜덤 6자리 수 추출
         int randomInt = ThreadLocalRandom.current().nextInt(100000, 1000000);
         mailService.sendVerificationMail(mailCodeRequest.getEmail(), randomInt);
 
-        if(userService.isRegisterUser(mailCodeRequest.getEmail())) {
-            throw new RuntimeException("이미 회원가입된 이메일입니다.");
-        }
-
         verificationCodeService.saveCode(mailCodeRequest.getEmail(), randomInt);
+
+        return new ResponseCode<>(SuccessCode.VELIFICATION_MAIL_SEND);
     }
 }

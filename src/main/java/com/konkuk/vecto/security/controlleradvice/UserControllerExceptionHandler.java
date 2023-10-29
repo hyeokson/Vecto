@@ -1,12 +1,10 @@
 package com.konkuk.vecto.security.controlleradvice;
 
-import com.konkuk.vecto.security.controller.UserController;
+import com.konkuk.vecto.security.model.common.codes.ErrorCode;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,7 +16,7 @@ import java.util.List;
 
 //에러를 처리하는 ContollerAdvice
 @Slf4j
-@ControllerAdvice
+@ControllerAdvice(basePackages = "com.konkuk.vecto")
 public class UserControllerExceptionHandler {
 
     //validation 오류가 발생했을 때 에러 메시지를 반환
@@ -29,7 +27,8 @@ public class UserControllerExceptionHandler {
 
         List<ResponseCode<String>> responseCodeList = new ArrayList<>();
         for(FieldError fieldError : ex.getBindingResult().getFieldErrors()){
-            responseCodeList.add(new ResponseCode<String>(400,"400",fieldError.getDefaultMessage()));
+            ResponseCode<String> responseCode = new ResponseCode<>(ErrorCode.valueOf(fieldError.getDefaultMessage()));
+            responseCodeList.add(responseCode);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseCodeList);
     }
@@ -39,8 +38,9 @@ public class UserControllerExceptionHandler {
 
         log.error("UserService exception: ", ex);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                new ResponseCode<String>(400,"400",ex.getMessage()));
+        ResponseCode<String> responseCode = new ResponseCode<>(ErrorCode.valueOf(ex.getMessage()));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseCode);
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -48,8 +48,9 @@ public class UserControllerExceptionHandler {
 
         log.error("UserService exception: ", ex);
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ResponseCode<String>(401,"401", ex.getMessage()));
+        ResponseCode<String> responseCode = new ResponseCode<>(ErrorCode.valueOf(ex.getMessage()));
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseCode);
     }
 
 

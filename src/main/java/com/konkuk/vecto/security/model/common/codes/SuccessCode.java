@@ -19,23 +19,44 @@ public enum SuccessCode {
     /**
      * ******************************* Success CodeList ***************************************
      */
-    // 조회 성공 코드 (HTTP Response: 200 OK)
-    SELECT(200, "200", "SELECT SUCCESS"),
-    // 삭제 성공 코드 (HTTP Response: 200 OK)
-    DELETE(200, "200", "DELETE SUCCESS"),
-
-    // 전송 성공 코드 (HTTP Response: 200 OK)
-    SEND(200, "200", "SEND SUCCESS"),
-
-    CHECK(200, "200", "CHECK SUCCESS"),
-
     // 로그인 성공 코드 (HTTP Response: 200 OK)
-    LOGIN(200, "200", "LOGIN SUCCESS"),
+    LOGIN(200, "S000", "로그인 성공"),
+    // 회원가입 성공 코드 (HTTP Response: 201 Created)
+    REGISTER(201, "S001", "회원가입 성공"),
+    // 사용자 정보 조회 성공 코드 (HTTP Response: 200 OK)
+    USERINFO_GET(200, "S002", "사용자 정보 조회 성공"),
+    // 사용자 정보 수정 성공 코드 (HTTP Response: 201 Created)
+    USERINFO_UPDATE(201, "S003", "사용자 정보 수정 성공"),
+    // 사용자 정보 삭제 성공 코드 (HTTP Response: 200 OK)
+    USERINFO_DELETE(200, "S004", "사용자 정보 삭제 성공"),
 
-    // 삽입 성공 코드 (HTTP Response: 201 Created)
-    INSERT(201, "201", "INSERT SUCCESS"),
-    // 수정 성공 코드 (HTTP Response: 201 Created)
-    UPDATE(201, "201", "UPDATE SUCCESS"),
+    // userId 중복 검사 통과 코드(HTTP Response: 200 OK)
+    USERID_CHECK(200, "S005", "사용자 아이디 중복검사 성공"),
+
+    // 좋아요 등록 성공 코드(HTTP Response: 200 OK)
+    LIKES_INSERT(200, "S006", "좋아요 등록 성공"),
+    // 좋아요 해제 성공 코드(HTTP Response: 200 OK)
+    LIKES_DELETE(200, "S007", "좋아요 해제 성공"),
+
+    // 메일로 인증번호 보내기 성공 코드 (HTTP Response: 200 OK)
+    VELIFICATION_MAIL_SEND(200, "S008", "인증번호 전송 성공"),
+
+    // 피드 이미지 저장 성공 코드(HTTP Response: 200 OK)
+    FEED_IMAGE_SAVE(200, "S009", "피드 이미지 저장 성공"),
+    // 프로필 이미지 저장 성공 코드(HTTP Response: 200 OK)
+    PROFILE_IMAGE_SAVE(200, "S010", "프로필 이미지 저장 성공"),
+
+    // 피드 저장 성공 코드(HTTP Response: 200 OK)
+    FEED_SAVE(200, "S011", "피드 저장 성공"),
+    // 피드 조회 성공 코드(HTTP Response: 200 OK)
+    FEED_GET(200, "S012", "피드 조회 성공"),
+    // 댓글 저장 성공 코드(HTTP Response: 200 OK)
+    COMMENT_SAVE(200, "S013", "댓글 저장 성공"),
+    // 댓글 조회 성공 코드(HTTP Response: 200 OK)
+    COMMENT_GET(200, "S014", "댓글 조회 성공"),
+
+
+
 
     ; // End
 

@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class FeedSaveRequest {
 
 	@Schema(description = "제목은 비울 수 없습니다.")
-	@NotBlank(message = "제목은 비울 수 없습니다.")
+	@NotBlank(message = "FEED_TITLE_NOT_BLANK_ERROR")
 	private String title;
 
 	private String content;

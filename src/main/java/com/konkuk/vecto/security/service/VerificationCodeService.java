@@ -25,7 +25,7 @@ public class VerificationCodeService {
 		LocalDateTime currentDateTime = LocalDateTime.now();
 		verificationCodeRepository.findValidVerificationCode(email, code,
 				currentDateTime.minus(3, ChronoUnit.MINUTES))
-			.orElseThrow(() -> new IllegalArgumentException("인증번호가 만료되었거나 이메일이 존재하지 않습니다."));
+			.orElseThrow(() -> new IllegalArgumentException("CODE_EMAIL_INVALID_ERROR"));
 		return Boolean.TRUE;
 	}
 }

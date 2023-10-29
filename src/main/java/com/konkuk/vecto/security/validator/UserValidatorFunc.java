@@ -14,16 +14,16 @@ public class UserValidatorFunc {
     String NICKNAME_REGEX = "^[A-Za-z0-9가-힣]{1,10}$";
     String EMAIL_REGEX = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$";
 
+    String CODE_REGEX = "^[0-9]{1,9}$";
+
     Pattern pattern = null;
     Matcher matcher = null;
 
     public void validateUserId(String userId, Errors errors, String validator, String provider){
         if (validator.equals("register") && (userId==null || userId.isEmpty()) ||
                 validator.equals("update") && userId!=null && userId.isEmpty()) {
-            if(provider.equals("vecto"))
-                errors.rejectValue("userId", "NotEmpty", "사용자 아이디를 적어주세요.");
-            else if(provider.equals("kakao"))
-                errors.rejectValue("userId", "NotEmpty", "카카오 아이디를 적어주세요.");
+                errors.rejectValue("userId", "NotEmpty", "USERID_VECTO_NOT_EMPTY_ERROR");
+                errors.rejectValue("userId", "NotEmpty", "USERID_KAKAO_NOT_EMPTY_ERROR");
         }
         else if(userId!=null && !userId.isEmpty()){
             if(provider.equals("vecto")) {
@@ -31,14 +31,14 @@ public class UserValidatorFunc {
                 matcher = pattern.matcher(userId);
 
                 if (!matcher.matches())
-                    errors.rejectValue("userId", "Pattern", "사용자 아이디는 알파벳, 숫자만 허용합니다. (4~20자리)");
+                    errors.rejectValue("userId", "Pattern", "USERID_VECTO_PATTERN_ERROR");
             }
             else if(provider.equals("kakao")){
                 pattern = Pattern.compile(KAKAOID_REGEX);
                 matcher = pattern.matcher(userId);
 
                 if (!matcher.matches())
-                    errors.rejectValue("userId", "Pattern", "카카오 아이디는 Long 타입 범위의 숫자만 허용합니다.");
+                    errors.rejectValue("userId", "Pattern", "USERID_KAKAO_PATTERN_ERROR");
             }
         }
     }
@@ -46,36 +46,51 @@ public class UserValidatorFunc {
     public void validateUserPw(String userPw, Errors errors, String validator){
         if (validator.equals("register") && (userPw==null || userPw.isEmpty()) ||
                 validator.equals("update") && userPw!=null && userPw.isEmpty())
-            errors.rejectValue("userPw", "NotEmpty", "사용자 비밀번호를 적어주세요.");
+            errors.rejectValue("userPw", "NotEmpty", "USERPW_NOT_EMPTY_ERROR");
         else if(userPw!=null && !userPw.isEmpty()){
             pattern = Pattern.compile(USERPW_REGEX);
             matcher = pattern.matcher(userPw);
 
             if (!matcher.matches())
-                errors.rejectValue("userPw", "Pattern", "사용자 비밀번호는 알파벳, 숫자, 특수문자를 무조건 포함해야 합니다. (8~20자리)");}
+                errors.rejectValue("userPw", "Pattern", "USERPW_PATTERN_ERROR");}
     }
 
     public void validateNickName(String nickName, Errors errors, String validator){
         if (validator.equals("register") && (nickName==null || nickName.isEmpty()) ||
                 validator.equals("update") && nickName!=null && nickName.isEmpty())
-            errors.rejectValue("nickName", "NotEmpty", "사용자 닉네임을 적어주세요.");
+            errors.rejectValue("nickName", "NotEmpty", "NICKNAME_NOT_EMPTY_ERROR");
         else if(nickName!=null && !nickName.isEmpty()){
             pattern = Pattern.compile(NICKNAME_REGEX);
             matcher = pattern.matcher(nickName);
 
             if (!matcher.matches())
-                errors.rejectValue("nickName", "Pattern", "사용자 닉네임은 알파벳, 한글, 숫자만 허용합니다. (1~10자리)");}
+                errors.rejectValue("nickName", "Pattern", "NICKNAME_PATTERN_ERROR");}
     }
 
     // 회원가입(vecto) 일 경우에만 이메일 검증
     public void validateEmail(String email, Errors errors, String validator){
         if (email==null || email.isEmpty())
-            errors.rejectValue("email", "NotEmpty", "사용자 이메일을 적어주세요.");
+            errors.rejectValue("email", "NotEmpty", "EMAIL_NOT_EMPTY_ERROR");
         else {
             pattern = Pattern.compile(EMAIL_REGEX);
             matcher = pattern.matcher(email);
 
             if (!matcher.matches())
-                errors.rejectValue("email", "Email", "이메일 형식과 맞지 않습니다.");}
+                errors.rejectValue("email", "Pattern", "EMAIL_PATTERN_ERROR");}
+    }
+
+    public void validateCode(Integer code, Errors errors, String validator){
+        if(validator == "register"){
+            if(code == null || code.toString().isEmpty())
+                errors.rejectValue("code", "NotEmpty", "CODE_NOT_EMPTY_ERROR");
+            else{
+                pattern = Pattern.compile(CODE_REGEX);
+                matcher = pattern.matcher(code.toString());
+
+                if (!matcher.matches())
+                    errors.rejectValue("code", "Pattern", "CODE_PATTERN_ERROR");
+
+            }
+        }
     }
 }
