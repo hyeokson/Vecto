@@ -68,10 +68,17 @@ public class FeedController {
 	}
 
 	@GetMapping("/feedList")
-	public List<Long> getFeedList(@NotNull Integer page, @Parameter(hidden = true) @UserInfo String userId) {
+	public ResponseCode<List<Long>> getFeedList(@NotNull Integer page, @Parameter(hidden = true) @UserInfo String userId) {
+		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+
 		if (userId == null) {
-			return feedService.getDefaultFeedList(page);
+			List<Long> feedList = feedService.getDefaultFeedList(page);
+			responseCode.setResult(feedList);
+			return responseCode;
 		}
-		return feedService.getPersonalFeedList(page, userId);
+
+		List<Long> feedList = feedService.getPersonalFeedList(page, userId);
+		responseCode.setResult(feedList);
+		return responseCode;
 	}
 }

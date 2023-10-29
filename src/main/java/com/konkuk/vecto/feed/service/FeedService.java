@@ -1,5 +1,6 @@
 package com.konkuk.vecto.feed.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
@@ -20,6 +21,7 @@ import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.response.CommentsResponse;
 import com.konkuk.vecto.feed.dto.response.FeedResponse;
 import com.konkuk.vecto.feed.repository.FeedRepository;
+import com.konkuk.vecto.security.dto.UserInfoResponse;
 import com.konkuk.vecto.security.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -44,7 +46,7 @@ public class FeedService {
 		Feed feed = Feed.builder()
 			.title(feedSaveRequest.getTitle())
 			.content(feedSaveRequest.getContent())
-			.uploadTime(feedSaveRequest.getUploadTime())
+			.uploadTime(LocalDateTime.now())
 			.feedMovements(feedMovements)
 			.feedImages(feedImages)
 			.feedPlaces(feedPlaces)
@@ -68,6 +70,7 @@ public class FeedService {
 		List<String> images = feed.getFeedImages().stream()
 			.map(FeedImage::getUrl).toList();
 
+		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
 		return FeedResponse.builder()
 			.title(feed.getTitle())
 			.content(feed.getContent())
@@ -76,14 +79,18 @@ public class FeedService {
 			.movements(movements)
 			.images(images)
 			.commentCount(feed.getComments().size())
-			.userId(userService.findUser(feed.getUserId()).getNickName())
+			.likeCount(feed.getLikeCount())
+			.userId(userInfo.getUserId())
+			.userName(userInfo.getNickName())
+			.profileUrl(userInfo.getProfileUrl())
 			.build();
 	}
 
 	@Transactional
 	public void saveComment(CommentRequest commentRequest, String userId) {
 		Long feedId = commentRequest.getFeedId();
-		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+		Feed feed = feedRepository.findById(feedId)
+			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 		Comment comment = new Comment(feed, userId, commentRequest.getContent());
 		feed.addComment(comment);
 
@@ -97,13 +104,18 @@ public class FeedService {
 	}
 
 	public CommentsResponse getFeedComments(Long feedId) {
-		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+		Feed feed = feedRepository.findById(feedId)
+			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 
 		return new CommentsResponse(feed.getComments()
 			.stream()
-			.map(comment -> new CommentsResponse.CommentResponse(userService.findUser(comment.getUserId()).getNickName(),
-				comment.getComment(),
-				timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt())))
+			.map(comment -> {
+				UserInfoResponse userInfo = userService.findUser(comment.getUserId());
+				return new CommentsResponse.CommentResponse(userInfo.getNickName(),
+					comment.getComment(),
+					timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt()),
+					userInfo.getProfileUrl());
+			})
 			.toList());
 	}
 

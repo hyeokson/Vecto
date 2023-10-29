@@ -45,6 +45,15 @@ public class FeedResponse {
 	@JsonProperty("commentCount")
 	private Integer commentCount;
 
+	@JsonProperty("likeCount")
+	private Integer likeCount;
+
+	@JsonProperty("nickName")
+	private String userName;
+
+	@JsonProperty("userProfile")
+	private String profileUrl;
+
 	@JsonProperty("userId")
 	private String userId;
 
