@@ -45,10 +45,10 @@ public class ImageController {
 		return responseCode;
 	}
 
-	@PostMapping("/upload/profile")
-	public ResponseCode<ImageUrlResponse> userProfileImageUpload(@UserInfo String userId, @RequestPart("image") MultipartFile image) {
+	@PostMapping(value = "/upload/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseCode<ImageUrlResponse> userProfileImageUpload(@Parameter(hidden = true) @UserInfo String userId, @RequestPart("image") MultipartFile image) {
 		ImageUrlResponse imageUrlResponse = new ImageUrlResponse();
-		imageUrlResponse.setUrl(imageService.uploadProfileImage(userId, image).getUrl());
+		imageUrlResponse.setUrl(imageService.uploadProfileImage(userId, image).getS3FullUrl());
 
 		ResponseCode<ImageUrlResponse> responseCode = new ResponseCode<>(SuccessCode.PROFILE_IMAGE_SAVE);
 		responseCode.setResult(imageUrlResponse);

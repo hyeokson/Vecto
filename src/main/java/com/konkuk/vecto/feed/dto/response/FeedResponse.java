@@ -45,6 +45,9 @@ public class FeedResponse {
 	@JsonProperty("commentCount")
 	private Integer commentCount;
 
+	@JsonProperty("userId")
+	private String userId;
+
 	@Getter
 	public static class Movement {
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

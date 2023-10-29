@@ -3,6 +3,8 @@ package com.konkuk.vecto.feed.controller;
 import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import com.konkuk.vecto.feed.service.FeedService;
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -54,7 +57,7 @@ public class FeedController {
 		return new ResponseCode<>(SuccessCode.COMMENT_SAVE);
 	}
 
-	@GetMapping("/comments/{feedId}")
+	@GetMapping("/{feedId}/comments")
 	public ResponseCode<CommentsResponse> saveComment(@PathVariable Long feedId) {
 		CommentsResponse commentsResponse = feedService.getFeedComments(feedId);
 
@@ -64,4 +67,11 @@ public class FeedController {
 		return responseCode;
 	}
 
+	@GetMapping("/feedList")
+	public List<Long> getFeedList(@NotNull Integer page, @Parameter(hidden = true) @UserInfo String userId) {
+		if (userId == null) {
+			return feedService.getDefaultFeedList(page);
+		}
+		return feedService.getPersonalFeedList(page, userId);
+	}
 }
