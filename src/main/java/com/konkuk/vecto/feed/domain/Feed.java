@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.konkuk.vecto.likes.domain.Likes;
-import org.junit.runner.Computer;
+
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Service;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -67,9 +66,14 @@ public class Feed {
 
 	}
 
-	public void addLikeCount() {
+	public void increaseLikeCount() {
 		this.likeCount += 1;
 	}
+
+	public void decreaseLikeCount() {
+		this.likeCount -= 1;
+	}
+
 	public void addComment(Comment comment) {
 		this.comments.add(comment);
 	}

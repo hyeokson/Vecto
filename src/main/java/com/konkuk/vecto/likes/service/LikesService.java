@@ -19,12 +19,15 @@ public class LikesService {
     public void saveLikes(Long feedId, String userId) {
         Feed feed = feedRepository.findById(feedId)
             .orElseThrow(() -> new IllegalArgumentException("좋아요를 누를 피드가 존재하지 않습니다."));
-        feed.addLikeCount();
+        feed.increaseLikeCount();
         likesRepository.insertLikes(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
     }
 
     @Transactional
     public void deleteLikes(Long feedId, String userId) {
+        Feed feed = feedRepository.findById(feedId)
+            .orElseThrow(() -> new IllegalArgumentException("좋아요를 누를 피드가 존재하지 않습니다."));
+        feed.decreaseLikeCount();
         likesRepository.deleteByFeedIdAndUserId(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
     }
 }

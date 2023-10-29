@@ -46,7 +46,7 @@ public class FeedController {
 		feedService.saveComment(commentRequest, userId);
 	}
 
-	@GetMapping("/comments/{feedId}")
+	@GetMapping("/{feedId}/comments")
 	public CommentsResponse saveComment(@PathVariable Long feedId) {
 		return feedService.getFeedComments(feedId);
 	}
