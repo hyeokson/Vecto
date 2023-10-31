@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.konkuk.vecto.feed.common.TimeDifferenceCalcuator;
 import com.konkuk.vecto.feed.domain.Comment;
 import com.konkuk.vecto.feed.domain.FeedImage;
+import com.konkuk.vecto.feed.domain.FeedMapImage;
 import com.konkuk.vecto.feed.domain.FeedMovement;
 import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.domain.FeedPlace;
@@ -42,6 +43,7 @@ public class FeedService {
 		List<FeedMovement> feedMovements = dtoToEntityIncludeIndex(feedSaveRequest.getMovements(), FeedMovement::new);
 		List<FeedImage> feedImages = dtoToEntityIncludeIndex(feedSaveRequest.getImages(), FeedImage::new);
 		List<FeedPlace> feedPlaces = dtoToEntityIncludeIndex(feedSaveRequest.getPlaces(), FeedPlace::new);
+		List<FeedMapImage> feedMapImages = dtoToEntityIncludeIndex(feedSaveRequest.getMapImages(), FeedMapImage::new);
 
 		Feed feed = Feed.builder()
 			.title(feedSaveRequest.getTitle())
@@ -50,6 +52,7 @@ public class FeedService {
 			.feedMovements(feedMovements)
 			.feedImages(feedImages)
 			.feedPlaces(feedPlaces)
+			.feedMapImages(feedMapImages)
 			.userId(userId)
 			.build();
 
@@ -70,6 +73,9 @@ public class FeedService {
 		List<String> images = feed.getFeedImages().stream()
 			.map(FeedImage::getUrl).toList();
 
+		List<String> mapImages = feed.getFeedMapImages().stream()
+			.map(FeedMapImage::getUrl).toList();
+
 		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
 		return FeedResponse.builder()
 			.title(feed.getTitle())
@@ -83,6 +89,7 @@ public class FeedService {
 			.userId(userInfo.getUserId())
 			.userName(userInfo.getNickName())
 			.profileUrl(userInfo.getProfileUrl())
+			.mapImages(mapImages)
 			.build();
 	}
 

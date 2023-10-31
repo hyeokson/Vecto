@@ -36,6 +36,9 @@ public class FeedResponse {
 	@JsonProperty("image")
 	private List<String> images = new ArrayList<>();
 
+	@JsonProperty("mapImage")
+	private List<String> mapImages = new ArrayList<>();
+
 	@JsonProperty("location")
 	private List<Movement> movements = new ArrayList<>();
 

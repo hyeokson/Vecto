@@ -49,12 +49,15 @@ public class Feed {
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<Likes> likes = new ArrayList<>();
 
+	@OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+	private List<FeedMapImage> feedMapImages = new ArrayList<>();
+
 	private Integer likeCount;
 	private String userId;
 
 	@Builder
 	public Feed(String title, String content, LocalDateTime uploadTime, List<FeedMovement> feedMovements,
-		List<FeedImage> feedImages, List<FeedPlace> feedPlaces, String userId) {
+		List<FeedImage> feedImages, List<FeedPlace> feedPlaces, String userId, List<FeedMapImage> feedMapImages) {
 		this.title = title;
 		this.content = content;
 		this.uploadTime = uploadTime;
@@ -63,7 +66,7 @@ public class Feed {
 		setFeedMovements(feedMovements);
 		setFeedImages(feedImages);
 		setFeedPlaces(feedPlaces);
-
+		setFeedMapImages(feedMapImages);
 	}
 
 	public void increaseLikeCount() {
@@ -89,6 +92,13 @@ public class Feed {
 		this.feedImages = feedImages;
 		for (FeedImage feedImage : feedImages) {
 			feedImage.setFeed(this);
+		}
+	}
+
+	private void setFeedMapImages(List<FeedMapImage> feedMapImages) {
+		this.feedMapImages = feedMapImages;
+		for (FeedMapImage feedMapImage : feedMapImages) {
+			feedMapImage.setFeed(this);
 		}
 	}
 
