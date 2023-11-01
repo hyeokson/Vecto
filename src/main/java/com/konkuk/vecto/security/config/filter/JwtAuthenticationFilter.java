@@ -2,7 +2,6 @@ package com.konkuk.vecto.security.config.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.konkuk.vecto.security.config.exception.BusinessExceptionHandler;
 import com.konkuk.vecto.security.dto.UserDetailsDto;
 import com.konkuk.vecto.security.model.common.codes.AuthConstants;
 import com.konkuk.vecto.security.model.common.codes.ErrorCode;
