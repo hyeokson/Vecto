@@ -1,15 +1,19 @@
 package com.konkuk.vecto.feed.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.konkuk.vecto.feed.common.TimeDifferenceCalcuator;
 import com.konkuk.vecto.feed.domain.Comment;
 import com.konkuk.vecto.feed.domain.FeedImage;
+import com.konkuk.vecto.feed.domain.FeedMapImage;
 import com.konkuk.vecto.feed.domain.FeedMovement;
 import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.domain.FeedPlace;
@@ -18,6 +22,8 @@ import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.response.CommentsResponse;
 import com.konkuk.vecto.feed.dto.response.FeedResponse;
 import com.konkuk.vecto.feed.repository.FeedRepository;
+import com.konkuk.vecto.security.dto.UserInfoResponse;
+import com.konkuk.vecto.security.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +35,7 @@ public class FeedService {
 
 	private final FeedRepository feedRepository;
 	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
+	private final UserService userService;
 
 	@Transactional
 	public Long saveFeed(FeedSaveRequest feedSaveRequest, String userId) {
@@ -36,14 +43,16 @@ public class FeedService {
 		List<FeedMovement> feedMovements = dtoToEntityIncludeIndex(feedSaveRequest.getMovements(), FeedMovement::new);
 		List<FeedImage> feedImages = dtoToEntityIncludeIndex(feedSaveRequest.getImages(), FeedImage::new);
 		List<FeedPlace> feedPlaces = dtoToEntityIncludeIndex(feedSaveRequest.getPlaces(), FeedPlace::new);
+		List<FeedMapImage> feedMapImages = dtoToEntityIncludeIndex(feedSaveRequest.getMapImages(), FeedMapImage::new);
 
 		Feed feed = Feed.builder()
 			.title(feedSaveRequest.getTitle())
 			.content(feedSaveRequest.getContent())
-			.uploadTime(feedSaveRequest.getUploadTime())
+			.uploadTime(LocalDateTime.now())
 			.feedMovements(feedMovements)
 			.feedImages(feedImages)
 			.feedPlaces(feedPlaces)
+			.feedMapImages(feedMapImages)
 			.userId(userId)
 			.build();
 
@@ -64,6 +73,10 @@ public class FeedService {
 		List<String> images = feed.getFeedImages().stream()
 			.map(FeedImage::getUrl).toList();
 
+		List<String> mapImages = feed.getFeedMapImages().stream()
+			.map(FeedMapImage::getUrl).toList();
+
+		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
 		return FeedResponse.builder()
 			.title(feed.getTitle())
 			.content(feed.getContent())
@@ -72,13 +85,19 @@ public class FeedService {
 			.movements(movements)
 			.images(images)
 			.commentCount(feed.getComments().size())
+			.likeCount(feed.getLikeCount())
+			.userId(userInfo.getUserId())
+			.userName(userInfo.getNickName())
+			.profileUrl(userInfo.getProfileUrl())
+			.mapImages(mapImages)
 			.build();
 	}
 
 	@Transactional
 	public void saveComment(CommentRequest commentRequest, String userId) {
 		Long feedId = commentRequest.getFeedId();
-		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+		Feed feed = feedRepository.findById(feedId)
+			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 		Comment comment = new Comment(feed, userId, commentRequest.getContent());
 		feed.addComment(comment);
 
@@ -92,13 +111,28 @@ public class FeedService {
 	}
 
 	public CommentsResponse getFeedComments(Long feedId) {
-		Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+		Feed feed = feedRepository.findById(feedId)
+			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 
 		return new CommentsResponse(feed.getComments()
 			.stream()
-			.map(comment -> new CommentsResponse.CommentResponse(comment.getUserId(),
-				comment.getComment(),
-				timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt())))
+			.map(comment -> {
+				UserInfoResponse userInfo = userService.findUser(comment.getUserId());
+				return new CommentsResponse.CommentResponse(userInfo.getNickName(),
+					comment.getComment(),
+					timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt()),
+					userInfo.getProfileUrl());
+			})
 			.toList());
+	}
+
+	public List<Long> getDefaultFeedList(Integer page) {
+		Pageable pageable = PageRequest.of(page, 5);
+		return feedRepository.findAllByOrderByLikeCountDesc(pageable).getContent()
+			.stream().map(Feed::getId).toList();
+	}
+
+	public List<Long> getPersonalFeedList(Integer page, String userId) {
+		return getDefaultFeedList(page);
 	}
 }

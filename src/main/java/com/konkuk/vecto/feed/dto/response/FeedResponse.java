@@ -36,6 +36,9 @@ public class FeedResponse {
 	@JsonProperty("image")
 	private List<String> images = new ArrayList<>();
 
+	@JsonProperty("mapImage")
+	private List<String> mapImages = new ArrayList<>();
+
 	@JsonProperty("location")
 	private List<Movement> movements = new ArrayList<>();
 
@@ -44,6 +47,18 @@ public class FeedResponse {
 
 	@JsonProperty("commentCount")
 	private Integer commentCount;
+
+	@JsonProperty("likeCount")
+	private Integer likeCount;
+
+	@JsonProperty("nickName")
+	private String userName;
+
+	@JsonProperty("userProfile")
+	private String profileUrl;
+
+	@JsonProperty("userId")
+	private String userId;
 
 	@Getter
 	public static class Movement {

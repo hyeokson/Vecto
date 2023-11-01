@@ -25,7 +25,7 @@ public class TimeDifferenceCalcuator {
 		} else if (minutesDifference >= 1) {
 			formattedTimeDifference = minutesDifference + "분 전";
 		} else {
-			formattedTimeDifference = secondsDifference + "초 전";
+			formattedTimeDifference = "방금 전";
 		}
 		return formattedTimeDifference;
 	}

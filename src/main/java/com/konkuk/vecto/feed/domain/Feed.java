@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.konkuk.vecto.likes.domain.Likes;
-import org.junit.runner.Computer;
+
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Service;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -50,19 +49,32 @@ public class Feed {
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<Likes> likes = new ArrayList<>();
 
+	@OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+	private List<FeedMapImage> feedMapImages = new ArrayList<>();
+
+	private Integer likeCount;
 	private String userId;
 
 	@Builder
 	public Feed(String title, String content, LocalDateTime uploadTime, List<FeedMovement> feedMovements,
-		List<FeedImage> feedImages, List<FeedPlace> feedPlaces, String userId) {
+		List<FeedImage> feedImages, List<FeedPlace> feedPlaces, String userId, List<FeedMapImage> feedMapImages) {
 		this.title = title;
 		this.content = content;
 		this.uploadTime = uploadTime;
 		this.userId = userId;
+		this.likeCount = 0;
 		setFeedMovements(feedMovements);
 		setFeedImages(feedImages);
 		setFeedPlaces(feedPlaces);
+		setFeedMapImages(feedMapImages);
+	}
 
+	public void increaseLikeCount() {
+		this.likeCount += 1;
+	}
+
+	public void decreaseLikeCount() {
+		this.likeCount -= 1;
 	}
 
 	public void addComment(Comment comment) {
@@ -80,6 +92,13 @@ public class Feed {
 		this.feedImages = feedImages;
 		for (FeedImage feedImage : feedImages) {
 			feedImage.setFeed(this);
+		}
+	}
+
+	private void setFeedMapImages(List<FeedMapImage> feedMapImages) {
+		this.feedMapImages = feedMapImages;
+		for (FeedMapImage feedMapImage : feedMapImages) {
+			feedMapImage.setFeed(this);
 		}
 	}
 

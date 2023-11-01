@@ -28,8 +28,8 @@ public class ImageService {
 	}
 
 	public Image uploadProfileImage(String userId, MultipartFile image) {
-		Image uploadImage = imageUtil.uploadImage(image, BucketName.Profile);
-		userService.updateUserProfileImage(userId, uploadImage.getUrl());
+		Image uploadImage = imageUtil.uploadImage(image, BucketName.Feed);
+		userService.updateUserProfileImage(userId, uploadImage.getS3FullUrl());
 		return uploadImage;
 	}
 }

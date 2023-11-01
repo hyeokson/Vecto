@@ -50,10 +50,12 @@ public enum SuccessCode {
     FEED_SAVE(200, "S011", "피드 저장 성공"),
     // 피드 조회 성공 코드(HTTP Response: 200 OK)
     FEED_GET(200, "S012", "피드 조회 성공"),
+    FEED_LIST_GET(200, "S014", "피드 리스트 번호 조회 성공"),
     // 댓글 저장 성공 코드(HTTP Response: 200 OK)
     COMMENT_SAVE(200, "S013", "댓글 저장 성공"),
-    // 댓글 조회 성공 코드(HTTP Response: 200 OK)
+    // 댓글 조회 성공 코드(HTTP Response: 200 OK),
     COMMENT_GET(200, "S014", "댓글 조회 성공")
+
 
 
 
