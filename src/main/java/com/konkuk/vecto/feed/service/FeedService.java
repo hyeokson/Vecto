@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+import com.konkuk.vecto.likes.service.LikesService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class FeedService {
 	private final FeedRepository feedRepository;
 	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
 	private final UserService userService;
+	private final LikesService likesService;
 
 	@Transactional
 	public Long saveFeed(FeedSaveRequest feedSaveRequest, String userId) {
@@ -59,7 +61,7 @@ public class FeedService {
 		return feedRepository.save(feed).getId();
 	}
 
-	public FeedResponse getFeed(Long feedId) {
+	public FeedResponse getFeed(Long feedId, String userId) {
 		Feed feed = feedRepository.findById(feedId).orElseThrow();
 
 		String differ = timeDifferenceCalcuator.formatTimeDifferenceKorean(feed.getUploadTime());
@@ -76,6 +78,13 @@ public class FeedService {
 		List<String> mapImages = feed.getFeedMapImages().stream()
 			.map(FeedMapImage::getUrl).toList();
 
+		Boolean likeFlag = false;
+
+		if(userId != null){
+			if(likesService.isClickedLikes(feedId, userId))
+				likeFlag = true;
+		}
+
 		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
 		return FeedResponse.builder()
 			.title(feed.getTitle())
@@ -90,6 +99,7 @@ public class FeedService {
 			.userName(userInfo.getNickName())
 			.profileUrl(userInfo.getProfileUrl())
 			.mapImages(mapImages)
+				.likeFlag(likeFlag)
 			.build();
 	}
 

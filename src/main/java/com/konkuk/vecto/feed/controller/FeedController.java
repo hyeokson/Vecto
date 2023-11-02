@@ -43,7 +43,16 @@ public class FeedController {
 
 	@GetMapping("/{feedId}")
 	public ResponseCode<FeedResponse> getPosting(@PathVariable("feedId") Long feedId) {
-		FeedResponse feedResponse = feedService.getFeed(feedId);
+		FeedResponse feedResponse = feedService.getFeed(feedId, null);
+
+		ResponseCode<FeedResponse> responseCode = new ResponseCode<>(SuccessCode.FEED_GET);
+		responseCode.setResult(feedResponse);
+		return responseCode;
+	}
+
+	@PostMapping("/{feedId}")
+	public ResponseCode<FeedResponse> getMemberPosting(@PathVariable("feedId") Long feedId, @Parameter(hidden = true) @UserInfo String userId) {
+		FeedResponse feedResponse = feedService.getFeed(feedId, userId);
 
 		ResponseCode<FeedResponse> responseCode = new ResponseCode<>(SuccessCode.FEED_GET);
 		responseCode.setResult(feedResponse);
