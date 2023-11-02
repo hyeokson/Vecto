@@ -20,19 +20,27 @@ public class LikesService {
     private final FeedRepository feedRepository;
 
     @Transactional
-    public void saveLikes(Long feedId, String userId) {
+    public boolean saveLikes(Long feedId, String userId) {
         Feed feed = feedRepository.findById(feedId)
             .orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
-        feed.increaseLikeCount();
-        likesRepository.insertLikes(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+        if(feed.getLikeCount() == 0){
+            feed.increaseLikeCount();
+            likesRepository.insertLikes(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+            return true;
+        }
+        return false;
     }
 
     @Transactional
-    public void deleteLikes(Long feedId, String userId) {
+    public boolean deleteLikes(Long feedId, String userId) {
         Feed feed = feedRepository.findById(feedId)
             .orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
-        feed.decreaseLikeCount();
-        likesRepository.deleteByFeedIdAndUserId(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+        if(feed.getLikeCount() == 1){
+            feed.decreaseLikeCount();
+            likesRepository.deleteByFeedIdAndUserId(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+            return true;
+        }
+        return false;
     }
 
     public Boolean isClickedLikes(Long feedId, String userId) {

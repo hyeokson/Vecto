@@ -156,4 +156,18 @@ public class UserServiceImpl implements UserService {
         if(user.isPresent())
             throw new IllegalArgumentException("USERID_DUPLICATED_ERROR");
     }
+
+    @Override
+    public String getFcmToken(String userId){
+        User user = repository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR"));
+        return user.getFcmToken();
+    }
+
+    @Override
+    public String getNickName(String userId){
+        User user = repository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR"));
+        return user.getNickName();
+    }
 }

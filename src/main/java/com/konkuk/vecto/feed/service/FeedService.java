@@ -2,6 +2,7 @@ package com.konkuk.vecto.feed.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
@@ -144,5 +145,11 @@ public class FeedService {
 
 	public List<Long> getPersonalFeedList(Integer page, String userId) {
 		return getDefaultFeedList(page);
+	}
+
+	public String getUserIdFromFeed(Long feedId){
+		Feed feed = feedRepository.findById(feedId)
+				.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+		return feed.getUserId();
 	}
 }

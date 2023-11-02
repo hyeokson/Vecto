@@ -54,7 +54,12 @@ public enum SuccessCode {
     // 댓글 저장 성공 코드(HTTP Response: 200 OK)
     COMMENT_SAVE(200, "S013", "댓글 저장 성공"),
     // 댓글 조회 성공 코드(HTTP Response: 200 OK),
-    COMMENT_GET(200, "S014", "댓글 조회 성공")
+    COMMENT_GET(200, "S014", "댓글 조회 성공"),
+
+    // 좋아요 이미 등록 상태임을 나타내는 코드(HTTP Response: 200 OK)
+    LIKES_ALREADY_INSERT(200, "S015", "좋아요 이미 등록 상태"),
+    // 좋아요 이미 해제 상태임을 나타내는 코드(HTTP Response: 200 OK)
+    LIKES_ALREADY_DELETE(200, "S016", "좋아요 이미 해제 상태")
 
 
 

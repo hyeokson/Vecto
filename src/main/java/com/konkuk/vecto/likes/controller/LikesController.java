@@ -19,14 +19,19 @@ public class LikesController {
     @PostMapping("/feed/{feedId}/likes")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseCode<String> likes(@PathVariable("feedId") Long feedId, @Parameter(hidden = true) @UserInfo String userId){
-        likesService.saveLikes(feedId, userId);
-        return new ResponseCode<>(SuccessCode.LIKES_INSERT);
+        if(likesService.saveLikes(feedId, userId))
+            return new ResponseCode<>(SuccessCode.LIKES_INSERT);
+        else
+            return new ResponseCode<>(SuccessCode.LIKES_ALREADY_INSERT);
+
     }
 
     @DeleteMapping("/feed/{feedId}/likes")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> unLikes(@PathVariable("feedId") Long feedId, @Parameter(hidden = true) @UserInfo String userId){
-        likesService.deleteLikes(feedId, userId);
-        return new ResponseCode<>(SuccessCode.LIKES_DELETE);
+        if(likesService.deleteLikes(feedId, userId))
+            return new ResponseCode<>(SuccessCode.LIKES_DELETE);
+        else
+            return new ResponseCode<>(SuccessCode.LIKES_ALREADY_DELETE);
     }
 }
