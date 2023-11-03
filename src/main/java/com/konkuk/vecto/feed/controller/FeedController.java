@@ -1,13 +1,16 @@
 package com.konkuk.vecto.feed.controller;
 
 import com.konkuk.vecto.feed.domain.Feed;
+import com.konkuk.vecto.feed.dto.request.CommentPatchRequest;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,13 +53,6 @@ public class FeedController {
 		return responseCode;
 	}
 
-	@PostMapping("/comment")
-	public ResponseCode<String> saveComment(@Valid @RequestBody final CommentRequest commentRequest, @Parameter(hidden = true) @UserInfo String userId) {
-		feedService.saveComment(commentRequest, userId);
-
-		return new ResponseCode<>(SuccessCode.COMMENT_SAVE);
-	}
-
 	@GetMapping("/{feedId}/comments")
 	public ResponseCode<CommentsResponse> saveComment(@PathVariable Long feedId) {
 		CommentsResponse commentsResponse = feedService.getFeedComments(feedId);
@@ -80,5 +76,25 @@ public class FeedController {
 		List<Long> feedList = feedService.getPersonalFeedList(page, userId);
 		responseCode.setResult(feedList);
 		return responseCode;
+	}
+
+	@PostMapping("/comment")
+	public ResponseCode<String> saveComment(@Valid @RequestBody final CommentRequest commentRequest, @Parameter(hidden = true) @UserInfo String userId) {
+		feedService.saveComment(commentRequest, userId);
+
+		return new ResponseCode<>(SuccessCode.COMMENT_SAVE);
+	}
+
+	@DeleteMapping("/comment")
+	public ResponseCode<String> deleteComment(@NotNull Long commentId, @Parameter(hidden = true) @UserInfo String userId) {
+		feedService.deleteComment(commentId, userId);
+
+		return new ResponseCode<>(SuccessCode.COMMENT_DELETE);
+	}
+
+	@PatchMapping("/comment")
+	public ResponseCode<String> patchComment(@Valid @RequestBody final CommentPatchRequest patchRequest, @Parameter(hidden = true) @UserInfo String userId) {
+		feedService.patchComment(patchRequest, userId);
+		return new ResponseCode<>(SuccessCode.COMMENT_PATCH);
 	}
 }

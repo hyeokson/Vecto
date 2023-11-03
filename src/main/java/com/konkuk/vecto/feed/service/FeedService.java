@@ -17,10 +17,12 @@ import com.konkuk.vecto.feed.domain.FeedMapImage;
 import com.konkuk.vecto.feed.domain.FeedMovement;
 import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.domain.FeedPlace;
+import com.konkuk.vecto.feed.dto.request.CommentPatchRequest;
 import com.konkuk.vecto.feed.dto.request.CommentRequest;
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.response.CommentsResponse;
 import com.konkuk.vecto.feed.dto.response.FeedResponse;
+import com.konkuk.vecto.feed.repository.CommentRepository;
 import com.konkuk.vecto.feed.repository.FeedRepository;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
 import com.konkuk.vecto.security.service.UserService;
@@ -36,6 +38,7 @@ public class FeedService {
 	private final FeedRepository feedRepository;
 	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
 	private final UserService userService;
+	private final CommentRepository commentRepository;
 
 	@Transactional
 	public Long saveFeed(FeedSaveRequest feedSaveRequest, String userId) {
@@ -100,8 +103,33 @@ public class FeedService {
 			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 		Comment comment = new Comment(feed, userId, commentRequest.getContent());
 		feed.addComment(comment);
-
 	}
+
+	@Transactional
+	public void deleteComment(Long commentId, String userId) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new IllegalArgumentException("COMMENT_NOT_FOUND_ERROR"));
+		if (comment.getUserId().equals(userId)) {
+			commentRepository.deleteById(commentId);
+			return;
+		}
+		throw new IllegalArgumentException("COMMENT_CANNOT_DELETE_ERROR");
+	}
+
+	@Transactional
+	public void patchComment(CommentPatchRequest patchRequest, String userId) {
+		Long commentId = patchRequest.getCommentId();
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new IllegalArgumentException("COMMENT_NOT_FOUND_ERROR"));
+
+		if (comment.getUserId().equals(userId)) {
+			comment.setComment(patchRequest.getContent());
+			commentRepository.flush();
+			return;
+		}
+		throw new IllegalArgumentException("COMMENT_CANNOT_DELETE_ERROR");
+	}
+
 
 	// 리스트의 순서를 껴넣어서, DTO를 엔티티로 변환해주는 함수
 	private static <T, R> List<R> dtoToEntityIncludeIndex(List<T> items, BiFunction<Long, T, R> mapper) {
