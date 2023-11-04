@@ -25,4 +25,8 @@ public interface UserService {
     void deleteUser(String userId);
 
     void checkUserId(String userId);
+
+    String getFcmToken(String userId);
+
+    String getNickName(String userId);
 }

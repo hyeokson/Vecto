@@ -7,6 +7,10 @@ import com.konkuk.vecto.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.konkuk.vecto.likes.domain.Likes;
+
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -16,18 +20,32 @@ public class LikesService {
     private final FeedRepository feedRepository;
 
     @Transactional
-    public void saveLikes(Long feedId, String userId) {
+    public boolean saveLikes(Long feedId, String userId) {
         Feed feed = feedRepository.findById(feedId)
-            .orElseThrow(() -> new IllegalArgumentException("좋아요를 누를 피드가 존재하지 않습니다."));
-        feed.increaseLikeCount();
-        likesRepository.insertLikes(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+            .orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+        if(feed.getLikeCount() == 0){
+            feed.increaseLikeCount();
+            likesRepository.insertLikes(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+            return true;
+        }
+        return false;
     }
 
     @Transactional
-    public void deleteLikes(Long feedId, String userId) {
+    public boolean deleteLikes(Long feedId, String userId) {
         Feed feed = feedRepository.findById(feedId)
-            .orElseThrow(() -> new IllegalArgumentException("좋아요를 누를 피드가 존재하지 않습니다."));
-        feed.decreaseLikeCount();
-        likesRepository.deleteByFeedIdAndUserId(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+            .orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+        if(feed.getLikeCount() == 1){
+            feed.decreaseLikeCount();
+            likesRepository.deleteByFeedIdAndUserId(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean isClickedLikes(Long feedId, String userId) {
+        Optional<Likes> likes =
+                likesRepository.findByFeedIdAndUserId(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
+        return likes.isPresent();
     }
 }
