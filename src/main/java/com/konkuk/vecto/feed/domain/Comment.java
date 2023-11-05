@@ -45,4 +45,9 @@ public class Comment {
 		this.userId = userId;
 		this.comment = comment;
 	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
 }
