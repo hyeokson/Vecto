@@ -1,14 +1,12 @@
 package com.konkuk.vecto.feed.controller;
 
 import com.konkuk.vecto.fcm.service.FcmService;
-import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.dto.request.CommentPatchRequest;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -74,8 +72,18 @@ public class FeedController {
 	}
   
 	@GetMapping("/{feedId}/comments")
-	public ResponseCode<CommentsResponse> saveComment(@PathVariable Long feedId) {
-		CommentsResponse commentsResponse = feedService.getFeedComments(feedId);
+	public ResponseCode<CommentsResponse> getComment(@PathVariable Long feedId) {
+		CommentsResponse commentsResponse = feedService.getFeedComments(feedId, null);
+
+		ResponseCode<CommentsResponse> responseCode = new ResponseCode<>(SuccessCode.COMMENT_GET);
+		responseCode.setResult(commentsResponse);
+
+		return responseCode;
+	}
+
+	@PostMapping("/{feedId}/comments")
+	public ResponseCode<CommentsResponse> getComment(@PathVariable Long feedId, @Parameter(hidden = true) @UserInfo String userId) {
+		CommentsResponse commentsResponse = feedService.getFeedComments(feedId, userId);
 
 		ResponseCode<CommentsResponse> responseCode = new ResponseCode<>(SuccessCode.COMMENT_GET);
 		responseCode.setResult(commentsResponse);

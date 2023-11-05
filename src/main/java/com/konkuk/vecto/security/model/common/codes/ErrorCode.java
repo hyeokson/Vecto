@@ -130,7 +130,10 @@ public enum ErrorCode {
     FEED_ID_POSITIVE_ERROR(400, "E029", "피드 Id는 양수입니다."),
 
     //피드 제목 not blank 에러
-    FEED_TITLE_NOT_BLANK_ERROR(400, "E030", "피드 제목을 적어주세요.")
+    FEED_TITLE_NOT_BLANK_ERROR(400, "E030", "피드 제목을 적어주세요."),
+
+    // 피드 조회 에러
+    COMMENT_NOT_FOUND_ERROR(400, "E031", "존재하지 않는 댓글입니다.")
 
     COMMENT_NOT_FOUND_ERROR(400, "E032", "존재하지 않는 댓글입니다"),
     COMMENT_CANNOT_DELETE_ERROR(400, "E031", "본인 댓글이 아니라 삭제할 수 없는 댓글입니다"),

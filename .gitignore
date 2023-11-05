@@ -37,4 +37,5 @@ out/
 .vscode/
 src/main/resources/application.yml
 src/main/resources/application-db.yml
-src/main/resources/firebase/vecto-400414-firebase-adminsdk-y6y2t-e31cd5827d.json
+src/main/resources/firebase/vecto-fc688-firebase-adminsdk-yyxm5-1527aad64c.json
+src/main/resources/logback.xml
