@@ -2,6 +2,8 @@ package com.konkuk.vecto.fcm.service;
 
 import com.google.firebase.ErrorCode;
 import com.google.firebase.messaging.*;
+import com.konkuk.vecto.feed.domain.Feed;
+import com.konkuk.vecto.feed.service.FeedService;
 import com.konkuk.vecto.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +19,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FcmService {
 
-    private UserService userService;
+    private final UserService userService;
+    private final FeedService feedService;
     //한 명의 User에게 알림 보내기
-    public void sendToUser(String userId, String token){
+    public void sendToUser(Long feedId, String from_userId){
+
+        String userId = feedService.getUserIdFromFeed(feedId);
+
+        if(from_userId.equals(userId))
+            return;
+
+        String fcmToken = userService.getFcmToken(userId);
+        String nickName = userService.getNickName(from_userId);
+
         Message message = Message.builder()
-                .putData("title", "제목")
-                .putData("body", "내용")
-                .setToken(token)
+                .putData("title", "vecto")
+                .putData("body", nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.")
+                .putData("feedId", feedId.toString())
+                .setToken(fcmToken)
                 .build();
 
         String response;

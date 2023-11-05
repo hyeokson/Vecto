@@ -51,6 +51,9 @@ dependencies {
 
 	// smtp 모듈
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// https://mvnrepository.com/artifact/ca.pjer/logback-awslogs-appender
+	implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
 }
 
 tasks.named('test') {

@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface LikesRepository extends JpaRepository<Likes, Long> {
     @Modifying
@@ -14,4 +16,6 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
     void insertLikes(@Param("feedId") Long feedId, @Param("userId") Long userId);
 
     void deleteByFeedIdAndUserId(Long feedId, Long userId);
+
+    Optional<Likes> findByFeedIdAndUserId(Long feedId, Long userId);
 }
