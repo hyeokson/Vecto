@@ -1,5 +1,6 @@
 package com.konkuk.vecto.security.domain;
 
+import com.konkuk.vecto.likes.domain.CommentLikes;
 import com.konkuk.vecto.likes.domain.Likes;
 import com.konkuk.vecto.security.dto.UserRegisterDto;
 import jakarta.persistence.*;
@@ -27,6 +28,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Likes> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<CommentLikes> commentlikes = new ArrayList<>();
 
     // 사용자 아이디
 

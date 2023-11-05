@@ -1,19 +1,16 @@
 package com.konkuk.vecto.feed.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.konkuk.vecto.likes.domain.CommentLikes;
+import com.konkuk.vecto.likes.domain.Likes;
+import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,9 +29,14 @@ public class Comment {
 	@JoinColumn(name = "feed_id")
 	private Feed feed;
 
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+	private List<CommentLikes> commentLikes = new ArrayList<>();
+
 	private String userId;
 
 	private String comment;
+
+	private Integer likeCount;
 
 	@CreatedDate
 	private LocalDateTime createdAt;
@@ -44,5 +46,14 @@ public class Comment {
 		this.feed = feed;
 		this.userId = userId;
 		this.comment = comment;
+		this.likeCount = 0;
+	}
+
+	public void increaseLikeCount() {
+		this.likeCount += 1;
+	}
+
+	public void decreaseLikeCount() {
+		this.likeCount -= 1;
 	}
 }

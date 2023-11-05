@@ -2,10 +2,10 @@ package com.konkuk.vecto.feed.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+import com.konkuk.vecto.likes.service.CommentLikesService;
 import com.konkuk.vecto.likes.service.LikesService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +39,7 @@ public class FeedService {
 	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
 	private final UserService userService;
 	private final LikesService likesService;
+	private final CommentLikesService commentLikesService;
 
 	@Transactional
 	public Long saveFeed(FeedSaveRequest feedSaveRequest, String userId) {
@@ -79,7 +80,7 @@ public class FeedService {
 		List<String> mapImages = feed.getFeedMapImages().stream()
 			.map(FeedMapImage::getUrl).toList();
 
-		Boolean likeFlag = false;
+		boolean likeFlag = false;
 
 		if(userId != null){
 			if(likesService.isClickedLikes(feedId, userId))
@@ -121,18 +122,28 @@ public class FeedService {
 			.toList();
 	}
 
-	public CommentsResponse getFeedComments(Long feedId) {
+	public CommentsResponse getFeedComments(Long feedId, String userId) {
 		Feed feed = feedRepository.findById(feedId)
 			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+
+
+
 
 		return new CommentsResponse(feed.getComments()
 			.stream()
 			.map(comment -> {
+				boolean likeFlag = false;
 				UserInfoResponse userInfo = userService.findUser(comment.getUserId());
-				return new CommentsResponse.CommentResponse(userInfo.getNickName(),
+
+				if(userId != null){
+					if(commentLikesService.isClickedLikes(comment.getId(), userId))
+						likeFlag = true;
+				}
+
+				return new CommentsResponse.CommentResponse(comment.getId(), userInfo.getNickName(),
 					comment.getComment(),
 					timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt()),
-					userInfo.getProfileUrl());
+					userInfo.getProfileUrl(), comment.getLikeCount(), likeFlag);
 			})
 			.toList());
 	}

@@ -2,7 +2,6 @@ package com.konkuk.vecto.fcm.service;
 
 import com.google.firebase.ErrorCode;
 import com.google.firebase.messaging.*;
-import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.service.FeedService;
 import com.konkuk.vecto.security.service.UserService;
 import lombok.RequiredArgsConstructor;

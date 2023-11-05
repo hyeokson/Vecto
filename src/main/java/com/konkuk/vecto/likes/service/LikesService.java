@@ -23,7 +23,7 @@ public class LikesService {
     public boolean saveLikes(Long feedId, String userId) {
         Feed feed = feedRepository.findById(feedId)
             .orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
-        if(feed.getLikeCount() == 0){
+        if(!isClickedLikes(feedId, userId)){
             feed.increaseLikeCount();
             likesRepository.insertLikes(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
             return true;
@@ -35,7 +35,7 @@ public class LikesService {
     public boolean deleteLikes(Long feedId, String userId) {
         Feed feed = feedRepository.findById(feedId)
             .orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
-        if(feed.getLikeCount() == 1){
+        if(isClickedLikes(feedId, userId)){
             feed.decreaseLikeCount();
             likesRepository.deleteByFeedIdAndUserId(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
             return true;

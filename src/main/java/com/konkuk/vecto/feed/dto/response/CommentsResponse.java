@@ -21,11 +21,19 @@ public class CommentsResponse {
 	@Getter
 	@AllArgsConstructor
 	public static class CommentResponse {
+		private Long commentId;
+
 		private String nickName;
+
 		private String content;
+
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 		private String timeDifference;
 
 		private String profileUrl;
+
+		private Integer commentCount;
+
+		private Boolean likeFlag;
 	}
 }
