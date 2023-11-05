@@ -135,6 +135,9 @@ public enum ErrorCode {
     // 피드 조회 에러
     COMMENT_NOT_FOUND_ERROR(400, "E031", "존재하지 않는 댓글입니다.")
 
+    COMMENT_NOT_FOUND_ERROR(400, "E032", "존재하지 않는 댓글입니다"),
+    COMMENT_CANNOT_DELETE_ERROR(400, "E031", "본인 댓글이 아니라 삭제할 수 없는 댓글입니다"),
+
 
 
 

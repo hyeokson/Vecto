@@ -69,8 +69,10 @@ public enum SuccessCode {
     // 댓글에 좋아요가 이미 등록 상태임을 나타내는 코드(HTTP Response: 200 OK)
     COMMENT_LIKES_ALREADY_INSERT(200, "S019", "뎃글에 좋아요 이미 등록 상태"),
     // 댓글에 좋아요가 이미 해제 상태임을 나타내는 코드(HTTP Response: 200 OK)
-    COMMENT_LIKES_ALREADY_DELETE(200, "S020", "댓글에 좋아요 이미 해제 상태")
+    COMMENT_LIKES_ALREADY_DELETE(200, "S020", "댓글에 좋아요 이미 해제 상태"),
 
+    COMMENT_DELETE(200, "S017", "댓글 삭제 성공"),
+    COMMENT_PATCH(200, "S018", "댓글 수정 성공")
 
 
 
