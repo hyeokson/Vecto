@@ -109,4 +109,9 @@ public class Feed {
 		}
 	}
 
+	public void patchFeed(String title, String content, List<FeedImage> images) {
+		this.title = title;
+		this.content = content;
+		setFeedImages(images);
+	}
 }

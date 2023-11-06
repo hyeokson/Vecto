@@ -78,6 +78,8 @@ public class FeedSaveRequest {
 		private Integer stayTime;
 
 		private String name;
+
+		private String address;
 	}
 
 }

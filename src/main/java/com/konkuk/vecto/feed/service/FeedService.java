@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
+import com.konkuk.vecto.feed.repository.FeedImageRepository;
 import com.konkuk.vecto.likes.service.CommentLikesService;
 import com.konkuk.vecto.likes.service.LikesService;
 import com.konkuk.vecto.security.domain.User;
@@ -47,6 +49,8 @@ public class FeedService {
 	private final LikesService likesService;
 	private final CommentLikesService commentLikesService;
 
+	private final FeedImageRepository feedImageRepository;
+
 	@Transactional
 	public Long saveFeed(FeedSaveRequest feedSaveRequest, String userId) {
 		// TODO: 현재는 매번 날려서 저장하는 방식. 이를 Bulk Insert 형태로 변경해야함.
@@ -88,8 +92,8 @@ public class FeedService {
 
 		boolean likeFlag = false;
 
-		if(userId != null){
-			if(likesService.isClickedLikes(feedId, userId))
+		if (userId != null) {
+			if (likesService.isClickedLikes(feedId, userId))
 				likeFlag = true;
 		}
 
@@ -111,7 +115,7 @@ public class FeedService {
 			.userName(userInfo.getNickName())
 			.profileUrl(userInfo.getProfileUrl())
 			.mapImages(mapImages)
-				.likeFlag(likeFlag)
+			.likeFlag(likeFlag)
 			.build();
 	}
 
@@ -149,7 +153,6 @@ public class FeedService {
 		throw new IllegalArgumentException("COMMENT_CANNOT_DELETE_ERROR");
 	}
 
-
 	// 리스트의 순서를 껴넣어서, DTO를 엔티티로 변환해주는 함수
 	private static <T, R> List<R> dtoToEntityIncludeIndex(List<T> items, BiFunction<Long, T, R> mapper) {
 		return IntStream.range(0, items.size())
@@ -161,9 +164,6 @@ public class FeedService {
 		Feed feed = feedRepository.findById(feedId)
 			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 
-
-
-
 		return new CommentsResponse(feed.getComments()
 			.stream()
 			.map(comment -> {
@@ -173,8 +173,8 @@ public class FeedService {
 				);
 				UserInfoResponse userInfo = userService.findUser(user.getId());
 
-				if(userId != null){
-					if(commentLikesService.isClickedLikes(comment.getId(), userId))
+				if (userId != null) {
+					if (commentLikesService.isClickedLikes(comment.getId(), userId))
 						likeFlag = true;
 				}
 
@@ -196,9 +196,43 @@ public class FeedService {
 		return getDefaultFeedList(page);
 	}
 
-	public String getUserIdFromFeed(Long feedId){
+	public List<Long> getKeywordFeedList(Integer page, String keyword) {
+		Pageable pageable = PageRequest.of(page, 5);
+		List<Feed> feedList = commentRepository.findByKeyWord(pageable, "%" + keyword + "%");
+		return feedList.stream().map(Feed::getId).toList();
+	}
+
+	public String getUserIdFromFeed(Long feedId) {
 		Feed feed = feedRepository.findById(feedId)
-				.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 		return feed.getUserId();
+	}
+
+	@Transactional
+	public Long patchFeed(FeedPatchRequest feedPatchRequest, String userId) {
+		Long feedId = feedPatchRequest.getFeedId();
+		Feed feed = feedRepository.findById(feedId)
+			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+
+		// 기존에 존재하던 피드 이미지를 삭제하고, 이를 새로운 피드 이미지로 변경
+		if (feed.getUserId().equals(userId)) {
+			feedImageRepository.deleteByFeed(feed);
+			List<FeedImage> feedImages = dtoToEntityIncludeIndex(feedPatchRequest.getImages(), FeedImage::new);
+			feed.patchFeed(feedPatchRequest.getTitle(), feedPatchRequest.getContent(), feedImages);
+			feedRepository.flush();
+			return feedId;
+		}
+		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
+	}
+
+	public void removeFeed(Long feedId, String userId) {
+		Feed feed = feedRepository.findById(feedId)
+			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+
+		if (feed.getUserId().equals(userId)) {
+			feedRepository.delete(feed);
+			return;
+		}
+		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
 	}
 }
