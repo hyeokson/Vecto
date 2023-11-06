@@ -72,7 +72,9 @@ public enum SuccessCode {
     COMMENT_LIKES_ALREADY_DELETE(200, "S020", "댓글에 좋아요 이미 해제 상태"),
 
     COMMENT_DELETE(200, "S017", "댓글 삭제 성공"),
-    COMMENT_PATCH(200, "S018", "댓글 수정 성공")
+    COMMENT_PATCH(200, "S018", "댓글 수정 성공"),
+    FEED_PATCH(200, "S012", "피드 수정 성공"),
+    FEED_DELETE(200, "S012", "피드 삭제 성공"),
 
 
 
