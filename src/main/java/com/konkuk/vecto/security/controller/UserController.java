@@ -73,7 +73,7 @@ public class UserController {
     }
     @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<UserInfoResponse> getUserInfo(@Parameter(hidden = true) @UserInfo String userId){
+    public ResponseCode<UserInfoResponse> getUserInfo(@RequestParam("userId") String userId){
         UserInfoResponse userInfoResponse = userService.findUser(userId);
 
         ResponseCode<UserInfoResponse> responseCode = new ResponseCode<>(SuccessCode.USERINFO_GET);

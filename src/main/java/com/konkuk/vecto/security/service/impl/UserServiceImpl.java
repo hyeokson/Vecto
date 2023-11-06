@@ -1,5 +1,7 @@
 package com.konkuk.vecto.security.service.impl;
 
+import com.konkuk.vecto.feed.domain.Feed;
+import com.konkuk.vecto.feed.repository.FeedRepository;
 import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
 import com.konkuk.vecto.security.dto.UserRegisterDto;
@@ -14,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -24,6 +27,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository repository;
+    private final FeedRepository feedRepository;
 
     //user 객체 반환(인증에 사용)
     @Override
@@ -65,7 +69,16 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("USER_NOT_FOUND_ERROR");
         }
         User user = userTemp.get();
-        return new UserInfoResponse(user);
+        List<Feed> feedList = feedRepository.findAllByUserId(user.getUserId());
+        List<Long> feedIdList = feedList.stream().map(Feed::getId).toList();
+
+        return UserInfoResponse.builder()
+                .user(user)
+                .feedCount(feedList.size())
+                .feedIdList(feedIdList)
+                .followerCount(user.getFollower().size())
+                .followingCount(user.getFollowing().size())
+                .build();
     }
 
     @Override

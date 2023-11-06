@@ -52,29 +52,47 @@ public enum SuccessCode {
     FEED_GET(200, "S012", "피드 조회 성공"),
     FEED_LIST_GET(200, "S014", "피드 리스트 번호 조회 성공"),
     // 댓글 저장 성공 코드(HTTP Response: 200 OK)
-    COMMENT_SAVE(200, "S013", "댓글 저장 성공"),
+    COMMENT_SAVE(201, "S013", "댓글 저장 성공"),
     // 댓글 조회 성공 코드(HTTP Response: 200 OK),
     COMMENT_GET(200, "S014", "댓글 조회 성공"),
 
     // 피드에 좋아요가 이미 등록 상태임을 나타내는 코드(HTTP Response: 200 OK)
-    LIKES_ALREADY_INSERT(200, "S015", "좋아요 이미 등록 상태"),
+    LIKES_ALREADY_INSERT(201, "S015", "좋아요 이미 등록 상태"),
     // 피드에 좋아요가 이미 해제 상태임을 나타내는 코드(HTTP Response: 200 OK)
     LIKES_ALREADY_DELETE(200, "S016", "좋아요 이미 해제 상태"),
 
     // 댓글에 좋아요 등록 성공 코드(HTTP Response: 200 OK)
-    COMMENT_LIKES_INSERT(200, "S017", "댓글에 좋아요 등록 성공"),
+    COMMENT_LIKES_INSERT(201, "S017", "댓글에 좋아요 등록 성공"),
     // 댓글에 좋아요 해제 성공 코드(HTTP Response: 200 OK)
     COMMENT_LIKES_DELETE(200, "S018", "댓글에 좋아요 해제 성공"),
 
     // 댓글에 좋아요가 이미 등록 상태임을 나타내는 코드(HTTP Response: 200 OK)
-    COMMENT_LIKES_ALREADY_INSERT(200, "S019", "뎃글에 좋아요 이미 등록 상태"),
+    COMMENT_LIKES_ALREADY_INSERT(201, "S019", "뎃글에 좋아요 이미 등록 상태"),
     // 댓글에 좋아요가 이미 해제 상태임을 나타내는 코드(HTTP Response: 200 OK)
     COMMENT_LIKES_ALREADY_DELETE(200, "S020", "댓글에 좋아요 이미 해제 상태"),
 
-    COMMENT_DELETE(200, "S017", "댓글 삭제 성공"),
-    COMMENT_PATCH(200, "S018", "댓글 수정 성공"),
-    FEED_PATCH(200, "S012", "피드 수정 성공"),
-    FEED_DELETE(200, "S012", "피드 삭제 성공"),
+    COMMENT_DELETE(200, "S021", "댓글 삭제 성공"),
+    COMMENT_PATCH(200, "S022", "댓글 수정 성공"),
+
+    // 팔로우 등록 성공 코드(HTTP Response: 201 Inserted)
+    FOLLOW_INSERT(201, "S023", "팔로우 등록 성공"),
+    // 팔로우 해제 성공 코드(HTTP Response: 200 OK)
+    FOLLOW_DELETE(200, "S024", "팔로우 해제 성공"),
+
+    // 팔로우 이미 등록 성공 코드(HTTP Response: 201 Inserted)
+    FOLLOW_ALREADY_INSERT(201, "S025", "팔로우 이미 등록 상태"),
+    // 팔로우 이미 해제 성공 코드(HTTP Response: 200 OK)
+    FOLLOW_ALREADY_DELETE(200, "S026", "팔로우 이미 해제 상태"),
+
+    // 해당 유저를 팔로우 하고 있는 상태 코드(HTTP Response: 200 OK)
+    FOLLOWING(200, "S027", "해당 유저를 팔로우 하고 있는 상태"),
+    // 해당 유저를 팔로우 하고 있지 않는 상태 코드(HTTP Response: 200 OK)
+    NOT_FOLLOWING(200, "S028", "해당 유저를 팔로우 하고 있지 않는 상태"),
+
+    // 좋아요를 누른 피드 리스트 조회 성공 코드(HTTP Response: 200 OK)
+    LIKES_FEEDLIST_GET(200, "S029", "좋아요를 누른 피드 리스트 조회 성공"),
+    FEED_PATCH(200, "S030", "피드 수정 성공"),
+    FEED_DELETE(200, "S031", "피드 삭제 성공")
 
 
 

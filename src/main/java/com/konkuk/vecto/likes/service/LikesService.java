@@ -3,12 +3,14 @@ package com.konkuk.vecto.likes.service;
 import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.repository.FeedRepository;
 import com.konkuk.vecto.likes.repository.LikesRepository;
+import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.konkuk.vecto.likes.domain.Likes;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -47,5 +49,16 @@ public class LikesService {
         Optional<Likes> likes =
                 likesRepository.findByFeedIdAndUserId(feedId, userRepository.findByUserId(userId).orElseThrow().getId());
         return likes.isPresent();
+    }
+
+    public List<Long> getLikesFeedIdList(String userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(
+                () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
+        );
+        return user.getLikes().stream()
+                .map(Likes::getFeed)
+                .map(Feed::getId)
+                .toList();
+
     }
 }
