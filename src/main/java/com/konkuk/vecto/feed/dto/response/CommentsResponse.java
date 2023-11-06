@@ -25,6 +25,8 @@ public class CommentsResponse {
 
 		private String nickName;
 
+		private String userId;
+
 		private String content;
 
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
