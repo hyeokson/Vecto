@@ -8,9 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import com.konkuk.vecto.feed.domain.Feed;
 
+import java.util.List;
+
 @Repository
 public interface FeedRepository extends JpaRepository<Feed, Long> {
 
 	Page<Feed> findAllByOrderByLikeCountDesc(Pageable pageable);
+
+	List<Feed> findAllByUserId(String userId);
 
 }

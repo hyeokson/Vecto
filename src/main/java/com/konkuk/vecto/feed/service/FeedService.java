@@ -7,6 +7,8 @@ import java.util.stream.IntStream;
 
 import com.konkuk.vecto.likes.service.CommentLikesService;
 import com.konkuk.vecto.likes.service.LikesService;
+import com.konkuk.vecto.security.domain.User;
+import com.konkuk.vecto.security.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,7 @@ public class FeedService {
 	private final FeedRepository feedRepository;
 	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
 	private final UserService userService;
+	private final UserRepository userRepository;
 	private final CommentRepository commentRepository;
 	private final LikesService likesService;
 	private final CommentLikesService commentLikesService;
@@ -90,7 +93,11 @@ public class FeedService {
 				likeFlag = true;
 		}
 
-		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
+		User user = userRepository.findByUserId(feed.getUserId()).orElseThrow(
+				() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
+		);
+
+		UserInfoResponse userInfo = userService.findUser(user.getId());
 		return FeedResponse.builder()
 			.title(feed.getTitle())
 			.content(feed.getContent())
@@ -161,7 +168,10 @@ public class FeedService {
 			.stream()
 			.map(comment -> {
 				boolean likeFlag = false;
-				UserInfoResponse userInfo = userService.findUser(comment.getUserId());
+				User user = userRepository.findByUserId(feed.getUserId()).orElseThrow(
+						() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
+				);
+				UserInfoResponse userInfo = userService.findUser(user.getId());
 
 				if(userId != null){
 					if(commentLikesService.isClickedLikes(comment.getId(), userId))

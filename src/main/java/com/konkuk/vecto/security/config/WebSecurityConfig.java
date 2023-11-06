@@ -40,11 +40,12 @@ public class WebSecurityConfig {
         // 정적 자원에 대해서 Security를 적용하지 않음으로 설정
         return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
             .and()
-            .ignoring().requestMatchers(HttpMethod.POST,"/user").requestMatchers("/swagger-ui/**")
+            .ignoring().requestMatchers(HttpMethod.POST,"/user").requestMatchers(HttpMethod.GET, "/user")
+                .requestMatchers("/swagger-ui/**")
                 .requestMatchers("/swagger").requestMatchers("/v3/**")
                 .requestMatchers("/userId/check").requestMatchers("/login")
                 .requestMatchers("/mail")
-            .requestMatchers(HttpMethod.GET, "/feed/**");
+            .requestMatchers(HttpMethod.GET, "/feed", "/feed/{feedId}", "/feed/{feedId}/comments", "/feed/feedList");
     }
 
     /**
