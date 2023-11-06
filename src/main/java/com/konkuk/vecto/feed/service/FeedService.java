@@ -171,7 +171,7 @@ public class FeedService {
 						likeFlag = true;
 				}
 
-				return new CommentsResponse.CommentResponse(comment.getId(), userInfo.getNickName(),
+				return new CommentsResponse.CommentResponse(comment.getId(), userInfo.getNickName(), userInfo.getUserId(),
 					comment.getComment(),
 					timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt()),
 					userInfo.getProfileUrl(), comment.getLikeCount(), likeFlag);
