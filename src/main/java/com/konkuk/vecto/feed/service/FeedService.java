@@ -186,6 +186,12 @@ public class FeedService {
 		return getDefaultFeedList(page);
 	}
 
+	public List<Long> getKeywordFeedList(Integer page, String keyword) {
+		Pageable pageable = PageRequest.of(page, 5);
+		List<Feed> feedList = commentRepository.findByKeyWord(pageable, "%"+keyword+"%");
+		return feedList.stream().map(Feed::getId).toList();
+	}
+
 	public String getUserIdFromFeed(Long feedId){
 		Feed feed = feedRepository.findById(feedId)
 				.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));

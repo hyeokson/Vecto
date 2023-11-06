@@ -12,8 +12,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = {
+	@Index(name = "idx_address", columnList = "address"),
+	@Index(name = "idx_name", columnList = "name")
+})
 public class FeedPlace {
 
 	@Id
@@ -44,6 +50,8 @@ public class FeedPlace {
 	private Integer stayTime;
 	private String name;
 
+	private String address;
+
 	public void setFeed(Feed feed) {
 		this.feed = feed;
 	}
@@ -57,6 +65,7 @@ public class FeedPlace {
 		this.latSet = place.getLatSet();
 		this.stayTime = place.getStayTime();
 		this.name = place.getName();
+		this.address = place.getAddress();
 	}
 
 }

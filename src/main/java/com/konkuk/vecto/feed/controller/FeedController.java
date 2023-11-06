@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.konkuk.vecto.feed.dto.request.CommentRequest;
@@ -102,6 +103,16 @@ public class FeedController {
 		}
 
 		List<Long> feedList = feedService.getPersonalFeedList(page, userId);
+		responseCode.setResult(feedList);
+		return responseCode;
+	}
+
+
+	@GetMapping("/feeds/search")
+	public ResponseCode<List<Long>> getKeywordFeedList(@NotNull Integer page, @NotNull @RequestParam("q") String keyword) {
+		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+
+		List<Long> feedList = feedService.getKeywordFeedList(page, keyword);
 		responseCode.setResult(feedList);
 		return responseCode;
 	}
