@@ -17,28 +17,28 @@ public class FollowController {
 
     private final FollowService followService;
 
-    @PostMapping("{follow_UserId}")
+    @PostMapping("{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseCode<String> follow(@PathVariable("follow_UserId") Long follow_UserId, @Parameter(hidden = true) @UserInfo String userId){
-        if(followService.saveFollow(follow_UserId, userId))
+    public ResponseCode<String> follow(@PathVariable("userId") Long followUserId, @Parameter(hidden = true) @UserInfo String userId){
+        if(followService.saveFollow(followUserId, userId))
             return new ResponseCode<>(SuccessCode.FOLLOW_INSERT);
         else
             return new ResponseCode<>(SuccessCode.FOLLOW_ALREADY_INSERT);
     }
 
-    @DeleteMapping("{follow_UserId}")
+    @DeleteMapping("{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<String> unFollow(@PathVariable("follow_UserId") Long follow_UserId, @Parameter(hidden = true) @UserInfo String userId){
-        if(followService.deleteFollow(follow_UserId, userId))
+    public ResponseCode<String> unFollow(@PathVariable("userId") Long followUserId, @Parameter(hidden = true) @UserInfo String userId){
+        if(followService.deleteFollow(followUserId, userId))
             return new ResponseCode<>(SuccessCode.FOLLOW_DELETE);
         else
             return new ResponseCode<>(SuccessCode.FOLLOW_ALREADY_DELETE);
     }
 
-    @GetMapping("{follow_UserId}")
+    @GetMapping("{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<String> followCheck(@PathVariable("follow_UserId") Long follow_UserId, @Parameter(hidden = true) @UserInfo String userId){
-        if(followService.isFollowing(follow_UserId, userId))
+    public ResponseCode<String> followCheck(@PathVariable("userId") Long followUserId, @Parameter(hidden = true) @UserInfo String userId){
+        if(followService.isFollowing(followUserId, userId))
             return new ResponseCode<>(SuccessCode.FOLLOWING);
         else
             return new ResponseCode<>(SuccessCode.NOT_FOLLOWING);

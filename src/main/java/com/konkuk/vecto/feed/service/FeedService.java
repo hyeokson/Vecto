@@ -97,11 +97,7 @@ public class FeedService {
 				likeFlag = true;
 		}
 
-		User user = userRepository.findByUserId(feed.getUserId()).orElseThrow(
-				() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
-		);
-
-		UserInfoResponse userInfo = userService.findUser(user.getId());
+		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
 		return FeedResponse.builder()
 			.title(feed.getTitle())
 			.content(feed.getContent())
@@ -168,10 +164,7 @@ public class FeedService {
 			.stream()
 			.map(comment -> {
 				boolean likeFlag = false;
-				User user = userRepository.findByUserId(feed.getUserId()).orElseThrow(
-						() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
-				);
-				UserInfoResponse userInfo = userService.findUser(user.getId());
+				UserInfoResponse userInfo = userService.findUser(feed.getUserId());
 
 				if (userId != null) {
 					if (commentLikesService.isClickedLikes(comment.getId(), userId))
@@ -198,7 +191,7 @@ public class FeedService {
 
 	public List<Long> getKeywordFeedList(Integer page, String keyword) {
 		Pageable pageable = PageRequest.of(page, 5);
-		List<Feed> feedList = commentRepository.findByKeyWord(pageable, "%" + keyword + "%");
+		List<Feed> feedList = feedRepository.findByKeyWord(pageable, "%" + keyword + "%");
 		return feedList.stream().map(Feed::getId).toList();
 	}
 
@@ -225,6 +218,7 @@ public class FeedService {
 		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
 	}
 
+	@Transactional
 	public void removeFeed(Long feedId, String userId) {
 		Feed feed = feedRepository.findById(feedId)
 			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));

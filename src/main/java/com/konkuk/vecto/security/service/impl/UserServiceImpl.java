@@ -62,8 +62,8 @@ public class UserServiceImpl implements UserService {
     //유저 id로 유저정보 찾기
     //회원정보가 존재하지 않으면 exception 발생
     @Override
-    public UserInfoResponse findUser(Long userId){
-        Optional<User> userTemp = repository.findById(userId);
+    public UserInfoResponse findUser(String userId){
+        Optional<User> userTemp = repository.findByUserId(userId);
         if(userTemp.isEmpty()) {
             log.info("error userId: {}", userId);
             throw new IllegalArgumentException("USER_NOT_FOUND_ERROR");

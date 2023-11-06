@@ -12,7 +12,7 @@ public interface UserService {
 
     void save(UserRegisterDto userRegisterDto);
 
-    UserInfoResponse findUser(Long userId);
+    UserInfoResponse findUser(String userId);
 
     Optional<String> updateUser(String userId, UserUpdateDto userUpdateDto);
     Boolean isRegisterUser(String emailName);

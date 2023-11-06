@@ -2,6 +2,7 @@ package com.konkuk.vecto.follow.domain;
 
 import com.konkuk.vecto.security.domain.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Setter;
 
 @Entity
@@ -19,4 +20,10 @@ public class Follow {
     @ManyToOne
     @JoinColumn(name = "follower_id")
     private User follower;
+
+    @Builder
+    Follow(User following, User follower){
+        this.following = following;
+        this.follower = follower;
+    }
 }

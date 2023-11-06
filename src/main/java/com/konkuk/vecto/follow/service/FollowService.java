@@ -17,33 +17,34 @@ public class FollowService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     @Transactional
-    public boolean saveFollow(Long follow_UserId, String userId){
+    public boolean saveFollow(Long followUserId, String userId){
         User from_user = userRepository.findByUserId(userId).orElseThrow(
                 () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
         );
-        User to_user = userRepository.findById(follow_UserId).orElseThrow(
+        User to_user = userRepository.findById(followUserId).orElseThrow(
                 () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
         );
-        if(followRepository.findByFollowing_IdAndFollower_Id(follow_UserId, from_user.getId()).isPresent())
+        if(followRepository.findByFollowingIdAndFollowerId(followUserId, from_user.getId()).isPresent())
             return false;
 
-        Follow follow = new Follow();
-        follow.setFollower(from_user);
-        follow.setFollowing(to_user);
+        Follow follow = Follow.builder()
+                        .follower(from_user)
+                        .following(to_user)
+                        .build();
         followRepository.save(follow);
         from_user.addFollow(follow, to_user);
         return true;
     }
 
     @Transactional
-    public boolean deleteFollow(Long follow_UserId, String userId){
+    public boolean deleteFollow(Long followUserId, String userId){
         User from_user = userRepository.findByUserId(userId).orElseThrow(
                 () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
         );
-        User to_user = userRepository.findById(follow_UserId).orElseThrow(
+        User to_user = userRepository.findById(followUserId).orElseThrow(
                 () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
         );
-        Optional<Follow> follow = followRepository.findByFollowing_IdAndFollower_Id(follow_UserId, from_user.getId());
+        Optional<Follow> follow = followRepository.findByFollowingIdAndFollowerId(followUserId, from_user.getId());
         if(follow.isEmpty())
             return false;
 
@@ -54,11 +55,11 @@ public class FollowService {
     }
 
     // follow_UserId에 해당하는 유저를 본인이 팔로잉 하고 있는지 확인하는 함수
-    public boolean isFollowing(Long follow_UserId, String userId){
+    public boolean isFollowing(Long followUserId, String userId){
         User from_user = userRepository.findByUserId(userId).orElseThrow(
                 () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
         );
-        Optional<Follow> follow = followRepository.findByFollowing_IdAndFollower_Id(follow_UserId, from_user.getId());
+        Optional<Follow> follow = followRepository.findByFollowingIdAndFollowerId(followUserId, from_user.getId());
         return follow.isPresent();
     }
 }

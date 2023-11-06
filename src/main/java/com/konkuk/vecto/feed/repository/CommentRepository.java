@@ -14,8 +14,5 @@ import com.konkuk.vecto.feed.domain.Feed;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-	@Query(value = "SELECT DISTINCT f.feed FROM FeedPlace f "
-		+ "WHERE f.name LIKE :keyword OR f.address LIKE :keyword "
-		+ "ORDER BY f.feed.likeCount")
-	List<Feed> findByKeyWord(Pageable pageable, String keyword);
+
 }
