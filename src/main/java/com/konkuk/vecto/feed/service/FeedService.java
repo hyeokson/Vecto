@@ -9,7 +9,6 @@ import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
 import com.konkuk.vecto.feed.repository.FeedImageRepository;
 import com.konkuk.vecto.likes.service.CommentLikesService;
 import com.konkuk.vecto.likes.service.LikesService;
-import com.konkuk.vecto.security.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
