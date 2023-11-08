@@ -11,4 +11,9 @@ public class DefaultController {
 	public String introduction() {
 		return "introduction";
 	}
+
+	@GetMapping("/privacy-policy")
+	public String privacyPolicy() {
+		return "privacy-policy";
+	}
 }
