@@ -9,10 +9,10 @@ import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
 import com.konkuk.vecto.feed.repository.FeedImageRepository;
 import com.konkuk.vecto.likes.service.CommentLikesService;
 import com.konkuk.vecto.likes.service.LikesService;
-import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +44,6 @@ public class FeedService {
 	private final FeedRepository feedRepository;
 	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
 	private final UserService userService;
-	private final UserRepository userRepository;
 	private final CommentRepository commentRepository;
 	private final LikesService likesService;
 	private final CommentLikesService commentLikesService;
@@ -164,7 +163,7 @@ public class FeedService {
 			.stream()
 			.map(comment -> {
 				boolean likeFlag = false;
-				UserInfoResponse userInfo = userService.findUser(feed.getUserId());
+				UserInfoResponse userInfo = userService.findUser(comment.getUserId());
 
 				if (userId != null) {
 					if (commentLikesService.isClickedLikes(comment.getId(), userId))
@@ -228,5 +227,17 @@ public class FeedService {
 			return;
 		}
 		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
+	}
+
+	public List<Long> getLikesFeedIdList(String userId, Integer page) {
+		Pageable pageable = PageRequest.of(page, 5);
+		List<Feed> feedList = this.feedRepository.findLikesFeedByUserId(userId, pageable);
+		return feedList.stream().map(Feed::getId).toList();
+	}
+
+	public List<Long> getUserFeedIdList(String userId, Integer page) {
+		Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("uploadTime")));
+		List<Feed> feedList = this.feedRepository.findAllByUserId(userId, pageable);
+		return feedList.stream().map(Feed::getId).toList();
 	}
 }

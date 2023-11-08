@@ -20,36 +20,35 @@ public class FcmService {
 
     private final UserService userService;
     private final FeedService feedService;
-    //한 명의 User에게 알림 보내기
-    public void sendToUser(Long feedId, String from_userId){
 
-        String userId = feedService.getUserIdFromFeed(feedId);
-
-        if(from_userId.equals(userId))
-            return;
-
-        String fcmToken = userService.getFcmToken(userId);
-        String nickName = userService.getNickName(from_userId);
-
-        Message message = Message.builder()
-                .putData("title", "vecto")
-                .putData("body", nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.")
-                .putData("feedId", feedId.toString())
-                .setToken(fcmToken)
-                .build();
-
-        String response;
-        try{
-            response = FirebaseMessaging.getInstance().send(message);
-            log.info("FCM message sent successfully, response: {}", response);
+    public void sendCommentAlarm(Long feedId, String fromUserId) {
+        String toUserId = this.feedService.getUserIdFromFeed(feedId);
+        if (!fromUserId.equals(toUserId)) {
+            String fcmToken = this.userService.getFcmToken(toUserId);
+            String nickName = this.userService.getNickName(fromUserId);
+            Message message = Message.builder().putData("title", "vecto").putData("body", nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.").putData("feedId", feedId.toString()).setToken(fcmToken).build();
+            this.sendAlarm(message, toUserId);
         }
-        catch(FirebaseMessagingException e){
-            log.error("cannot send client push message. error info : {}", e.getMessage());
-            // FCM Token이 유효하지 않으면 null로 초기화
-            if(e.getErrorCode() == ErrorCode.UNAUTHENTICATED){
-                userService.updateFcmToken(userId, Optional.empty());
+    }
+
+    public void sendFollowAlarm(String fromUserId, String toUserId) {
+        String fcmToken = this.userService.getFcmToken(toUserId);
+        String nickName = this.userService.getNickName(fromUserId);
+        Message message = Message.builder().putData("title", "vecto").putData("body", nickName + "님께서 회원님을 팔로우하기 시작했습니다.").setToken(fcmToken).build();
+        this.sendAlarm(message, toUserId);
+    }
+
+    public void sendAlarm(Message message, String toUserId) {
+        try {
+            String response = FirebaseMessaging.getInstance().send(message);
+            log.info("FCM message sent successfully, response: {}", response);
+        } catch (FirebaseMessagingException var5) {
+            log.error("cannot send client push message. error info : {}", var5.getMessage());
+            if (var5.getErrorCode() == ErrorCode.UNAUTHENTICATED) {
+                this.userService.updateFcmToken(toUserId, Optional.empty());
             }
         }
+
     }
 
     // 여러 User에게 알림 보내기
