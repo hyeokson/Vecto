@@ -4,7 +4,6 @@ import com.konkuk.vecto.follow.domain.Follow;
 import com.konkuk.vecto.follow.repository.FollowRepository;
 import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.repository.UserRepository;
-import com.konkuk.vecto.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

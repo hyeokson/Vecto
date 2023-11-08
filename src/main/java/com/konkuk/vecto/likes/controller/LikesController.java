@@ -36,13 +36,4 @@ public class LikesController {
         else
             return new ResponseCode<>(SuccessCode.LIKES_ALREADY_DELETE);
     }
-
-    @GetMapping("/feed/likes")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<List<Long>> getLikesFeedIdList(@Parameter(hidden = true) @UserInfo String userId){
-        List<Long> feedIdList = likesService.getLikesFeedIdList(userId);
-        ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.LIKES_FEEDLIST_GET);
-        responseCode.setResult(feedIdList);
-        return responseCode;
-    }
 }
