@@ -46,7 +46,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/userId/check").requestMatchers("/login")
                 .requestMatchers("/mail")
                 .requestMatchers(HttpMethod.GET, "/feed/**")
-                .requestMatchers(HttpMethod.GET, "", "/", "/introduction.html");
+                .requestMatchers(HttpMethod.GET, "", "/", "/introduction.html", "/privacy-policy");
     }
 
     /**
