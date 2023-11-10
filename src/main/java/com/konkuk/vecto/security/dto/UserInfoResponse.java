@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -30,9 +29,6 @@ public class UserInfoResponse {
     // 게시글 개수
     private Integer feedCount;
 
-    // 유저가 작성한 게시글 Id list
-    private List<Long> feedIdList;
-
     // 유저의 팔로워 수
     private Integer followerCount;
 
@@ -41,7 +37,7 @@ public class UserInfoResponse {
 
 
     @Builder
-    public UserInfoResponse(User user, Integer feedCount, Integer followerCount, Integer followingCount, List<Long> feedIdList){
+    public UserInfoResponse(User user, Integer feedCount, Integer followerCount, Integer followingCount){
         this.userId = user.getUserId();
         this.provider = user.getProvider();
         this.nickName = user.getNickName();
@@ -50,6 +46,5 @@ public class UserInfoResponse {
         this.feedCount = feedCount;
         this.followerCount = followerCount;
         this.followingCount = followingCount;
-        this.feedIdList = feedIdList;
     }
 }

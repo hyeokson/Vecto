@@ -91,6 +91,9 @@ public enum SuccessCode {
 
     // 좋아요를 누른 피드 리스트 조회 성공 코드(HTTP Response: 200 OK)
     LIKES_FEEDLIST_GET(200, "S029", "좋아요를 누른 피드 리스트 조회 성공"),
+    // 유저가 작성한 피드 리스트 조회 성공 코드(HTTP Response: 200 OK)
+    USER_FEEDLIST_GET(200, "S030", "유저가 작성한 피드 리스트 조회 성공"),
+
     FEED_PATCH(200, "S030", "피드 수정 성공"),
     FEED_DELETE(200, "S031", "피드 삭제 성공"),
 

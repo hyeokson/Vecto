@@ -11,6 +11,7 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.Parameter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,6 +33,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RestController
 @RequestMapping("/feed")
 @RequiredArgsConstructor
@@ -83,13 +85,12 @@ public class FeedController {
 		return responseCode;
 	}
 
-	@PostMapping("/comment")
-	public ResponseCode<String> saveComment(@Valid @RequestBody final CommentRequest commentRequest,
-		@Parameter(hidden = true) @UserInfo String userId) {
-		feedService.saveComment(commentRequest, userId);
+	@PostMapping({"/comment"})
+	public ResponseCode<String> saveComment(@RequestBody final @Valid CommentRequest commentRequest, @Parameter(hidden = true) @UserInfo String userId) {
 
-		//Push 알림 발송
-		fcmService.sendToUser(commentRequest.getFeedId(), userId);
+		this.feedService.saveComment(commentRequest, userId);
+		this.fcmService.sendCommentAlarm(commentRequest.getFeedId(), userId);
+
 		return new ResponseCode<>(SuccessCode.COMMENT_SAVE);
 	}
 
@@ -137,10 +138,11 @@ public class FeedController {
 	}
 
 	@GetMapping("/feeds/search")
-	public ResponseCode<List<Long>> getKeywordFeedList(@NotNull Integer page,
+	public ResponseCode<List<Long>> getKeywordFeedList(@RequestParam("page") @NotNull Integer page,
 		@NotNull @RequestParam("q") String keyword) {
-		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 
+		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+		log.info("keyword check: {}", keyword);
 		List<Long> feedList = feedService.getKeywordFeedList(page, keyword);
 		responseCode.setResult(feedList);
 		return responseCode;
@@ -159,5 +161,21 @@ public class FeedController {
 		@Parameter(hidden = true) @UserInfo String userId) {
 		feedService.patchComment(patchRequest, userId);
 		return new ResponseCode<>(SuccessCode.COMMENT_PATCH);
+	}
+
+	@GetMapping({"/likes"})
+	public ResponseCode<List<Long>> getLikesFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
+		List<Long> feedIdList = this.feedService.getLikesFeedIdList(userId, page);
+		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.LIKES_FEEDLIST_GET);
+		responseCode.setResult(feedIdList);
+		return responseCode;
+	}
+
+	@GetMapping
+	public ResponseCode<List<Long>> getUserFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
+		List<Long> feedIdList = this.feedService.getUserFeedIdList(userId, page);
+		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.USER_FEEDLIST_GET);
+		responseCode.setResult(feedIdList);
+		return responseCode;
 	}
 }

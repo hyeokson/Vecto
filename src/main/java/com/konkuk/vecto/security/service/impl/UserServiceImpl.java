@@ -70,12 +70,10 @@ public class UserServiceImpl implements UserService {
         }
         User user = userTemp.get();
         List<Feed> feedList = feedRepository.findAllByUserId(user.getUserId());
-        List<Long> feedIdList = feedList.stream().map(Feed::getId).toList();
 
         return UserInfoResponse.builder()
                 .user(user)
                 .feedCount(feedList.size())
-                .feedIdList(feedIdList)
                 .followerCount(user.getFollower().size())
                 .followingCount(user.getFollowing().size())
                 .build();
