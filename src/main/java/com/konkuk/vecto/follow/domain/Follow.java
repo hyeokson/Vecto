@@ -3,11 +3,13 @@ package com.konkuk.vecto.follow.domain;
 import com.konkuk.vecto.security.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Setter
+@Getter
 @Table(name = "FOLLOW")
 @NoArgsConstructor
 public class Follow {

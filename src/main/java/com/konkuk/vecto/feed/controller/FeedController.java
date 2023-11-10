@@ -1,6 +1,7 @@
 package com.konkuk.vecto.feed.controller;
 
 import com.konkuk.vecto.fcm.service.FcmService;
+import com.konkuk.vecto.feed.dto.PersonalFeedsDto;
 import com.konkuk.vecto.feed.dto.request.CommentPatchRequest;
 import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
@@ -113,18 +114,24 @@ public class FeedController {
 		return responseCode;
 	}
 
+	@GetMapping("/feeds/personal")
+	public ResponseCode<List<Long>> getPersonalFeedList(@Parameter(hidden = true) @UserInfo String userId) {
+		PersonalFeedsDto feedsDto = feedService.getPersonalFeedList(userId);
+		ResponseCode<List<Long>> responseCode;
+		if (feedsDto.isLastPage()) {
+			responseCode = new ResponseCode<>(SuccessCode.PERSONAL_FEED_END);
+		} else {
+			responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+		}
+		responseCode.setResult(feedsDto.getFeedIds());
+		return responseCode;
+	}
+
 	@GetMapping("/feedList")
-	public ResponseCode<List<Long>> getFeedList(@NotNull Integer page,
-		@Parameter(hidden = true) @UserInfo String userId) {
+	public ResponseCode<List<Long>> getDefaultFeedList(@NotNull Integer page) {
 		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 
-		if (userId == null) {
-			List<Long> feedList = feedService.getDefaultFeedList(page);
-			responseCode.setResult(feedList);
-			return responseCode;
-		}
-
-		List<Long> feedList = feedService.getPersonalFeedList(page, userId);
+		List<Long> feedList = feedService.getDefaultFeedList(page);
 		responseCode.setResult(feedList);
 		return responseCode;
 	}
