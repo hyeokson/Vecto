@@ -109,9 +109,13 @@ public class Feed {
 		}
 	}
 
-	public void patchFeed(String title, String content, List<FeedImage> images) {
+	public void patchFeed(String title, String content,
+						  List<FeedImage> images, List<FeedMovement> movements, List<FeedPlace> places, List<FeedMapImage> mapImages) {
 		this.title = title;
 		this.content = content;
 		setFeedImages(images);
+		setFeedMovements(movements);
+		setFeedPlaces(places);
+		setFeedMapImages(mapImages);
 	}
 }
