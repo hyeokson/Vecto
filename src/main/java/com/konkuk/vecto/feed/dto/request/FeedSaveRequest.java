@@ -52,8 +52,8 @@ public class FeedSaveRequest {
 		@JsonProperty("datetime")
 		private LocalDateTime enterTime;
 
-		private Float lng;
-		private Float lat;
+		private Double lng;
+		private Double lat;
 	}
 
 	@Getter
@@ -67,13 +67,13 @@ public class FeedSaveRequest {
 		@JsonProperty("endtime")
 		private LocalDateTime endTime;
 
-		private Float lng;
-		private Float lat;
+		private Double lng;
+		private Double lat;
 
 		@JsonProperty("lng_set")
-		private Float lngSet;
+		private Double lngSet;
 		@JsonProperty("lat_set")
-		private Float latSet;
+		private Double latSet;
 		@JsonProperty("staytime")
 		private Integer stayTime;
 

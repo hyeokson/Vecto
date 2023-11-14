@@ -43,10 +43,10 @@ public class FeedPlace {
 
 	private LocalDateTime enterTime;
 	private LocalDateTime endTime;
-	private Float lng;
-	private Float lat;
-	private Float lngSet;
-	private Float latSet;
+	private Double lng;
+	private Double lat;
+	private Double lngSet;
+	private Double latSet;
 	private Integer stayTime;
 	private String name;
 

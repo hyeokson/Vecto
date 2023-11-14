@@ -37,8 +37,8 @@ public class FeedMovement {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime dateTime;
 
-	private Float lng;
-	private Float lat;
+	private Double lng;
+	private Double lat;
 
 	public FeedMovement(Long index, Movement movement) {
 		this.orderNum = index;
