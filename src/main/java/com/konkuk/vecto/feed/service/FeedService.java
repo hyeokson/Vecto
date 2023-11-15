@@ -9,8 +9,7 @@ import java.util.stream.IntStream;
 import com.konkuk.vecto.feed.domain.FeedQueue;
 import com.konkuk.vecto.feed.dto.PersonalFeedsDto;
 import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
-import com.konkuk.vecto.feed.repository.FeedImageRepository;
-import com.konkuk.vecto.feed.repository.FeedQueueRepository;
+import com.konkuk.vecto.feed.repository.*;
 import com.konkuk.vecto.follow.service.FollowService;
 import com.konkuk.vecto.likes.service.CommentLikesService;
 import com.konkuk.vecto.likes.service.LikesService;
@@ -33,8 +32,6 @@ import com.konkuk.vecto.feed.dto.request.CommentRequest;
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.response.CommentsResponse;
 import com.konkuk.vecto.feed.dto.response.FeedResponse;
-import com.konkuk.vecto.feed.repository.CommentRepository;
-import com.konkuk.vecto.feed.repository.FeedRepository;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
 import com.konkuk.vecto.security.repository.UserRepository;
 import com.konkuk.vecto.security.service.UserService;
@@ -57,6 +54,9 @@ public class FeedService {
 	private final CommentLikesService commentLikesService;
 
 	private final FeedImageRepository feedImageRepository;
+	private final FeedPlaceRepository feedPlaceRepository;
+	private final FeedMovementRepository feedMovementRepository;
+	private final FeedMapImageRepository feedMapImageRepository;
 
 	private final FeedQueueRepository feedQueueRepository;
 
@@ -243,8 +243,16 @@ public class FeedService {
 		// 기존에 존재하던 피드 이미지를 삭제하고, 이를 새로운 피드 이미지로 변경
 		if (feed.getUserId().equals(userId)) {
 			feedImageRepository.deleteByFeed(feed);
+			feedPlaceRepository.deleteByFeed(feed);
+			feedMovementRepository.deleteByFeed(feed);
+			feedMapImageRepository.deleteByFeed(feed);
+
 			List<FeedImage> feedImages = dtoToEntityIncludeIndex(feedPatchRequest.getImages(), FeedImage::new);
-			feed.patchFeed(feedPatchRequest.getTitle(), feedPatchRequest.getContent(), feedImages);
+			List<FeedMovement> feedMovements = dtoToEntityIncludeIndex(feedPatchRequest.getMovements(), FeedMovement::new);
+			List<FeedPlace> feedPlaces = dtoToEntityIncludeIndex(feedPatchRequest.getPlaces(), FeedPlace::new);
+			List<FeedMapImage> feedMapImages = dtoToEntityIncludeIndex(feedPatchRequest.getMapImages(), FeedMapImage::new);
+
+			feed.patchFeed(feedPatchRequest.getTitle(), feedPatchRequest.getContent(), feedImages, feedMovements, feedPlaces, feedMapImages);
 			feedRepository.flush();
 			return feedId;
 		}
