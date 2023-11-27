@@ -21,15 +21,15 @@ public class FcmService {
     private final UserService userService;
     private final FeedService feedService;
     //한 명의 User에게 알림 보내기
-    public void sendToUser(Long feedId, String from_userId){
+    public void sendCommentAlarm(Long feedId, String fromUserId){
 
-        String userId = feedService.getUserIdFromFeed(feedId);
+        String toUserId = feedService.getUserIdFromFeed(feedId);
 
-        if(from_userId.equals(userId))
+        if(fromUserId.equals(toUserId))
             return;
 
-        String fcmToken = userService.getFcmToken(userId);
-        String nickName = userService.getNickName(from_userId);
+        String fcmToken = userService.getFcmToken(toUserId);
+        String nickName = userService.getNickName(fromUserId);
 
         Message message = Message.builder()
                 .putData("title", "vecto")
@@ -38,6 +38,24 @@ public class FcmService {
                 .setToken(fcmToken)
                 .build();
 
+        sendAlarm(message, toUserId);
+    }
+
+    public void sendFollowAlarm(String fromUserId, String toUserId){
+
+        String fcmToken = userService.getFcmToken(toUserId);
+        String nickName = userService.getNickName(fromUserId);
+
+        Message message = Message.builder()
+                .putData("title", "vecto")
+                .putData("body", nickName + "님께서 회원님을 팔로우하기 시작했습니다.")
+                .setToken(fcmToken)
+                .build();
+
+        sendAlarm(message, toUserId);
+    }
+
+    public void sendAlarm(Message message, String toUserId){
         String response;
         try{
             response = FirebaseMessaging.getInstance().send(message);
@@ -47,7 +65,7 @@ public class FcmService {
             log.error("cannot send client push message. error info : {}", e.getMessage());
             // FCM Token이 유효하지 않으면 null로 초기화
             if(e.getErrorCode() == ErrorCode.UNAUTHENTICATED){
-                userService.updateFcmToken(userId, Optional.empty());
+                userService.updateFcmToken(toUserId, Optional.empty());
             }
         }
     }

@@ -7,10 +7,7 @@ import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -37,12 +34,5 @@ public class LikesController {
             return new ResponseCode<>(SuccessCode.LIKES_ALREADY_DELETE);
     }
 
-    @GetMapping("/feed/likes")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<List<Long>> getLikesFeedIdList(@Parameter(hidden = true) @UserInfo String userId){
-        List<Long> feedIdList = likesService.getLikesFeedIdList(userId);
-        ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.LIKES_FEEDLIST_GET);
-        responseCode.setResult(feedIdList);
-        return responseCode;
-    }
+
 }

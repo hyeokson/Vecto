@@ -1,24 +1,21 @@
 package com.konkuk.vecto.feed.controller;
 
 import com.konkuk.vecto.fcm.service.FcmService;
+import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.dto.request.CommentPatchRequest;
 import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Parameter;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import com.konkuk.vecto.feed.dto.request.CommentRequest;
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
@@ -31,6 +28,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RestController
 @RequestMapping("/feed")
 @RequiredArgsConstructor
@@ -88,7 +86,7 @@ public class FeedController {
 		feedService.saveComment(commentRequest, userId);
 
 		//Push 알림 발송
-		fcmService.sendToUser(commentRequest.getFeedId(), userId);
+		fcmService.sendCommentAlarm(commentRequest.getFeedId(), userId);
 		return new ResponseCode<>(SuccessCode.COMMENT_SAVE);
 	}
 
@@ -130,10 +128,11 @@ public class FeedController {
 	}
 
 	@GetMapping("/feeds/search")
-	public ResponseCode<List<Long>> getKeywordFeedList(@NotNull Integer page,
+	public ResponseCode<List<Long>> getKeywordFeedList(@NotNull @RequestParam("page") Integer page,
 		@NotNull @RequestParam("q") String keyword) {
 		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 
+		log.info("keyword check: {}", keyword);
 		List<Long> feedList = feedService.getKeywordFeedList(page, keyword);
 		responseCode.setResult(feedList);
 		return responseCode;
@@ -152,5 +151,27 @@ public class FeedController {
 		@Parameter(hidden = true) @UserInfo String userId) {
 		feedService.patchComment(patchRequest, userId);
 		return new ResponseCode<>(SuccessCode.COMMENT_PATCH);
+	}
+
+	// 해당 유저가 좋아요를 누른 피드 Id 리스트 반환
+	@GetMapping("/likes")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseCode<List<Long>> getLikesFeedIdList(@RequestParam("userId") String userId,
+													   @NotNull @RequestParam("page") Integer page){
+		List<Long> feedIdList = feedService.getLikesFeedIdList(userId, page);
+		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.LIKES_FEEDLIST_GET);
+		responseCode.setResult(feedIdList);
+		return responseCode;
+	}
+
+	// 해당 유저가 쓴 피드 Id 리스트 반환
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseCode<List<Long>> getUserFeedIdList(@RequestParam("userId") String userId,
+													  @NotNull @RequestParam("page") Integer page){
+		List<Long> feedIdList = feedService.getUserFeedIdList(userId, page);
+		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.USER_FEEDLIST_GET);
+		responseCode.setResult(feedIdList);
+		return responseCode;
 	}
 }

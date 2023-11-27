@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TimeDifferenceCalcuator {
+public class TimeDifferenceCalculator {
 
 	public String formatTimeDifferenceKorean(LocalDateTime earlier) {
 		LocalDateTime now = LocalDateTime.now();

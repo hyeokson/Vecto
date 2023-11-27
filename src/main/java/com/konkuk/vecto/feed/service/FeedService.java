@@ -1,22 +1,27 @@
 package com.konkuk.vecto.feed.service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.konkuk.vecto.feed.common.TimeDifferenceCalculator;
 import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
 import com.konkuk.vecto.feed.repository.FeedImageRepository;
+import com.konkuk.vecto.likes.domain.Likes;
 import com.konkuk.vecto.likes.service.CommentLikesService;
 import com.konkuk.vecto.likes.service.LikesService;
 import com.konkuk.vecto.security.domain.User;
 import com.konkuk.vecto.security.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.konkuk.vecto.feed.common.TimeDifferenceCalcuator;
+import com.konkuk.vecto.feed.common.TimeDifferenceCalculator;
 import com.konkuk.vecto.feed.domain.Comment;
 import com.konkuk.vecto.feed.domain.FeedImage;
 import com.konkuk.vecto.feed.domain.FeedMapImage;
@@ -42,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FeedService {
 
 	private final FeedRepository feedRepository;
-	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
+	private final TimeDifferenceCalculator timeDifferenceCalculator;
 	private final UserService userService;
 	private final UserRepository userRepository;
 	private final CommentRepository commentRepository;
@@ -76,7 +81,7 @@ public class FeedService {
 	public FeedResponse getFeed(Long feedId, String userId) {
 		Feed feed = feedRepository.findById(feedId).orElseThrow();
 
-		String differ = timeDifferenceCalcuator.formatTimeDifferenceKorean(feed.getUploadTime());
+		String differ = timeDifferenceCalculator.formatTimeDifferenceKorean(feed.getUploadTime());
 
 		List<FeedResponse.Place> places = feed.getFeedPlaces().stream()
 			.map(FeedResponse.Place::new).toList();
@@ -164,7 +169,7 @@ public class FeedService {
 			.stream()
 			.map(comment -> {
 				boolean likeFlag = false;
-				UserInfoResponse userInfo = userService.findUser(feed.getUserId());
+				UserInfoResponse userInfo = userService.findUser(comment.getUserId());
 
 				if (userId != null) {
 					if (commentLikesService.isClickedLikes(comment.getId(), userId))
@@ -173,7 +178,7 @@ public class FeedService {
 
 				return new CommentsResponse.CommentResponse(comment.getId(), userInfo.getNickName(), userInfo.getUserId(),
 					comment.getComment(),
-					timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt()),
+					timeDifferenceCalculator.formatTimeDifferenceKorean(comment.getCreatedAt()),
 					userInfo.getProfileUrl(), comment.getLikeCount(), likeFlag);
 			})
 			.toList());
@@ -228,5 +233,23 @@ public class FeedService {
 			return;
 		}
 		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
+	}
+
+	public List<Long> getLikesFeedIdList(String userId, Integer page){
+
+		Pageable pageable = PageRequest.of(page, 5);
+		List<Feed> feedList = feedRepository.findLikesFeedByUserId(userId, pageable);
+
+		return feedList.stream().map(Feed::getId).toList();
+
+	}
+
+	public List<Long> getUserFeedIdList(String userId, Integer page){
+
+		Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("uploadTime")));
+		List<Feed> feedList = feedRepository.findAllByUserId(userId, pageable);
+
+		return feedList.stream().map(Feed::getId).toList();
+
 	}
 }
