@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface FeedRepository extends JpaRepository<Feed, Long> {
 
-	Page<Feed> findAllByOrderByLikeCountDesc(Pageable pageable);
+	Page<Feed> findAllByOrderByUploadTimeDesc(Pageable pageable);
 
 	List<Feed> findAllByUserId(String userId);
 

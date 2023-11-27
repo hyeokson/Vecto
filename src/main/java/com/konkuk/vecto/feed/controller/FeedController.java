@@ -1,7 +1,7 @@
 package com.konkuk.vecto.feed.controller;
 
 import com.konkuk.vecto.fcm.service.FcmService;
-import com.konkuk.vecto.feed.domain.Feed;
+import com.konkuk.vecto.feed.dto.PersonalFeedsDto;
 import com.konkuk.vecto.feed.dto.request.CommentPatchRequest;
 import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
@@ -14,8 +14,15 @@ import java.util.stream.Collectors;
 import io.swagger.v3.oas.annotations.Parameter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.konkuk.vecto.feed.dto.request.CommentRequest;
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
@@ -80,13 +87,11 @@ public class FeedController {
 		return responseCode;
 	}
 
-	@PostMapping("/comment")
-	public ResponseCode<String> saveComment(@Valid @RequestBody final CommentRequest commentRequest,
-		@Parameter(hidden = true) @UserInfo String userId) {
-		feedService.saveComment(commentRequest, userId);
+	@PostMapping({"/comment"})
+	public ResponseCode<String> saveComment(@RequestBody final @Valid CommentRequest commentRequest, @Parameter(hidden = true) @UserInfo String userId) {
 
-		//Push 알림 발송
-		fcmService.sendCommentAlarm(commentRequest.getFeedId(), userId);
+		this.feedService.saveComment(commentRequest, userId);
+		this.fcmService.sendCommentAlarm(commentRequest.getFeedId(), userId);
 		return new ResponseCode<>(SuccessCode.COMMENT_SAVE);
 	}
 
@@ -111,27 +116,33 @@ public class FeedController {
 		return responseCode;
 	}
 
+	@GetMapping("/feeds/personal")
+	public ResponseCode<List<Long>> getPersonalFeedList(@Parameter(hidden = true) @UserInfo String userId) {
+		PersonalFeedsDto feedsDto = feedService.getPersonalFeedList(userId);
+		ResponseCode<List<Long>> responseCode;
+		if (feedsDto.isLastPage()) {
+			responseCode = new ResponseCode<>(SuccessCode.PERSONAL_FEED_END);
+		} else {
+			responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+		}
+		responseCode.setResult(feedsDto.getFeedIds());
+		return responseCode;
+	}
+
 	@GetMapping("/feedList")
-	public ResponseCode<List<Long>> getFeedList(@NotNull Integer page,
-		@Parameter(hidden = true) @UserInfo String userId) {
+	public ResponseCode<List<Long>> getDefaultFeedList(@NotNull Integer page) {
 		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 
-		if (userId == null) {
-			List<Long> feedList = feedService.getDefaultFeedList(page);
-			responseCode.setResult(feedList);
-			return responseCode;
-		}
-
-		List<Long> feedList = feedService.getPersonalFeedList(page, userId);
+		List<Long> feedList = feedService.getDefaultFeedList(page);
 		responseCode.setResult(feedList);
 		return responseCode;
 	}
 
 	@GetMapping("/feeds/search")
-	public ResponseCode<List<Long>> getKeywordFeedList(@NotNull @RequestParam("page") Integer page,
+	public ResponseCode<List<Long>> getKeywordFeedList(@RequestParam("page") @NotNull Integer page,
 		@NotNull @RequestParam("q") String keyword) {
-		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 
+		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 		log.info("keyword check: {}", keyword);
 		List<Long> feedList = feedService.getKeywordFeedList(page, keyword);
 		responseCode.setResult(feedList);
@@ -154,11 +165,9 @@ public class FeedController {
 	}
 
 	// 해당 유저가 좋아요를 누른 피드 Id 리스트 반환
-	@GetMapping("/likes")
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseCode<List<Long>> getLikesFeedIdList(@RequestParam("userId") String userId,
-													   @NotNull @RequestParam("page") Integer page){
-		List<Long> feedIdList = feedService.getLikesFeedIdList(userId, page);
+	@GetMapping({"/likes"})
+	public ResponseCode<List<Long>> getLikesFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
+		List<Long> feedIdList = this.feedService.getLikesFeedIdList(userId, page);
 		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.LIKES_FEEDLIST_GET);
 		responseCode.setResult(feedIdList);
 		return responseCode;
@@ -166,10 +175,8 @@ public class FeedController {
 
 	// 해당 유저가 쓴 피드 Id 리스트 반환
 	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseCode<List<Long>> getUserFeedIdList(@RequestParam("userId") String userId,
-													  @NotNull @RequestParam("page") Integer page){
-		List<Long> feedIdList = feedService.getUserFeedIdList(userId, page);
+	public ResponseCode<List<Long>> getUserFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
+		List<Long> feedIdList = this.feedService.getUserFeedIdList(userId, page);
 		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.USER_FEEDLIST_GET);
 		responseCode.setResult(feedIdList);
 		return responseCode;

@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +32,4 @@ public class LikesController {
         else
             return new ResponseCode<>(SuccessCode.LIKES_ALREADY_DELETE);
     }
-
-
 }

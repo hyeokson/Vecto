@@ -34,4 +34,50 @@ public class FeedPatchRequest {
 	@JsonProperty("image")
 	private List<String> images = new ArrayList<>();
 
+	@JsonProperty("location")
+	private List<FeedSaveRequest.Movement> movements = new ArrayList<>();
+
+	@JsonProperty("visit")
+	private List<FeedSaveRequest.Place> places = new ArrayList<>();
+
+	@JsonProperty("mapimage")
+	@Size(min = 2, max = 2, message = "반드시 mapImage의 크기는 2여야합니다.")
+	private List<String> mapImages = new ArrayList<>();
+
+	@Getter
+	public static class Movement {
+		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+		@JsonProperty("datetime")
+		private LocalDateTime enterTime;
+
+		private Double lng;
+		private Double lat;
+	}
+
+	@Getter
+	public static class Place {
+
+		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+		@JsonProperty("datetime")
+		private LocalDateTime enterTime;
+
+		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+		@JsonProperty("endtime")
+		private LocalDateTime endTime;
+
+		private Double lng;
+		private Double lat;
+
+		@JsonProperty("lng_set")
+		private Double lngSet;
+		@JsonProperty("lat_set")
+		private Double latSet;
+		@JsonProperty("staytime")
+		private Integer stayTime;
+
+		private String name;
+
+		private String address;
+	}
+
 }

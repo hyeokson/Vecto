@@ -95,7 +95,9 @@ public enum SuccessCode {
     USER_FEEDLIST_GET(200, "S030", "유저가 작성한 피드 리스트 조회 성공"),
 
     FEED_PATCH(200, "S031", "피드 수정 성공"),
-    FEED_DELETE(200, "S032", "피드 삭제 성공")
+    FEED_DELETE(200, "S032", "피드 삭제 성공"),
+
+    PERSONAL_FEED_END(200, "S100", "30일 이전의 팔로우 피드 목록을 모두 불러왔습니다.")
 
 
 

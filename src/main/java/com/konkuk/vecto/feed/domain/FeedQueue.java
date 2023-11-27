@@ -1,27 +1,34 @@
 package com.konkuk.vecto.feed.domain;
 
-import static com.konkuk.vecto.feed.dto.request.FeedSaveRequest.*;
-
 import java.time.LocalDateTime;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.konkuk.vecto.security.domain.User;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FeedMovement {
+@Table(indexes = {
+	@Index(name = "idx_address", columnList = "userId")
+})
+@EntityListeners(AuditingEntityListener.class)
+public class FeedQueue {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,22 +39,13 @@ public class FeedMovement {
 	@JoinColumn(name = "feed_id")
 	private Feed feed;
 
-	private Long orderNum;
+	private Long userId;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime dateTime;
+	@CreatedDate
+	private LocalDateTime createdAt;
 
-	private Double lng;
-	private Double lat;
-
-	public FeedMovement(Long index, Movement movement) {
-		this.orderNum = index;
-		this.dateTime = movement.getEnterTime();
-		this.lng = movement.getLng();
-		this.lat = movement.getLat();
-	}
-
-	public void setFeed(Feed feed) {
+	public FeedQueue(Long userId, Feed feed) {
+		this.userId = userId;
 		this.feed = feed;
 	}
 }

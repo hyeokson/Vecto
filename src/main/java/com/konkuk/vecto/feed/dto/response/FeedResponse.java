@@ -69,8 +69,8 @@ public class FeedResponse {
 		@JsonProperty("datetime")
 		private LocalDateTime enterTime;
 
-		private final Float lng;
-		private final Float lat;
+		private final Double lng;
+		private final Double lat;
 
 		public Movement(FeedMovement feedMovement) {
 			this.enterTime = feedMovement.getDateTime();
@@ -91,13 +91,13 @@ public class FeedResponse {
 		@JsonProperty("endtime")
 		private LocalDateTime endTime;
 
-		private Float lng;
-		private Float lat;
+		private Double lng;
+		private Double lat;
 
 		@JsonProperty("lng_set")
-		private Float lngSet;
+		private Double lngSet;
 		@JsonProperty("lat_set")
-		private Float latSet;
+		private Double latSet;
 		@JsonProperty("staytime")
 		private Integer stayTime;
 
