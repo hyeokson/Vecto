@@ -45,6 +45,7 @@ public class ImageController {
 		return responseCode;
 	}
 
+	@Operation(summary = "프로필 이미지 저장", description = "프로필 이미지를 저장합니다.")
 	@PostMapping(value = "/upload/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseCode<String> userProfileImageUpload(@Parameter(hidden = true) @UserInfo String userId, @RequestPart("image") MultipartFile image) {
 		String s3FullUrl = imageService.uploadProfileImage(userId, image).getS3FullUrl();

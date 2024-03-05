@@ -51,14 +51,5 @@ public class LikesService {
         return likes.isPresent();
     }
 
-    public List<Long> getLikesFeedIdList(String userId){
-        User user = userRepository.findByUserId(userId).orElseThrow(
-                () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
-        );
-        return user.getLikes().stream()
-                .map(Likes::getFeed)
-                .map(Feed::getId)
-                .toList();
 
-    }
 }

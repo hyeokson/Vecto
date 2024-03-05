@@ -21,6 +21,7 @@ public class FcmService {
     private final UserService userService;
     private final FeedService feedService;
 
+    //댓글 알림 보내기
     public void sendCommentAlarm(Long feedId, String fromUserId) {
         String toUserId = this.feedService.getUserIdFromFeed(feedId);
         if (!fromUserId.equals(toUserId)) {
@@ -31,6 +32,7 @@ public class FcmService {
         }
     }
 
+    //팔로우 알림 보내기
     public void sendFollowAlarm(String fromUserId, String toUserId) {
         String fcmToken = this.userService.getFcmToken(toUserId);
         String nickName = this.userService.getNickName(fromUserId);

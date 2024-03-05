@@ -1,11 +1,12 @@
 package com.konkuk.vecto.feed.service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import com.konkuk.vecto.feed.domain.FeedQueue;
 import com.konkuk.vecto.feed.dto.PersonalFeedsDto;
 import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
@@ -20,7 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.konkuk.vecto.feed.common.TimeDifferenceCalcuator;
+import com.konkuk.vecto.feed.common.TimeDifferenceCalculator;
 import com.konkuk.vecto.feed.domain.Comment;
 import com.konkuk.vecto.feed.domain.FeedImage;
 import com.konkuk.vecto.feed.domain.FeedMapImage;
@@ -45,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FeedService {
 
 	private final FeedRepository feedRepository;
-	private final TimeDifferenceCalcuator timeDifferenceCalcuator;
+	private final TimeDifferenceCalculator timeDifferenceCalculator;
 	private final UserService userService;
 
 	private final UserRepository userRepository;
@@ -64,7 +65,7 @@ public class FeedService {
 
 	@Transactional
 	public Long saveFeed(FeedSaveRequest feedSaveRequest, String userId) {
-		// TODO: 현재는 매번 날려서 저장하는 방식. 이를 Bulk Insert 형태로 변경해야함.
+
 		List<FeedMovement> feedMovements = dtoToEntityIncludeIndex(feedSaveRequest.getMovements(), FeedMovement::new);
 		List<FeedImage> feedImages = dtoToEntityIncludeIndex(feedSaveRequest.getImages(), FeedImage::new);
 		List<FeedPlace> feedPlaces = dtoToEntityIncludeIndex(feedSaveRequest.getPlaces(), FeedPlace::new);
@@ -89,7 +90,7 @@ public class FeedService {
 	public FeedResponse getFeed(Long feedId, String userId) {
 		Feed feed = feedRepository.findById(feedId).orElseThrow();
 
-		String differ = timeDifferenceCalcuator.formatTimeDifferenceKorean(feed.getUploadTime());
+		String differ = timeDifferenceCalculator.formatTimeDifferenceKorean(feed.getUploadTime());
 
 		List<FeedResponse.Place> places = feed.getFeedPlaces().stream()
 			.map(FeedResponse.Place::new).toList();
@@ -186,7 +187,7 @@ public class FeedService {
 
 				return new CommentsResponse.CommentResponse(comment.getId(), userInfo.getNickName(), userInfo.getUserId(),
 					comment.getComment(),
-					timeDifferenceCalcuator.formatTimeDifferenceKorean(comment.getCreatedAt()),
+					timeDifferenceCalculator.formatTimeDifferenceKorean(comment.getCreatedAt()),
 					userInfo.getProfileUrl(), comment.getLikeCount(), likeFlag);
 			})
 			.toList());
@@ -270,6 +271,7 @@ public class FeedService {
 		}
 		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
 	}
+
 
 	private void saveFeedQueue(Feed feed, List<Long> followers) {
 		List<FeedQueue> feedQueues = followers.stream()

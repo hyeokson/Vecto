@@ -20,17 +20,16 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
 
 	List<Feed> findAllByUserId(String userId, Pageable pageable);
 
-	@Query("SELECT DISTINCT f.feed FROM FeedPlace f " +
+	@Query(value = "SELECT DISTINCT f.feed FROM FeedPlace f " +
 			"WHERE f.name LIKE :keyword " +
 			"OR f.address LIKE :keyword " +
 			"OR f.feed.title LIKE :keyword " +
 			"ORDER BY f.feed.likeCount")
 	List<Feed> findByKeyWord(Pageable pageable, @Param("keyword") String keyword);
 
-	@Query("SELECT DISTINCT l.feed FROM Likes l " +
+	@Query(value = "SELECT DISTINCT l.feed FROM Likes l " +
 			"JOIN l.user u " +
 			"WHERE u.userId = :userId " +
 			"ORDER BY l.feed.uploadTime DESC")
 	List<Feed> findLikesFeedByUserId(@Param("userId") String userId, Pageable pageable);
-
 }

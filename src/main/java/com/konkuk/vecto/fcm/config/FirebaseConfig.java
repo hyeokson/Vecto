@@ -27,7 +27,7 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         try {
-            FirebaseOptions options = new FirebaseOptions.Builder()
+            FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(
                             GoogleCredentials
                                     .fromStream(new ClassPathResource(FCM_PRIVATE_KEY_PATH).getInputStream())
