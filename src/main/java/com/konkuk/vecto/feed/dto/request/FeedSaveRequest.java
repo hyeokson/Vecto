@@ -22,13 +22,11 @@ import lombok.NoArgsConstructor;
 @Getter
 public class FeedSaveRequest {
 
-	@Schema(description = "제목은 비울 수 없습니다.")
 	@NotBlank(message = "FEED_TITLE_NOT_BLANK_ERROR")
 	private String title;
 
 	private String content;
 
-	@Schema(description = "업로드 시간은 반드시 존재해야합니다.")
 	@JsonProperty("uploadtime")
 	@DateTimeFormat
 	private LocalDateTime uploadTime;

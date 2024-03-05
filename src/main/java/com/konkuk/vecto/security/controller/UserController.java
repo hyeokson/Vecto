@@ -40,6 +40,7 @@ public class UserController {
     private final MailService mailService;
     private final VerificationCodeService verificationCodeService;
 
+    @Operation(summary = "로그인 처리 및 JWT Token 반환", description = "로그인을 처리하고 JWT Token을 반환합니다.")
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> login(@RequestBody LoginDto loginDto, BindingResult bindingResult) throws BindException{
@@ -54,6 +55,7 @@ public class UserController {
         return responseCode;
     }
 
+    @Operation(summary = "회원가입", description = "회원 정보를 저장합니다.")
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseCode<String> registerUser(@RequestBody UserRegisterDto userRegisterDto,
@@ -71,6 +73,7 @@ public class UserController {
         userService.save(userRegisterDto);
         return new ResponseCode<>(SuccessCode.REGISTER);
     }
+    @Operation(summary = "유저 정보 반환", description = "유저 정보를 반환합니다.")
     @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<UserInfoResponse> getUserInfo(@RequestParam("userId") String userId){
@@ -81,6 +84,7 @@ public class UserController {
         return responseCode;
     }
 
+    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
     @PatchMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseCode<String> updateUserInfo(@Parameter(hidden = true) @UserInfo String userId,
@@ -102,7 +106,7 @@ public class UserController {
 
         return new ResponseCode<>(SuccessCode.USERINFO_UPDATE);
     }
-
+    @Operation(summary = "회원 탈퇴", description = "유저 정보를 삭제합니다.")
     @DeleteMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> deleteUserInfo(@Parameter(hidden = true) @UserInfo String userId){
@@ -110,6 +114,7 @@ public class UserController {
         return new ResponseCode<>(SuccessCode.USERINFO_DELETE);
     }
 
+    @Operation(summary = "유저 아이디 중복검사", description = "유저 아이디 중복검사 결과를 반환합니다.")
     @PostMapping("/userId/check")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCode<String> checkUserId(@RequestBody UserIdDto userIdDto){
@@ -118,10 +123,10 @@ public class UserController {
     }
 
 
+
     @PostMapping("/mail")
     @Operation(summary = "이메일 코드 요청", description = "이메일로 코드요청을 받습니다.")
     @ApiResponse(responseCode = "200", description = "이메일 전송 성공 시 상태코드 200을 보냅니다.")
-    @ResponseBody
     public ResponseCode<String> sendVerificationMail(@RequestBody @Valid MailCodeRequest mailCodeRequest) {
         if(userService.isRegisterUser(mailCodeRequest.getEmail())) {
             throw new IllegalArgumentException("EMAIL_DUPLICATED_ERROR");
