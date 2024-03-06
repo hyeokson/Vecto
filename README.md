@@ -70,6 +70,7 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
   <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=spring boot&logoColor=white"/>
   <img src="https://img.shields.io/badge/gmail server-EA4335?style=for-the-badge&logo=gmail server&logoColor=white"/>
   <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"/>
+  <img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=spring security&logoColor=white"/>
   
 - **Database**
 
@@ -168,9 +169,34 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
   <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/ca9eb3a9-c9e3-4888-8e88-ff0349605198"/>  
   <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/3b84173f-f85c-4146-ae17-9e93d57eab74"/>  
 
+</br>
 
-
+## 💻 Server
+- **[Server API(Swagger)](https://vec-to.net/swagger-ui/index.html)**
   
+- **로그인 및 인증 기능**
+  spring sequrity, jwt
+
+
+## 💾 ERD  
+
+- **유저 정보 테이블을 중심으로 한 ERD**
+  
+<img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/4d5c36f3-19c6-4526-874c-941c3b704ea7"/>
+
+- **팔로우 테이블 ERD**
+
+  <img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/5ff787c2-880e-484d-ad5a-625b969c105a"/>
+
+- **게시글 테이블을 중심으로 한 ERD**
+  
+  <img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/0364f80c-299f-4d84-ae3a-cd1c455693b9"/>
+  <img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/c4dafeb5-9a3b-4ffc-866a-1ad79ed9eb5b"/>
+  <img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/537b1476-81d6-4e19-89b5-b6da0df35544"/>
+  <img width="400px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/826bc286-0ca6-4ec3-b1e1-ed15b4ef9ff3"/>
+
+
+
 
 
   
