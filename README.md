@@ -1,0 +1,122 @@
+<p align="middle" >
+  <img width="200px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/a771c542-bebb-4846-8d35-d337b6ab8333"/>
+</p>
+<h1 align="middle">VECTO</h1>
+<h3 align="middle">데이트 경로 공유 SNS </h3>
+<br/>
+
+## 📝 프로젝트 소개
+
+Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 있는 SNS입니다.  
+자세하게 말하면, 연인간의 데이트에만 국한되지 않고 하루동안 사용자들이 경험한 다양한 장소 및 경로를 공유할 수 있습니다.   
+
+**<기대 효과>**  
+1) 신뢰할 수 있는 방문지 리뷰  
+사용자의 위치를 GPS로 추적하여 실제로 방문한 장소와 경로만 게시글에 올릴 수 있습니다.  
+따라서 광고성 리뷰 또는 광고료를 받고 작성된 대가성 리뷰는 제공하지 않으므로 사용자들은 신뢰할 수 있는 데이트 경로 정보를 사용할 수 있습니다.    
+
+2) 서로 소통할 수 있는 SNS
+일반적인 SNS처럼 사용자들이 작성한 게시글을 팔로우, 댓글, 좋아요 기능을 통해 서로 소통할 수 있고 게시글의 정보를 평가할 수 있습니다.  
+또한, 질 좋은 정보를 제공하는 사용자는 팔로잉을 많이 받을 수 있고 게시글의 좋아요를 많이 받으므로 다른 사용자들이 질 좋은 정보를 제공할 수 있는 동기부여를 제공할 수 있고, 사용자들이 데이트 코스를 선택하는 기준을 제공해줍니다.    
+
+3) 추천 방문지 및 데이트 경로 제공  
+방문지를 검색했을 때, 방문지에 대한 리뷰와 정보뿐만 아니라 인근의 다른 추천 방문지들이 코스로 제공되기 때문에 개별 방문지들을 검색하는 것보다 더 효율적으로 질 좋은 컨텐츠를 제공받을 수 있습니다.    
+
+
+<br/>
+
+## ⭐ UI 및 주요 기능
+
+- **메인 화면**
+  
+  메인 화면인 탐색 화면에서 검색어를 통해 원하는 장소나 키워드에 해당하는 게시글을 확인 할 수 있습니다.
+  
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/26156908-e82a-4a84-82e4-bc3bcdc5eea8"/>
+
+- **게시글 상세 화면**
+
+  게시글을 선택하면 게시글 상세 페이지로 이동할 수 있습니다.  
+  데이트 코스와 이미지 및 상세정보를 확인할 수 있고, 좋아요와 댓글을 통해 소통할 수 있습니다.
+  
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/9e8aedcd-735d-416f-a873-a54789e6b8e1"/>
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/15e8f2c8-08ac-43e9-8739-df305777fde5"/>
+
+- **게시글 작성 화면**
+
+  바텀 네비게이션의 글쓰기 아이콘 선택을 통해 게시글 작성 화면으로 이동할 수 있습니다.  
+  데이트 경로, 사진, 제목, 글을 작성하여 등록하면 게시글 작성이 완료됩니다.  
+  
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/ffbcf421-3092-4bc5-ae18-35dd96405ffc"/>
+
+- **권한 설정 화면**
+
+  바텀 네비게이션의 위치 수집항목 아이콘 선택을 통해 권한 설정 화면으로 이동할 수 있습니다.  
+  사용자 권한 설정이 처음이라면 가이드 화면을 따라가면서 권한 설정을 할 수 있습니다.  
+
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/9496cf29-3d61-4df1-aff2-aac5377f3083"/>
+
+- **경로 수집 화면**
+
+  권한 설정이 모두 완료되면 GPS를 통해 유저의 이동 경로 및 방문지 정보를 수집할 수 있습니다.
+
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/651d3647-e1b3-4939-a4e4-b1f0dcc77979"/>
+
+- **경로 수정 화면**
+
+  바텀 네비게이션의 경로 수정 아이콘 선택을 통해 경로 수정 화면으로 이동할 수 있습니다.  
+  처음에 나오는 달력을 통해 방문지가 저장된 날짜를 확인할 수 있고, 해당 날짜를 선택하여 이동경로 및 방문지를 수정할 수 있습니다.  
+  방문지를 선택하면 방문지 이름 수정, 방문지 삭제, 주변 방문지 검색 기능을 사용할 수 있습니다.  
+  이동 경로를 선택하면 화면 하단에서 방문지들을 순서대로 확인할 수 있고, 추천 경로 설정 기능을 통해 이동 경로를 바꿀 수 있습니다.  
+
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/f4cb2759-1f8b-4eec-a246-fbaa6c5d3a14"/>  
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/67bea202-bfaf-4f2c-bb58-82353389f27a"/>  
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/aa1ca2c5-1441-4833-af1a-b3467294bda6"/>  
+
+- **마이페이지 화면**
+
+  바텀 네비게이션의 마이페이지 아이콘 선택을 통해 마이페이지로 이동할 수 있습니다.  
+  
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/eeabf54b-025e-45a4-af5e-03174c42df9c"/>
+
+- **로그인 및 회원가입 화면**
+
+  VECTO 전용 계정 또는 카카오 계정으로 로그인할 수 있습니다.  
+  VECTO 전용 계정으로 로그인하려면 회원가입을 진행해야 합니다.
+
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/04d217da-31ef-4cea-96bb-ccba186715ae"/>  
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/56d6647a-da92-4258-b93c-080fc3bc83cf"/>
+
+- **알림 화면**
+
+  다른 유저가 자신의 게시글에 댓글을 달거나 팔로우를 할 경우, 알림을 확인할 수 있습니다.
+
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/4845b861-2278-4c8e-a7a6-6fc14beb1964"/>
+
+- **댓글 화면**
+
+  게시글에 댓글을 작성할 수 있고, 댓글에 좋아요를 누를 수 있습니다.
+
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/a8dfb449-1f87-4aa7-8b7c-9815a45d152f"/>
+
+- **유저 프로필 화면**  
+
+  해당 화면에서 유저를 팔로우할 수 있고 유저의 상세 정보들을 확인할 수 있습니다.
+  유저의 부적절한 행동을 발견한 경우, 해당 유저를 신고할 수도 있습니다.
+
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/ca9eb3a9-c9e3-4888-8e88-ff0349605198"/>  
+  <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/3b84173f-f85c-4146-ae17-9e93d57eab74"/>  
+
+
+
+  
+
+
+  
+
+  
+
+
+
+
+  
+
