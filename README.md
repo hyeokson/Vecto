@@ -5,10 +5,22 @@
 <h3 align="middle">데이트 경로 공유 SNS </h3>
 <br/>
 
+## 🙋‍♂️ Developer  
+|                                          Frontend                                           |                                         Backend                                          |                                         Backend                                          |             
+| :----------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------
+|  |  |  | 
+|                            [심준보](https://github.com/Vecto-Konkuk)                            |                           [손찬혁](https://github.com/hyeokson)                           |                          [백종현](https://github.com/jhbaik1501)                          |
+
 ## 📝 프로젝트 소개
 
 Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 있는 SNS입니다.  
-자세하게 말하면, 연인간의 데이트에만 국한되지 않고 하루동안 사용자들이 경험한 다양한 장소 및 경로를 공유할 수 있습니다.   
+연인간의 데이트 경로뿐만 아니라, 하루동안 사용자들이 경험한 다양한 장소 및 경로를 공유할 수 있습니다.  
+앱은 Android Studio에서 다운받을 수 있습니다.  
+<p align="middle" >
+<img width="200px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/0dfced33-b985-4e4c-b535-cd435132dab7"/>
+</p>
+
+</br>
 
 **<기대 효과>**  
 1) 신뢰할 수 있는 방문지 리뷰  
@@ -25,25 +37,53 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
 
 <br/>
 
+
+
 ## 🔧 Stack
 
-**Cloud**  
+**Deploy**  
 
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon rds-527FFF?style=for-the-badge&logo=Amazon rds&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon s3-569A31?style=for-the-badge&logo=Amazon s3&logoColor=white"/>
 
 **Frontend(Web)**
 - **Language**
   
   <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=Kotlin&logoColor=white"/>
-- **Library & Framework** : React, Styled-Components, Axios, Recoil, React-Quill, React-Rnd, React-To-Pdf
-- **Deploy**: Netlify
+  
+- **Library & Framework**
+
+  <img src="https://img.shields.io/badge/android studio-3DDC84?style=for-the-badge&logo=android studio&logoColor=white"/>
+  
+- **Database**
+
+  <img src="https://img.shields.io/badge/sqlite-003B57?style=for-the-badge&logo=sqlite&logoColor=white"/>
 <br />
 
 **Backend**
-- **Language** : Java 
-- **Library & Framework** : Spring Boot
-- **Database** : MySQLDB
-- **ORM** : JPA
-- **Deploy**: Heroku, Firebase(Storage)
+- **Language**
+
+  <img src="https://img.shields.io/badge/java-FF4C46?style=for-the-badge&logo=java&logoColor=white"/>
+  
+- **Library & Framework**
+
+  <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=spring boot&logoColor=white"/>
+  <img src="https://img.shields.io/badge/gmail server-EA4335?style=for-the-badge&logo=gmail server&logoColor=white"/>
+  <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"/>
+  
+- **Database**
+
+  <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+  
+- **ORM**
+
+  <img src="https://img.shields.io/badge/jpa-0064FF?style=for-the-badge&logo=jpa&logoColor=white"/>  
+
+<br/>
+
+## 🔨 프로젝트 구조도
+
+<img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/9ed4ed87-db45-4aae-b827-465e5db509ca"/>
 
 <br/>
 
