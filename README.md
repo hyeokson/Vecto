@@ -25,6 +25,28 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
 
 <br/>
 
+## 🔧 Stack
+
+**Cloud**  
+
+
+**Frontend(Web)**
+- **Language**
+  
+  <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=Kotlin&logoColor=white"/>
+- **Library & Framework** : React, Styled-Components, Axios, Recoil, React-Quill, React-Rnd, React-To-Pdf
+- **Deploy**: Netlify
+<br />
+
+**Backend**
+- **Language** : Java 
+- **Library & Framework** : Spring Boot
+- **Database** : MySQLDB
+- **ORM** : JPA
+- **Deploy**: Heroku, Firebase(Storage)
+
+<br/>
+
 ## ⭐ UI 및 주요 기능
 
 - **메인 화면**
