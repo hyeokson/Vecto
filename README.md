@@ -11,6 +11,8 @@
 |  |  |  | 
 |                            [심준보](https://github.com/Vecto-Konkuk)                            |                           [손찬혁](https://github.com/hyeokson)                           |                          [백종현](https://github.com/jhbaik1501)                          |
 
+개발 기간: 2023.09 ~ 2023.12
+
 ## 📝 프로젝트 소개
 
 Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 있는 SNS입니다.  
@@ -174,9 +176,28 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
 ## 💻 Server
 - **[Server API(Swagger)](https://vec-to.net/swagger-ui/index.html)**
   
-- **로그인 및 인증 기능**
-  spring sequrity, jwt
+- **로그인 및 인증 기능**  
+  애플리케이션을 위한 Restful API 서버를 개발해야하기 때문에 세션, 쿠키가 필요없는 JWT 인증방식을 사용했습니다.  
+  그리고 인증 방식을 쉽고 안전하게 구현하기 위해서 Spring Security를 사용하여 인증체계를 구축했습니다.  
+  Username and Password Authentication Mechanism 을 사용하지 않으므로 JwtAuthenticationFilter를 따로 만들어서 JWT를 인증할 수 있도록 개발했습니다.  
+  로그인을 하게 되면 프론트에 JWT를 반환하고 그 후의 request에서 header에 JWT를 넣으면 서버의 여러 기능들을 사용할 수 있습니다.  
 
+- **게시글 및 댓글 기능**  
+  FeedController를 통해서 게시글과 댓글의 CRUD 기능을 구현했습니다.  
+  애플리케이션의 게시글 탐색 화면에서 게시글을 조회할 때는 Paging을 사용하여 DB에서 정보를 가져왔고, 로그인 상태와 비로그인 상태를 구별해서 게시글 정보를 반환하도록 구현했습니다.  
+  로그인 상태에서는 팔로우를 한 유저의 게시글을 조회하고 나서 팔로우를 하지 않은 유저의 게시글을 조회할 수 있습니다.  
+  비로그인 상태에서는 처음부터 팔로우 여부와 관계없이 시간 순서대로 게시글을 조회할 수 있습니다.  
+
+- **팔로우 및 좋아요 기능**  
+  각각 FollowController, LikesController, CommentLikesController가 CRUD를 담당합니다.  
+  팔로우 및 게시글 좋아요 기능을 사용하게 되면 해당 유저에게 푸쉬알림이 가도록 구현했습니다.  
+  푸쉬알림은 Firebase의 Cloud Messaging 기능을 사용해서 팔로우 및 좋아요 기능을 사용한 직후에 바로 유저의 앱에 알림이 뜨게 됩니다.  
+
+- **이미지 저장 기능**  
+  ImageController에서 게시글 사진과 프로필 사진 저장 및 조회 기능을 담당합니다.  
+  이미지 파일은 용량이 크기 때문에 Amazon S3를 활용하여 이미지를 저장하고, 해당 이미지 URL을 프론트에 보내주게 됩니다.  
+  
+</br>
 
 ## 💾 ERD  
 
