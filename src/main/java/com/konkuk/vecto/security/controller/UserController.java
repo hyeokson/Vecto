@@ -12,6 +12,7 @@ import com.konkuk.vecto.security.validator.LoginValidator;
 import com.konkuk.vecto.security.validator.UserRegisterValidator;
 import com.konkuk.vecto.security.validator.UserUpdateValidator;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import com.konkuk.vecto.security.dto.MailCodeRequest;
 import com.konkuk.vecto.security.dto.UserInfoResponse;
@@ -30,6 +31,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "User Controller", description = "유저 관련 API")
 public class UserController {
 
     private final UserService userService;

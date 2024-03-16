@@ -1,7 +1,6 @@
-package com.konkuk.vecto.feed.dto;
+package com.konkuk.vecto.complaint.dto;
 
-import java.util.List;
-
+import jakarta.persistence.Lob;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,10 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
-public class PersonalFeedsDto {
+public class ComplaintRequest {
 
-	boolean isLastPage;
-	boolean isFollowPage;
-	Integer nextPage;
-	List<Long> feedIds;
+    private String complaintType;
+
+    private String toUserId;
+
+    private String content;
 }

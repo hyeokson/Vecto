@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.konkuk.vecto.image.common.dto.ImageUrlResponse;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Image Controller", description = "이미지 API")
 public class ImageController {
 
 	private final ImageService imageService;
