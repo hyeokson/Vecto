@@ -1,6 +1,7 @@
 package com.konkuk.vecto.feed.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -193,34 +194,44 @@ public class FeedService {
 			.toList());
 	}
 
-	public List<Long> getDefaultFeedList(Integer page) {
-		Pageable pageable = PageRequest.of(page, 5);
+	public List<Long> getDefaultFeedList(Integer page, Integer pageSize) {
+		Pageable pageable = PageRequest.of(page, pageSize);
 		return feedRepository.findAllByOrderByUploadTimeDesc(pageable).getContent()
 			.stream().map(Feed::getId).toList();
 	}
 
 	@Transactional
-	public PersonalFeedsDto getPersonalFeedList(String userId) {
+	public PersonalFeedsDto getPersonalFeedList(String userId, Integer page, boolean isFollowPage) {
+		List<FeedQueue> feedQueues;
+		List<Long> feedIdList;
+		if(isFollowPage) {
+			Pageable pageable = PageRequest.of(page, 5);
+			Long id = userRepository.findByUserId(userId).orElseThrow(
+					() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
+			).getId();
+			feedQueues = feedQueueRepository.findFeedIdByUserId(pageable, id);
+			feedIdList = new ArrayList<>(feedQueues.stream().map((feedQueue) -> feedQueue.getFeed().getId()).toList());
 
-		// 30일이 지나지 않은 팔로우 중인 사용자의 피드 리스트를 큐에서 가져온다.
-		Pageable pageable = PageRequest.of(0, 5);
-		Long id = userRepository.findByUserId(userId).orElseThrow(
-			() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
-		).getId();
-		List<FeedQueue> feedQueues = feedQueueRepository.findFeedIdByUserId(pageable, id, LocalDateTime.now().minusDays(30));
-
-		// 읽은 피드 리스트는 큐에서 제거한다.
-		feedQueueRepository.deleteAll(feedQueues);
-
-
-		// 피드 ID 리스트를 반환
-		// 더 이상 읽어올 팔로잉 유저의 글이 없는 경우, 마지막 페이지라는 사실을 알린다.
-		List<Long> feedIdList = feedQueues.stream().map((feedQueue) -> feedQueue.getFeed().getId()).toList();
-		if (feedIdList.isEmpty()) {
-			return new PersonalFeedsDto(true, feedIdList);
+			if(feedIdList.size()<5){
+				int nextPage = 5-feedIdList.size();
+				feedIdList.addAll(getDefaultFeedList(0, nextPage));
+				if(feedIdList.size()<5){
+					return new PersonalFeedsDto(true, false,0, feedIdList);
+				}
+				else{
+					return new PersonalFeedsDto(false, false, nextPage, feedIdList);
+				}
+			}
+			return new PersonalFeedsDto(false, false,page+5, feedIdList);
 		}
-		// 팔로잉 중인 유저의 글 목록의 다음 페이지가 존재하는 경우, 마지막 페이지가 아님을 표시한다.
-		return new PersonalFeedsDto(false, feedIdList);
+		else{
+			feedIdList = getDefaultFeedList(page, 5);
+			if(feedIdList.size()<5)
+				return new PersonalFeedsDto(true, false,0, feedIdList);
+			else
+				return new PersonalFeedsDto(false, false,page+5, feedIdList);
+		}
+
 	}
 
 	public List<Long> getKeywordFeedList(Integer page, String keyword) {

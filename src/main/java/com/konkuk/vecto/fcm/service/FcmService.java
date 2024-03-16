@@ -2,11 +2,17 @@ package com.konkuk.vecto.fcm.service;
 
 import com.google.firebase.ErrorCode;
 import com.google.firebase.messaging.*;
+import com.konkuk.vecto.fcm.domain.NotificationType;
+import com.konkuk.vecto.fcm.domain.PushNotification;
+import com.konkuk.vecto.fcm.repository.PushNotificationRepository;
 import com.konkuk.vecto.feed.service.FeedService;
+import com.konkuk.vecto.security.domain.User;
+import com.konkuk.vecto.security.repository.UserRepository;
 import com.konkuk.vecto.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +25,12 @@ import java.util.stream.Collectors;
 public class FcmService {
 
     private final UserService userService;
+    private final UserRepository userRepository;
     private final FeedService feedService;
+    private final PushNotificationRepository pushNotificationRepository;
 
     //댓글 알림 보내기
+    @Transactional
     public void sendCommentAlarm(Long feedId, String fromUserId) {
         String toUserId = this.feedService.getUserIdFromFeed(feedId);
         if (!fromUserId.equals(toUserId)) {
@@ -29,15 +38,35 @@ public class FcmService {
             String nickName = this.userService.getNickName(fromUserId);
             Message message = Message.builder().putData("title", "vecto").putData("body", nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.").putData("feedId", feedId.toString()).setToken(fcmToken).build();
             this.sendAlarm(message, toUserId);
+            User user = userRepository.findByUserId(toUserId).orElseThrow();
+            PushNotification pushNotification = PushNotification.builder()
+                    .user(user)
+                    .content(nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.")
+                    .feedId(feedId)
+                    .fromUserId(fromUserId)
+                    .notificationType(NotificationType.COMMENT.getNotificationType())
+                    .build();
+            pushNotificationRepository.save(pushNotification);
         }
     }
 
     //팔로우 알림 보내기
+    @Transactional
     public void sendFollowAlarm(String fromUserId, String toUserId) {
         String fcmToken = this.userService.getFcmToken(toUserId);
         String nickName = this.userService.getNickName(fromUserId);
         Message message = Message.builder().putData("title", "vecto").putData("body", nickName + "님께서 회원님을 팔로우하기 시작했습니다.").setToken(fcmToken).build();
         this.sendAlarm(message, toUserId);
+
+        User user = userRepository.findByUserId(toUserId).orElseThrow();
+        PushNotification pushNotification = PushNotification.builder()
+                .user(user)
+                .content(nickName + "님께서 회원님을 팔로우하기 시작했습니다.")
+                .feedId((long) -1)
+                .fromUserId(fromUserId)
+                .notificationType(NotificationType.FOLLOW.getNotificationType())
+                .build();
+        pushNotificationRepository.save(pushNotification);
     }
 
     public void sendAlarm(Message message, String toUserId) {

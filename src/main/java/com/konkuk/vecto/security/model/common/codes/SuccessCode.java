@@ -97,7 +97,11 @@ public enum SuccessCode {
     FEED_PATCH(200, "S031", "피드 수정 성공"),
     FEED_DELETE(200, "S032", "피드 삭제 성공"),
 
-    PERSONAL_FEED_END(200, "S100", "30일 이전의 팔로우 피드 목록을 모두 불러왔습니다.")
+    FEED_END(200, "S033", "피드 목록을 모두 불러왔습니다."),
+
+    PUSH_NOTIFICATION_GET(200, "S034", "푸쉬 알림 기록 조회 성공"),
+
+    COMPLAINT_SAVE(200, "S035", "신고 접수 성공")
 
 
 
