@@ -14,10 +14,6 @@ import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -117,25 +113,34 @@ public class FeedController {
 
 	@Operation(summary = "게시글 ID 리스트 반환", description = "게시글 탐색 화면에 보여질 게시글 ID 리스트를 반환합니다. (로그인 시)")
 	@GetMapping("/feeds/personal")
-	public ResponseCode<List<Long>> getPersonalFeedList(@Parameter(hidden = true) @UserInfo String userId) {
-		PersonalFeedsDto feedsDto = feedService.getPersonalFeedList(userId);
-		ResponseCode<List<Long>> responseCode;
+	public ResponseCode<PersonalFeedsDto> getPersonalFeedList(@Parameter(hidden = true) @UserInfo String userId,
+														@NotNull Integer page, boolean isFollowPage) {
+		PersonalFeedsDto feedsDto = feedService.getPersonalFeedList(userId, page, isFollowPage);
+		ResponseCode<PersonalFeedsDto> responseCode;
 		if (feedsDto.isLastPage()) {
-			responseCode = new ResponseCode<>(SuccessCode.PERSONAL_FEED_END);
+			responseCode = new ResponseCode<>(SuccessCode.FEED_END);
 		} else {
 			responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 		}
-		responseCode.setResult(feedsDto.getFeedIds());
+		responseCode.setResult(feedsDto);
 		return responseCode;
 	}
 
 	@Operation(summary = "게시글 ID 리스트 반환", description = "게시글 탐색 화면에 보여질 게시글 ID 리스트를 반환합니다. (비로그인 시)")
 	@GetMapping("/feedList")
-	public ResponseCode<List<Long>> getDefaultFeedList(@NotNull Integer page) {
-		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+	public ResponseCode<PersonalFeedsDto> getDefaultFeedList(@NotNull Integer page) {
+		ResponseCode<PersonalFeedsDto> responseCode;
 
-		List<Long> feedList = feedService.getDefaultFeedList(page);
-		responseCode.setResult(feedList);
+		List<Long> feedList = feedService.getDefaultFeedList(page, 5);
+		boolean isLastPage = feedList.size() < 5;
+		PersonalFeedsDto personalFeedsDto = new PersonalFeedsDto(isLastPage, false,
+				isLastPage ? 0 : page+5, feedList);
+		if(isLastPage)
+			responseCode = new ResponseCode<>(SuccessCode.FEED_END);
+		else
+			responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+
+		responseCode.setResult(personalFeedsDto);
 		return responseCode;
 	}
 

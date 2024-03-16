@@ -1,5 +1,6 @@
 package com.konkuk.vecto.security.domain;
 
+import com.konkuk.vecto.fcm.domain.PushNotification;
 import com.konkuk.vecto.follow.domain.Follow;
 import com.konkuk.vecto.likes.domain.CommentLikes;
 import com.konkuk.vecto.likes.domain.Likes;
@@ -34,6 +35,9 @@ public class User{
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<CommentLikes> commentLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<PushNotification> pushNotifications = new ArrayList<>();
 
     // 사용자 아이디
 

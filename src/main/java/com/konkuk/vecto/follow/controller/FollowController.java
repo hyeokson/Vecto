@@ -7,6 +7,7 @@ import com.konkuk.vecto.security.model.common.codes.ResponseCode;
 import com.konkuk.vecto.security.model.common.codes.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/follow")
+@Tag(name = "Follow Controller", description = "팔로우 API")
 public class FollowController {
 
     private final FollowService followService;
