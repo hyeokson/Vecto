@@ -45,8 +45,7 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
 
 **Deploy**  
 
-<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon rds-527FFF?style=for-the-badge&logo=Amazon rds&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon s3-569A31?style=for-the-badge&logo=Amazon s3&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon rds-527FFF?style=for-the-badge&logo=Amazon rds&logoColor=white"/>  
 
 **Frontend(Web)**
 - **Language**
@@ -73,6 +72,7 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
   <img src="https://img.shields.io/badge/gmail server-EA4335?style=for-the-badge&logo=gmail server&logoColor=white"/>
   <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"/>
   <img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=spring security&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon s3-569A31?style=for-the-badge&logo=Amazon s3&logoColor=white"/>
   
 - **Database**
 
