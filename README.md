@@ -174,7 +174,7 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
 </br>
 
 ## 💻 Server
-- **[Server API(Swagger)](https://vec-to.net/swagger-ui/index.html)**
+- **[Server API(Swagger)]**: https://vec-to.net/swagger-ui/index.html
   
 - **로그인 및 인증 기능**  
   애플리케이션을 위한 Restful API 서버를 개발해야하기 때문에 세션, 쿠키가 필요없는 JWT 인증방식을 사용했습니다.  
