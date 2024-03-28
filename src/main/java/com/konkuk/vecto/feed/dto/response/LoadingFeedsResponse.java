@@ -1,16 +1,14 @@
-package com.konkuk.vecto.feed.dto;
+package com.konkuk.vecto.feed.dto.response;
 
 import java.util.List;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
-public class PersonalFeedsDto {
+@Builder
+public class LoadingFeedsResponse {
 
 	boolean isLastPage;
 	boolean isFollowPage;

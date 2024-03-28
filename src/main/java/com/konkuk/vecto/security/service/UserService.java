@@ -29,4 +29,5 @@ public interface UserService {
     String getFcmToken(String userId);
 
     String getNickName(String userId);
+
 }

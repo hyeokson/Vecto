@@ -181,4 +181,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR"));
         return user.getNickName();
     }
+
+
 }
