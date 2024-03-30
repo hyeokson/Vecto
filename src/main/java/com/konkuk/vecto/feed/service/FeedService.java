@@ -2,20 +2,19 @@ package com.konkuk.vecto.feed.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import com.konkuk.vecto.feed.domain.FeedQueue;
-import com.konkuk.vecto.feed.dto.PersonalFeedsDto;
+import com.konkuk.vecto.feed.dto.response.LoadingFeedsResponse;
+import com.konkuk.vecto.feed.dto.response.PagingFeedsResponse;
 import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
 import com.konkuk.vecto.feed.repository.*;
 import com.konkuk.vecto.follow.service.FollowService;
 import com.konkuk.vecto.likes.service.CommentLikesService;
 import com.konkuk.vecto.likes.service.LikesService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -88,6 +87,30 @@ public class FeedService {
 		return feedRepository.save(feed).getId();
 	}
 
+	private void saveFeedQueue(Feed feed, List<Long> followers) {
+		List<FeedQueue> feedQueues = followers.stream()
+				.map((follower) -> new FeedQueue(follower, feed))
+				.toList();
+		feedQueueRepository.saveAll(feedQueues);
+	}
+
+
+
+	@Transactional
+	public void removeFeed(Long feedId, String userId) {
+		Feed feed = feedRepository.findById(feedId)
+				.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+
+		if (feed.getUserId().equals(userId)) {
+			feedQueueRepository.deleteByFeed(feed);
+			feedRepository.delete(feed);
+			return;
+		}
+		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
+	}
+
+
+
 	public FeedResponse getFeed(Long feedId, String userId) {
 		Feed feed = feedRepository.findById(feedId).orElseThrow();
 
@@ -110,6 +133,7 @@ public class FeedService {
 		if (userId != null) {
 			if (likesService.isClickedLikes(feedId, userId))
 				likeFlag = true;
+
 		}
 
 		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
@@ -194,50 +218,117 @@ public class FeedService {
 			.toList());
 	}
 
-	public List<Long> getDefaultFeedList(Integer page, Integer pageSize) {
+	public LoadingFeedsResponse getDefaultFeedList(Integer page, Integer pageSize) {
 		Pageable pageable = PageRequest.of(page, pageSize);
-		return feedRepository.findAllByOrderByUploadTimeDesc(pageable).getContent()
+		Page<Feed> result = feedRepository.findAllByOrderByUploadTimeDesc(pageable);
+		List<Long> feedIds = result.getContent()
 			.stream().map(Feed::getId).toList();
+
+		if(result.isLast()){
+			return LoadingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+                    .isFollowPage(false)
+					.nextPage(0)
+					.feedIds(feedIds)
+					.build();
+		}
+		else{
+			return LoadingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+                    .isFollowPage(false)
+					.nextPage(page+1)
+					.feedIds(feedIds)
+					.build();
+		}
+
 	}
 
 	@Transactional
-	public PersonalFeedsDto getPersonalFeedList(String userId, Integer page, boolean isFollowPage) {
-		List<FeedQueue> feedQueues;
-		List<Long> feedIdList;
-		if(isFollowPage) {
-			Pageable pageable = PageRequest.of(page, 5);
-			Long id = userRepository.findByUserId(userId).orElseThrow(
-					() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
-			).getId();
-			feedQueues = feedQueueRepository.findFeedIdByUserId(pageable, id);
-			feedIdList = new ArrayList<>(feedQueues.stream().map((feedQueue) -> feedQueue.getFeed().getId()).toList());
+	public LoadingFeedsResponse getPersonalFeedList(String userId, Integer page, boolean isFollowPage) {
+		Pageable pageable = PageRequest.of(page, 5);
+		Long id = userRepository.findByUserId(userId).orElseThrow(
+				() -> new IllegalArgumentException("USER_NOT_FOUND_ERROR")
+		).getId();
 
-			if(feedIdList.size()<5){
-				int nextPage = 5-feedIdList.size();
-				feedIdList.addAll(getDefaultFeedList(0, nextPage));
-				if(feedIdList.size()<5){
-					return new PersonalFeedsDto(true, false,0, feedIdList);
+		if(isFollowPage) {
+			Page<FeedQueue> result = feedQueueRepository.findFeedIdByUserId(pageable, id);
+			List<Long> feedIds = result.getContent().stream()
+					.map((feedQueue) -> feedQueue.getFeed().getId())
+					.toList();
+
+			if(result.isLast()){
+                boolean followFeedUnavailable = (feedIds.size() == 0);
+				if(followFeedUnavailable) {
+					pageable = PageRequest.of(0, 5);
 				}
-				else{
-					return new PersonalFeedsDto(false, false, nextPage, feedIdList);
+				else {
+					pageable = PageRequest.of(0, 5);
+					Page<Feed> checkFeedIds = feedRepository.findNotFollowFeed(id, pageable);
+					boolean isLastPage= checkFeedIds.isEmpty();
+					return LoadingFeedsResponse.builder()
+							.isLastPage(isLastPage)
+							.isFollowPage(false)
+							.nextPage(0)
+							.feedIds(feedIds)
+							.build();
 				}
+
 			}
-			return new PersonalFeedsDto(false, false,page+5, feedIdList);
+			else{
+				return LoadingFeedsResponse.builder()
+						.isLastPage(false)
+						.isFollowPage(true)
+						.nextPage(page+1)
+						.feedIds(feedIds)
+						.build();
+			}
+		}
+
+
+		Page<Feed> result = feedRepository.findNotFollowFeed(id, pageable);
+		List<Long> feedIds = result.getContent()
+				.stream().map(Feed::getId).toList();
+
+		if(result.isLast()){
+			return LoadingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+					.isFollowPage(false)
+					.nextPage(0)
+					.feedIds(feedIds)
+					.build();
 		}
 		else{
-			feedIdList = getDefaultFeedList(page, 5);
-			if(feedIdList.size()<5)
-				return new PersonalFeedsDto(true, false,0, feedIdList);
-			else
-				return new PersonalFeedsDto(false, false,page+5, feedIdList);
+			return LoadingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+					.isFollowPage(false)
+					.nextPage(page+1)
+					.feedIds(feedIds)
+					.build();
 		}
+
 
 	}
 
-	public List<Long> getKeywordFeedList(Integer page, String keyword) {
+	public PagingFeedsResponse getKeywordFeedList(Integer page, String keyword) {
 		Pageable pageable = PageRequest.of(page, 5);
-		List<Feed> feedList = feedRepository.findByKeyWord(pageable, "%" + keyword + "%");
-		return feedList.stream().map(Feed::getId).toList();
+		Page<Feed> result = feedRepository.findByKeyWord(pageable, "%" + keyword + "%");
+		List<Long> feedIds = result.getContent()
+				.stream().map(Feed::getId).toList();
+
+		if(result.isLast()){
+			return PagingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+					.nextPage(0)
+					.feedIds(feedIds)
+					.build();
+		}
+		else{
+			return PagingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+					.nextPage(page+1)
+					.feedIds(feedIds)
+					.build();
+		}
 	}
 
 	public String getUserIdFromFeed(Long feedId) {
@@ -271,34 +362,52 @@ public class FeedService {
 		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
 	}
 
+
+
+
 	@Transactional
-	public void removeFeed(Long feedId, String userId) {
-		Feed feed = feedRepository.findById(feedId)
-			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
-
-		if (feed.getUserId().equals(userId)) {
-			feedRepository.delete(feed);
-			return;
-		}
-		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
-	}
-
-
-	private void saveFeedQueue(Feed feed, List<Long> followers) {
-		List<FeedQueue> feedQueues = followers.stream()
-			.map((follower) -> new FeedQueue(follower, feed))
-			.toList();
-		feedQueueRepository.saveAll(feedQueues);
-	}
-	public List<Long> getLikesFeedIdList(String userId, Integer page) {
+	public PagingFeedsResponse getLikesFeedIdList(String userId, Integer page) {
 		Pageable pageable = PageRequest.of(page, 5);
-		List<Feed> feedList = this.feedRepository.findLikesFeedByUserId(userId, pageable);
-		return feedList.stream().map(Feed::getId).toList();
+		Page<Feed> result = this.feedRepository.findLikesFeedByUserId(userId, pageable);
+		List<Long> feedIds = result.getContent()
+				.stream().map(Feed::getId).toList();
+
+		if(result.isLast()){
+			return PagingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+					.nextPage(0)
+					.feedIds(feedIds)
+					.build();
+		}
+		else{
+			return PagingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+					.nextPage(page+1)
+					.feedIds(feedIds)
+					.build();
+		}
 	}
 
-	public List<Long> getUserFeedIdList(String userId, Integer page) {
+	@Transactional
+	public PagingFeedsResponse getUserFeedIdList(String userId, Integer page) {
 		Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("uploadTime")));
-		List<Feed> feedList = this.feedRepository.findAllByUserId(userId, pageable);
-		return feedList.stream().map(Feed::getId).toList();
+		Page<Feed> result = this.feedRepository.findAllByUserId(userId, pageable);
+		List<Long> feedIds = result.getContent()
+				.stream().map(Feed::getId).toList();
+
+		if(result.isLast()){
+			return PagingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+					.nextPage(0)
+					.feedIds(feedIds)
+					.build();
+		}
+		else{
+			return PagingFeedsResponse.builder()
+					.isLastPage(result.isLast())
+					.nextPage(page+1)
+					.feedIds(feedIds)
+					.build();
+		}
 	}
 }

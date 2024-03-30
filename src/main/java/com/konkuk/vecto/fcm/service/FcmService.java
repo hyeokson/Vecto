@@ -36,8 +36,13 @@ public class FcmService {
         if (!fromUserId.equals(toUserId)) {
             String fcmToken = this.userService.getFcmToken(toUserId);
             String nickName = this.userService.getNickName(fromUserId);
-            Message message = Message.builder().putData("title", "vecto").putData("body", nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.").putData("feedId", feedId.toString()).setToken(fcmToken).build();
-            this.sendAlarm(message, toUserId);
+            Message message = Message.builder()
+                    .putData("title", "vecto")
+                    .putData("body", nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.")
+                    .putData("feedId", feedId.toString())
+                    .setToken(fcmToken)
+                    .build();
+
             User user = userRepository.findByUserId(toUserId).orElseThrow();
             PushNotification pushNotification = PushNotification.builder()
                     .user(user)
@@ -47,6 +52,9 @@ public class FcmService {
                     .notificationType(NotificationType.COMMENT.getNotificationType())
                     .build();
             pushNotificationRepository.save(pushNotification);
+            if(fcmToken == null)
+                return;
+            this.sendAlarm(message, toUserId);
         }
     }
 
@@ -55,8 +63,12 @@ public class FcmService {
     public void sendFollowAlarm(String fromUserId, String toUserId) {
         String fcmToken = this.userService.getFcmToken(toUserId);
         String nickName = this.userService.getNickName(fromUserId);
-        Message message = Message.builder().putData("title", "vecto").putData("body", nickName + "님께서 회원님을 팔로우하기 시작했습니다.").setToken(fcmToken).build();
-        this.sendAlarm(message, toUserId);
+
+        Message message = Message.builder()
+                .putData("title", "vecto")
+                .putData("body", nickName + "님께서 회원님을 팔로우하기 시작했습니다.")
+                .setToken(fcmToken)
+                .build();
 
         User user = userRepository.findByUserId(toUserId).orElseThrow();
         PushNotification pushNotification = PushNotification.builder()
@@ -67,6 +79,9 @@ public class FcmService {
                 .notificationType(NotificationType.FOLLOW.getNotificationType())
                 .build();
         pushNotificationRepository.save(pushNotification);
+        if(fcmToken == null)
+            return;
+        this.sendAlarm(message, toUserId);
     }
 
     public void sendAlarm(Message message, String toUserId) {

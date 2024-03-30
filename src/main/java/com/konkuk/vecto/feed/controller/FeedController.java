@@ -1,7 +1,8 @@
 package com.konkuk.vecto.feed.controller;
 
 import com.konkuk.vecto.fcm.service.FcmService;
-import com.konkuk.vecto.feed.dto.PersonalFeedsDto;
+import com.konkuk.vecto.feed.dto.response.LoadingFeedsResponse;
+import com.konkuk.vecto.feed.dto.response.PagingFeedsResponse;
 import com.konkuk.vecto.feed.dto.request.CommentPatchRequest;
 import com.konkuk.vecto.feed.dto.request.CommentRequest;
 import com.konkuk.vecto.feed.dto.request.FeedPatchRequest;
@@ -113,46 +114,44 @@ public class FeedController {
 
 	@Operation(summary = "게시글 ID 리스트 반환", description = "게시글 탐색 화면에 보여질 게시글 ID 리스트를 반환합니다. (로그인 시)")
 	@GetMapping("/feeds/personal")
-	public ResponseCode<PersonalFeedsDto> getPersonalFeedList(@Parameter(hidden = true) @UserInfo String userId,
-														@NotNull Integer page, boolean isFollowPage) {
-		PersonalFeedsDto feedsDto = feedService.getPersonalFeedList(userId, page, isFollowPage);
-		ResponseCode<PersonalFeedsDto> responseCode;
-		if (feedsDto.isLastPage()) {
+	public ResponseCode<LoadingFeedsResponse> getPersonalFeedList(@Parameter(hidden = true) @UserInfo String userId,
+																   @RequestParam("page") @NotNull Integer page,
+																   @RequestParam("isFollowPage") boolean isFollowPage) {
+		LoadingFeedsResponse loadingFeedsResponse = feedService.getPersonalFeedList(userId, page, isFollowPage);
+		ResponseCode<LoadingFeedsResponse> responseCode;
+		if (loadingFeedsResponse.isLastPage()) {
 			responseCode = new ResponseCode<>(SuccessCode.FEED_END);
 		} else {
 			responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 		}
-		responseCode.setResult(feedsDto);
+		responseCode.setResult(loadingFeedsResponse);
 		return responseCode;
 	}
 
 	@Operation(summary = "게시글 ID 리스트 반환", description = "게시글 탐색 화면에 보여질 게시글 ID 리스트를 반환합니다. (비로그인 시)")
 	@GetMapping("/feedList")
-	public ResponseCode<PersonalFeedsDto> getDefaultFeedList(@NotNull Integer page) {
-		ResponseCode<PersonalFeedsDto> responseCode;
+	public ResponseCode<LoadingFeedsResponse> getDefaultFeedList(@RequestParam("page") @NotNull Integer page) {
+		ResponseCode<LoadingFeedsResponse> responseCode;
 
-		List<Long> feedList = feedService.getDefaultFeedList(page, 5);
-		boolean isLastPage = feedList.size() < 5;
-		PersonalFeedsDto personalFeedsDto = new PersonalFeedsDto(isLastPage, false,
-				isLastPage ? 0 : page+5, feedList);
-		if(isLastPage)
+		LoadingFeedsResponse loadingFeedsResponse = feedService.getDefaultFeedList(page, 5);
+		if(loadingFeedsResponse.isLastPage())
 			responseCode = new ResponseCode<>(SuccessCode.FEED_END);
 		else
 			responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 
-		responseCode.setResult(personalFeedsDto);
+		responseCode.setResult(loadingFeedsResponse);
 		return responseCode;
 	}
 
 	@Operation(summary = "게시글 검색 결과 반환", description = "키워드로 검색한 게시글 ID 리스트를 반환합니다.")
 	@GetMapping("/feeds/search")
-	public ResponseCode<List<Long>> getKeywordFeedList(@RequestParam("page") @NotNull Integer page,
-		@NotNull @RequestParam("q") String keyword) {
+	public ResponseCode<PagingFeedsResponse> getKeywordFeedList(@RequestParam("page") @NotNull Integer page,
+																@NotNull @RequestParam("q") String keyword) {
 
-		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+		ResponseCode<PagingFeedsResponse> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 		log.info("keyword check: {}", keyword);
-		List<Long> feedList = feedService.getKeywordFeedList(page, keyword);
-		responseCode.setResult(feedList);
+		PagingFeedsResponse pagingFeedsResponse = feedService.getKeywordFeedList(page, keyword);
+		responseCode.setResult(pagingFeedsResponse);
 		return responseCode;
 	}
 
@@ -175,19 +174,19 @@ public class FeedController {
 
 	@Operation(summary = "좋아요를 누른 게시글 반환", description = "유저가 좋아요를 누른 피드 ID 리스트를 반환합니다.")
 	@GetMapping({"/likes"})
-	public ResponseCode<List<Long>> getLikesFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
-		List<Long> feedIdList = this.feedService.getLikesFeedIdList(userId, page);
-		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.LIKES_FEEDLIST_GET);
-		responseCode.setResult(feedIdList);
+	public ResponseCode<PagingFeedsResponse> getLikesFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
+		PagingFeedsResponse pagingFeedsResponse = this.feedService.getLikesFeedIdList(userId, page);
+		ResponseCode<PagingFeedsResponse> responseCode = new ResponseCode<>(SuccessCode.LIKES_FEEDLIST_GET);
+		responseCode.setResult(pagingFeedsResponse);
 		return responseCode;
 	}
 
 	@Operation(summary = "유저가 작성한 게시글 반환", description = "유저가 작성한 게시글 ID 리스트를 반환합니다.")
 	@GetMapping
-	public ResponseCode<List<Long>> getUserFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
-		List<Long> feedIdList = this.feedService.getUserFeedIdList(userId, page);
-		ResponseCode<List<Long>> responseCode = new ResponseCode<>(SuccessCode.USER_FEEDLIST_GET);
-		responseCode.setResult(feedIdList);
+	public ResponseCode<PagingFeedsResponse> getUserFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
+		PagingFeedsResponse pagingFeedsResponse = this.feedService.getUserFeedIdList(userId, page);
+		ResponseCode<PagingFeedsResponse> responseCode = new ResponseCode<>(SuccessCode.USER_FEEDLIST_GET);
+		responseCode.setResult(pagingFeedsResponse);
 		return responseCode;
 	}
 }
