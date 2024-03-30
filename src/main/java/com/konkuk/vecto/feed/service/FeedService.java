@@ -87,6 +87,30 @@ public class FeedService {
 		return feedRepository.save(feed).getId();
 	}
 
+	private void saveFeedQueue(Feed feed, List<Long> followers) {
+		List<FeedQueue> feedQueues = followers.stream()
+				.map((follower) -> new FeedQueue(follower, feed))
+				.toList();
+		feedQueueRepository.saveAll(feedQueues);
+	}
+
+
+
+	@Transactional
+	public void removeFeed(Long feedId, String userId) {
+		Feed feed = feedRepository.findById(feedId)
+				.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
+
+		if (feed.getUserId().equals(userId)) {
+			feedQueueRepository.deleteByFeed(feed);
+			feedRepository.delete(feed);
+			return;
+		}
+		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
+	}
+
+
+
 	public FeedResponse getFeed(Long feedId, String userId) {
 		Feed feed = feedRepository.findById(feedId).orElseThrow();
 
@@ -109,6 +133,7 @@ public class FeedService {
 		if (userId != null) {
 			if (likesService.isClickedLikes(feedId, userId))
 				likeFlag = true;
+
 		}
 
 		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
@@ -337,24 +362,9 @@ public class FeedService {
 		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
 	}
 
-	@Transactional
-	public void removeFeed(Long feedId, String userId) {
-		Feed feed = feedRepository.findById(feedId)
-			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
 
-		if (feed.getUserId().equals(userId)) {
-			feedRepository.delete(feed);
-			return;
-		}
-		throw new IllegalArgumentException("FEED_CANNOT_DELETE_ERROR");
-	}
 
-	private void saveFeedQueue(Feed feed, List<Long> followers) {
-		List<FeedQueue> feedQueues = followers.stream()
-			.map((follower) -> new FeedQueue(follower, feed))
-			.toList();
-		feedQueueRepository.saveAll(feedQueues);
-	}
+
 	@Transactional
 	public PagingFeedsResponse getLikesFeedIdList(String userId, Integer page) {
 		Pageable pageable = PageRequest.of(page, 5);
