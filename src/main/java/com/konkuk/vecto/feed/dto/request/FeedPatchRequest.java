@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.konkuk.vecto.feed.domain.TransportType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -78,6 +79,9 @@ public class FeedPatchRequest {
 		private String name;
 
 		private String address;
+
+		private TransportType transportType;
+		private Integer distance;
 	}
 
 }

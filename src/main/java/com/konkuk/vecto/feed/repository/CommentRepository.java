@@ -14,5 +14,6 @@ import com.konkuk.vecto.feed.domain.Feed;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
+    Page<Comment> findByFeedIdOrderByCreatedAtAsc(Pageable page, Long feedId);
 
 }

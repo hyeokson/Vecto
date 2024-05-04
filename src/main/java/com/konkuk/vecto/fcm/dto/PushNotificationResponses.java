@@ -7,7 +7,12 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
+@Builder
 public class PushNotificationResponses {
+    boolean isLastPage;
+
+    Integer nextPage;
+
     List<PushNotificationResponse> notifications;
 
     @Getter
@@ -15,6 +20,8 @@ public class PushNotificationResponses {
     @AllArgsConstructor
     public static class PushNotificationResponse{
         private String notificationType;
+
+        private Boolean requestedBefore;
 
         private Long feedId;
 

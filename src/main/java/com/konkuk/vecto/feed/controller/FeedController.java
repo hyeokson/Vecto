@@ -91,10 +91,11 @@ public class FeedController {
 	}
 	@Operation(summary = "댓글 반환", description = "게시글에 달린 댓글을 반환합니다. (비로그인 시)")
 	@GetMapping("/{feedId}/comments")
-	public ResponseCode<CommentsResponse> getComment(@PathVariable Long feedId) {
-		CommentsResponse commentsResponse = feedService.getFeedComments(feedId, null);
+	public ResponseCode<CommentsResponse> getComment(@PathVariable Long feedId, @RequestParam("page") Integer page) {
+		CommentsResponse commentsResponse = feedService.getFeedComments(feedId, null, page);
 
-		ResponseCode<CommentsResponse> responseCode = new ResponseCode<>(SuccessCode.COMMENT_GET);
+		ResponseCode<CommentsResponse> responseCode = new ResponseCode<>(
+				commentsResponse.isLastPage() ? SuccessCode.COMMENT_END : SuccessCode.COMMENT_GET);
 		responseCode.setResult(commentsResponse);
 
 		return responseCode;
@@ -102,17 +103,18 @@ public class FeedController {
 
 	@Operation(summary = "댓글 반환", description = "게시글에 달린 댓글을 반환합니다. (로그인 시)")
 	@PostMapping("/{feedId}/comments")
-	public ResponseCode<CommentsResponse> getComment(@PathVariable Long feedId,
+	public ResponseCode<CommentsResponse> getComment(@PathVariable Long feedId, @RequestParam("page") Integer page,
 		@Parameter(hidden = true) @UserInfo String userId) {
-		CommentsResponse commentsResponse = feedService.getFeedComments(feedId, userId);
+		CommentsResponse commentsResponse = feedService.getFeedComments(feedId, userId, page);
 
-		ResponseCode<CommentsResponse> responseCode = new ResponseCode<>(SuccessCode.COMMENT_GET);
+		ResponseCode<CommentsResponse> responseCode = new ResponseCode<>(
+				commentsResponse.isLastPage() ? SuccessCode.COMMENT_END : SuccessCode.COMMENT_GET);
 		responseCode.setResult(commentsResponse);
 
 		return responseCode;
 	}
 
-	@Operation(summary = "게시글 ID 리스트 반환", description = "게시글 탐색 화면에 보여질 게시글 ID 리스트를 반환합니다. (로그인 시)")
+	@Operation(summary = "게시글 리스트 반환", description = "게시글 탐색 화면에 보여질 게시글 리스트를 반환합니다. (로그인 시)")
 	@GetMapping("/feeds/personal")
 	public ResponseCode<LoadingFeedsResponse> getPersonalFeedList(@Parameter(hidden = true) @UserInfo String userId,
 																   @RequestParam("page") @NotNull Integer page,
@@ -128,7 +130,7 @@ public class FeedController {
 		return responseCode;
 	}
 
-	@Operation(summary = "게시글 ID 리스트 반환", description = "게시글 탐색 화면에 보여질 게시글 ID 리스트를 반환합니다. (비로그인 시)")
+	@Operation(summary = "게시글 리스트 반환", description = "게시글 탐색 화면에 보여질 게시글 리스트를 반환합니다. (비로그인 시)")
 	@GetMapping("/feedList")
 	public ResponseCode<LoadingFeedsResponse> getDefaultFeedList(@RequestParam("page") @NotNull Integer page) {
 		ResponseCode<LoadingFeedsResponse> responseCode;
@@ -143,14 +145,27 @@ public class FeedController {
 		return responseCode;
 	}
 
-	@Operation(summary = "게시글 검색 결과 반환", description = "키워드로 검색한 게시글 ID 리스트를 반환합니다.")
+	@Operation(summary = "게시글 검색 결과 반환", description = "키워드로 검색한 게시글 리스트를 반환합니다.(비로그인시)")
 	@GetMapping("/feeds/search")
 	public ResponseCode<PagingFeedsResponse> getKeywordFeedList(@RequestParam("page") @NotNull Integer page,
 																@NotNull @RequestParam("q") String keyword) {
 
 		ResponseCode<PagingFeedsResponse> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
 		log.info("keyword check: {}", keyword);
-		PagingFeedsResponse pagingFeedsResponse = feedService.getKeywordFeedList(page, keyword);
+		PagingFeedsResponse pagingFeedsResponse = feedService.getKeywordFeedList(page, keyword, null);
+		responseCode.setResult(pagingFeedsResponse);
+		return responseCode;
+	}
+
+	@Operation(summary = "게시글 검색 결과 반환", description = "키워드로 검색한 게시글 리스트를 반환합니다.(로그인시)")
+	@PostMapping("/feeds/search")
+	public ResponseCode<PagingFeedsResponse> getKeywordFeedListByLogin(@Parameter(hidden = true) @UserInfo String userId,
+																		@RequestParam("page") @NotNull Integer page,
+																@NotNull @RequestParam("q") String keyword) {
+
+		ResponseCode<PagingFeedsResponse> responseCode = new ResponseCode<>(SuccessCode.FEED_LIST_GET);
+		log.info("keyword check: {}", keyword);
+		PagingFeedsResponse pagingFeedsResponse = feedService.getKeywordFeedList(page, keyword, userId);
 		responseCode.setResult(pagingFeedsResponse);
 		return responseCode;
 	}
@@ -172,19 +187,32 @@ public class FeedController {
 		return new ResponseCode<>(SuccessCode.COMMENT_PATCH);
 	}
 
-	@Operation(summary = "좋아요를 누른 게시글 반환", description = "유저가 좋아요를 누른 피드 ID 리스트를 반환합니다.")
-	@GetMapping({"/likes"})
-	public ResponseCode<PagingFeedsResponse> getLikesFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
-		PagingFeedsResponse pagingFeedsResponse = this.feedService.getLikesFeedIdList(userId, page);
+	@Operation(summary = "좋아요를 누른 게시글 반환", description = "유저가 좋아요를 누른 피드 리스트를 반환합니다.")
+	@PostMapping("/likes")
+	public ResponseCode<PagingFeedsResponse> getLikesFeedList(@Parameter(hidden = true) @UserInfo String userId,
+																@RequestParam("page") @NotNull Integer page) {
+		log.info("userId: {}", userId);
+		PagingFeedsResponse pagingFeedsResponse = this.feedService.getLikesFeedList(userId, page);
 		ResponseCode<PagingFeedsResponse> responseCode = new ResponseCode<>(SuccessCode.LIKES_FEEDLIST_GET);
 		responseCode.setResult(pagingFeedsResponse);
 		return responseCode;
 	}
 
-	@Operation(summary = "유저가 작성한 게시글 반환", description = "유저가 작성한 게시글 ID 리스트를 반환합니다.")
-	@GetMapping
-	public ResponseCode<PagingFeedsResponse> getUserFeedIdList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
-		PagingFeedsResponse pagingFeedsResponse = this.feedService.getUserFeedIdList(userId, page);
+	@Operation(summary = "유저가 작성한 게시글 반환", description = "유저가 작성한 게시글 ID 리스트를 반환합니다.(비로그인시)")
+	@GetMapping("/user")
+	public ResponseCode<PagingFeedsResponse> getUserFeedList(@RequestParam("userId") String userId, @RequestParam("page") @NotNull Integer page) {
+		PagingFeedsResponse pagingFeedsResponse = this.feedService.getUserFeedList(userId, page, null);
+		ResponseCode<PagingFeedsResponse> responseCode = new ResponseCode<>(SuccessCode.USER_FEEDLIST_GET);
+		responseCode.setResult(pagingFeedsResponse);
+		return responseCode;
+	}
+
+	@Operation(summary = "유저가 작성한 게시글 반환", description = "유저가 작성한 게시글 ID 리스트를 반환합니다.(로그인시)")
+	@PostMapping("/user")
+	public ResponseCode<PagingFeedsResponse> getUserFeedListByLogin(@Parameter(hidden = true) @UserInfo String userId,
+																	@RequestParam("userId") String baseUserId,
+																	@RequestParam("page") @NotNull Integer page) {
+		PagingFeedsResponse pagingFeedsResponse = this.feedService.getUserFeedList(baseUserId, page, userId);
 		ResponseCode<PagingFeedsResponse> responseCode = new ResponseCode<>(SuccessCode.USER_FEEDLIST_GET);
 		responseCode.setResult(pagingFeedsResponse);
 		return responseCode;

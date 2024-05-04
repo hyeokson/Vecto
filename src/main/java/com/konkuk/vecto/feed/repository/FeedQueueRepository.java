@@ -18,9 +18,9 @@ import com.konkuk.vecto.feed.domain.FeedQueue;
 @Repository
 public interface FeedQueueRepository extends JpaRepository<FeedQueue, Long> {
 
-	@Query("SELECT fq FROM FeedQueue fq WHERE fq.userId = :userId "
+	@Query("SELECT fq.feed.id FROM FeedQueue fq WHERE fq.userId = :userId "
 		+ "ORDER BY fq.createdAt DESC")
-	Page<FeedQueue> findFeedIdByUserId(Pageable pageable, @Param("userId")Long userId);
+	Page<Long> findFeedIdByUserId(Pageable pageable, @Param("userId")Long userId);
 
 	@Modifying
 	@Query("DELETE FROM FeedQueue fq WHERE fq.feed = :feed")

@@ -13,5 +13,5 @@ public class LoadingFeedsResponse {
 	boolean isLastPage;
 	boolean isFollowPage;
 	Integer nextPage;
-	List<Long> feedIds;
+	List<FeedResponse> feeds;
 }

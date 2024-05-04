@@ -44,9 +44,11 @@ public class WebSecurityConfig {
                 .requestMatchers("/swagger").requestMatchers("/v3/**")
                 .requestMatchers("/userId/check").requestMatchers("/login")
                 .requestMatchers("/mail")
-                .requestMatchers(HttpMethod.GET, "/feed/feedList", "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments",
-                        "/feed/likes", "/feed")
-                .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy");
+                .requestMatchers(HttpMethod.GET, "/feed/feedList",
+                        "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments","/feed",
+                        "/feed/user")
+                .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy")
+                .requestMatchers(HttpMethod.GET, "/follow/follower", "/follow/followed");
     }
 
     /**

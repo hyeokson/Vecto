@@ -1,6 +1,9 @@
 package com.konkuk.vecto.follow.controller;
 
 import com.konkuk.vecto.fcm.service.FcmService;
+import com.konkuk.vecto.follow.dto.FollowRelationRequest;
+import com.konkuk.vecto.follow.dto.FollowRelationResponse;
+import com.konkuk.vecto.follow.dto.FollowRelationWithUserInfoResponse;
 import com.konkuk.vecto.follow.service.FollowService;
 import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
 import com.konkuk.vecto.security.model.common.codes.ResponseCode;
@@ -43,13 +46,38 @@ public class FollowController {
         else
             return new ResponseCode<>(SuccessCode.FOLLOW_ALREADY_DELETE);
     }
-    @Operation(summary = "팔로우 여부 반환", description = "로그인 유저가 해당 유저를 팔로우 하는지의 여부를 반환합니다.")
-    @GetMapping("{userId}")
+    @Operation(summary = "팔로우 여부 반환", description = "로그인 유저와 인수로 넘어온 유저들과의 팔로우 관계를 반환합니다.")
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<String> followCheck(@PathVariable("userId") String followUserId, @Parameter(hidden = true) @UserInfo String userId){
-        if(followService.isFollowing(followUserId, userId))
-            return new ResponseCode<>(SuccessCode.FOLLOWING);
-        else
-            return new ResponseCode<>(SuccessCode.NOT_FOLLOWING);
+    public ResponseCode<FollowRelationResponse> followCheck(@RequestBody FollowRelationRequest followRelationRequest,
+                                            @Parameter(hidden = true) @UserInfo String userId){
+        FollowRelationResponse followRelationResponse=followService.getFollowRelation(
+                followRelationRequest, userId
+        );
+        ResponseCode<FollowRelationResponse> responseCode=new ResponseCode<>(SuccessCode.FOLLOW_RELATION);
+        responseCode.setResult(followRelationResponse);
+        return responseCode;
+    }
+
+    @Operation(summary = "팔로워 userId 반환", description = "특정 유저를 팔로우하는 유저들의 userId를 반환합니다.")
+    @GetMapping("follower")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<FollowRelationWithUserInfoResponse> getFollowersUserId(@RequestParam("userId") String userId){
+        FollowRelationWithUserInfoResponse response=followService.getFollowersUserId(userId);
+        ResponseCode<FollowRelationWithUserInfoResponse> responseCode
+                =new ResponseCode<>(SuccessCode.FOLLOWER_USERID);
+        responseCode.setResult(response);
+        return responseCode;
+    }
+
+    @Operation(summary = "팔로잉 userId 반환", description = "특정 유저가 팔로잉하는 유저들의 userId를 반환합니다.")
+    @GetMapping("followed")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<FollowRelationWithUserInfoResponse> getFollowingsUserId(@RequestParam("userId") String userId)
+    {
+        FollowRelationWithUserInfoResponse response=followService.getFollowingUserId(userId);
+        ResponseCode<FollowRelationWithUserInfoResponse> responseCode=new ResponseCode<>(SuccessCode.FOLLOWED_USERID);
+        responseCode.setResult(response);
+        return responseCode;
     }
 }

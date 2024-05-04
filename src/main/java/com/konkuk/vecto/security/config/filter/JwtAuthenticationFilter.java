@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private UserDetailsService userService;
+    private final UserDetailsService userService;
 
     public JwtAuthenticationFilter(UserDetailsService userService) {
         this.userService = userService;

@@ -32,8 +32,10 @@ public class Feed {
 
 	private String title;
 	private String content;
+
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime uploadTime;
+
 	@OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
 	private List<FeedMovement> feedMovements = new ArrayList<>();
 

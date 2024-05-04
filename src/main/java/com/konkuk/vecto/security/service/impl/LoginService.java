@@ -42,10 +42,12 @@ public class LoginService {
             String sql=
                     "update User u" +
                             " set u.fcmToken = :value" +
-                            " where userId <> :userId";
+                            " where userId <> :userId" +
+                            " and u.fcmToken = :value2";
             em.createQuery(sql)
                     .setParameter("value", null)
                     .setParameter("userId", userId)
+                    .setParameter("value2", fcmToken)
                     .executeUpdate();
         }
 
@@ -53,8 +55,8 @@ public class LoginService {
         return TokenUtils.generateJwtToken(user.get());
     }
 
-    public Integer getUserSizeByFcmToken(String userId){
-        List<User> user = userRepository.findByFcmToken(userId);
+    public Integer getUserSizeByFcmToken(String fcmToken){
+        List<User> user = userRepository.findByFcmToken(fcmToken);
         return (Integer)user.size();
     }
 }

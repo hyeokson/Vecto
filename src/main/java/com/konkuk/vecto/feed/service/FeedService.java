@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
+
+import com.konkuk.vecto.fcm.domain.PushNotification;
 import com.konkuk.vecto.feed.domain.FeedQueue;
 import com.konkuk.vecto.feed.dto.response.LoadingFeedsResponse;
 import com.konkuk.vecto.feed.dto.response.PagingFeedsResponse;
@@ -138,6 +140,7 @@ public class FeedService {
 
 		UserInfoResponse userInfo = userService.findUser(feed.getUserId());
 		return FeedResponse.builder()
+				.feedId(feed.getId())
 			.title(feed.getTitle())
 			.content(feed.getContent())
 			.timeDifference(differ)
@@ -195,11 +198,13 @@ public class FeedService {
 			.toList();
 	}
 
-	public CommentsResponse getFeedComments(Long feedId, String userId) {
+	public CommentsResponse getFeedComments(Long feedId, String userId, Integer page) {
 		Feed feed = feedRepository.findById(feedId)
 			.orElseThrow(() -> new IllegalArgumentException("FEED_NOT_FOUND_ERROR"));
-
-		return new CommentsResponse(feed.getComments()
+		Pageable pageable = PageRequest.of(page, 20);
+		Page<Comment> comments = commentRepository.findByFeedIdOrderByCreatedAtAsc(
+				pageable, feed.getId());
+		List<CommentsResponse.CommentResponse> commentResponses = comments.getContent()
 			.stream()
 			.map(comment -> {
 				boolean likeFlag = false;
@@ -210,26 +215,38 @@ public class FeedService {
 						likeFlag = true;
 				}
 
-				return new CommentsResponse.CommentResponse(comment.getId(), userInfo.getNickName(), userInfo.getUserId(),
-					comment.getComment(),
-					timeDifferenceCalculator.formatTimeDifferenceKorean(comment.getCreatedAt()),
-					userInfo.getProfileUrl(), comment.getLikeCount(), likeFlag);
+				return CommentsResponse.CommentResponse.builder()
+						.commentId(comment.getId())
+						.updatedBefore(!comment.getUpdatedAt().isEqual(comment.getCreatedAt()))
+						.nickName(userInfo.getNickName())
+						.userId(userInfo.getUserId())
+						.content(comment.getComment())
+						.timeDifference(timeDifferenceCalculator.formatTimeDifferenceKorean(comment.getCreatedAt()))
+						.profileUrl(userInfo.getProfileUrl())
+						.commentCount(comment.getLikeCount())
+						.likeFlag(likeFlag)
+						.build();
 			})
-			.toList());
+			.toList();
+		return CommentsResponse.builder()
+				.isLastPage(comments.isLast())
+				.nextPage(comments.isLast() ? 0 : page+1)
+				.comments(commentResponses)
+				.build();
 	}
 
 	public LoadingFeedsResponse getDefaultFeedList(Integer page, Integer pageSize) {
 		Pageable pageable = PageRequest.of(page, pageSize);
 		Page<Feed> result = feedRepository.findAllByOrderByUploadTimeDesc(pageable);
-		List<Long> feedIds = result.getContent()
-			.stream().map(Feed::getId).toList();
+		List<FeedResponse> feeds = result.getContent()
+			.stream().map((feed)->getFeed(feed.getId(), null)).toList();
 
 		if(result.isLast()){
 			return LoadingFeedsResponse.builder()
 					.isLastPage(result.isLast())
                     .isFollowPage(false)
 					.nextPage(0)
-					.feedIds(feedIds)
+					.feeds(feeds)
 					.build();
 		}
 		else{
@@ -237,7 +254,7 @@ public class FeedService {
 					.isLastPage(result.isLast())
                     .isFollowPage(false)
 					.nextPage(page+1)
-					.feedIds(feedIds)
+					.feeds(feeds)
 					.build();
 		}
 
@@ -251,13 +268,10 @@ public class FeedService {
 		).getId();
 
 		if(isFollowPage) {
-			Page<FeedQueue> result = feedQueueRepository.findFeedIdByUserId(pageable, id);
-			List<Long> feedIds = result.getContent().stream()
-					.map((feedQueue) -> feedQueue.getFeed().getId())
-					.toList();
+			Page<Long> feedIds = feedQueueRepository.findFeedIdByUserId(pageable, id);
 
-			if(result.isLast()){
-                boolean followFeedUnavailable = (feedIds.size() == 0);
+			if(feedIds.isLast()){
+                boolean followFeedUnavailable = (feedIds.getSize() == 0);
 				if(followFeedUnavailable) {
 					pageable = PageRequest.of(0, 5);
 				}
@@ -269,7 +283,8 @@ public class FeedService {
 							.isLastPage(isLastPage)
 							.isFollowPage(false)
 							.nextPage(0)
-							.feedIds(feedIds)
+							.feeds(feedIds.getContent()
+									.stream().map((feedId)->getFeed(feedId, userId)).toList())
 							.build();
 				}
 
@@ -279,22 +294,23 @@ public class FeedService {
 						.isLastPage(false)
 						.isFollowPage(true)
 						.nextPage(page+1)
-						.feedIds(feedIds)
+						.feeds(feedIds.getContent()
+								.stream().map((feedId)->getFeed(feedId, userId)).toList())
 						.build();
 			}
 		}
 
 
 		Page<Feed> result = feedRepository.findNotFollowFeed(id, pageable);
-		List<Long> feedIds = result.getContent()
-				.stream().map(Feed::getId).toList();
+		List<FeedResponse> feeds = result.getContent()
+				.stream().map((feed)->getFeed(feed.getId(), userId)).toList();
 
 		if(result.isLast()){
 			return LoadingFeedsResponse.builder()
 					.isLastPage(result.isLast())
 					.isFollowPage(false)
 					.nextPage(0)
-					.feedIds(feedIds)
+					.feeds(feeds)
 					.build();
 		}
 		else{
@@ -302,31 +318,31 @@ public class FeedService {
 					.isLastPage(result.isLast())
 					.isFollowPage(false)
 					.nextPage(page+1)
-					.feedIds(feedIds)
+					.feeds(feeds)
 					.build();
 		}
 
 
 	}
 
-	public PagingFeedsResponse getKeywordFeedList(Integer page, String keyword) {
+	public PagingFeedsResponse getKeywordFeedList(Integer page, String keyword, String userId) {
 		Pageable pageable = PageRequest.of(page, 5);
 		Page<Feed> result = feedRepository.findByKeyWord(pageable, "%" + keyword + "%");
-		List<Long> feedIds = result.getContent()
-				.stream().map(Feed::getId).toList();
 
 		if(result.isLast()){
 			return PagingFeedsResponse.builder()
 					.isLastPage(result.isLast())
 					.nextPage(0)
-					.feedIds(feedIds)
+					.feeds(result.getContent()
+							.stream().map((feed)->getFeed(feed.getId(), userId)).toList())
 					.build();
 		}
 		else{
 			return PagingFeedsResponse.builder()
 					.isLastPage(result.isLast())
 					.nextPage(page+1)
-					.feedIds(feedIds)
+					.feeds(result.getContent()
+							.stream().map((feed)->getFeed(feed.getId(), userId)).toList())
 					.build();
 		}
 	}
@@ -366,47 +382,48 @@ public class FeedService {
 
 
 	@Transactional
-	public PagingFeedsResponse getLikesFeedIdList(String userId, Integer page) {
+	public PagingFeedsResponse getLikesFeedList(String userId, Integer page) {
 		Pageable pageable = PageRequest.of(page, 5);
 		Page<Feed> result = this.feedRepository.findLikesFeedByUserId(userId, pageable);
-		List<Long> feedIds = result.getContent()
-				.stream().map(Feed::getId).toList();
-
+		log.info("userId: {}", userId);
+		log.info("result: {}", result.toString());
 		if(result.isLast()){
 			return PagingFeedsResponse.builder()
 					.isLastPage(result.isLast())
 					.nextPage(0)
-					.feedIds(feedIds)
+					.feeds(result.getContent()
+							.stream().map((feed)->getFeed(feed.getId(), userId)).toList())
 					.build();
 		}
 		else{
 			return PagingFeedsResponse.builder()
 					.isLastPage(result.isLast())
 					.nextPage(page+1)
-					.feedIds(feedIds)
+					.feeds(result.getContent()
+							.stream().map((feed)->getFeed(feed.getId(), userId)).toList())
 					.build();
 		}
 	}
 
 	@Transactional
-	public PagingFeedsResponse getUserFeedIdList(String userId, Integer page) {
+	public PagingFeedsResponse getUserFeedList(String baseUserId, Integer page, String userId) {
 		Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("uploadTime")));
-		Page<Feed> result = this.feedRepository.findAllByUserId(userId, pageable);
-		List<Long> feedIds = result.getContent()
-				.stream().map(Feed::getId).toList();
+		Page<Feed> result = this.feedRepository.findAllByUserId(baseUserId, pageable);
 
 		if(result.isLast()){
 			return PagingFeedsResponse.builder()
 					.isLastPage(result.isLast())
 					.nextPage(0)
-					.feedIds(feedIds)
+					.feeds(result.getContent()
+							.stream().map((feed)->getFeed(feed.getId(), userId)).toList())
 					.build();
 		}
 		else{
 			return PagingFeedsResponse.builder()
 					.isLastPage(result.isLast())
 					.nextPage(page+1)
-					.feedIds(feedIds)
+					.feeds(result.getContent()
+							.stream().map((feed)->getFeed(feed.getId(), userId)).toList())
 					.build();
 		}
 	}

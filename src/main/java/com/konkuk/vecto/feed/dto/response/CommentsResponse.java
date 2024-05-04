@@ -15,13 +15,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class CommentsResponse {
+	boolean isLastPage;
+
+	Integer nextPage;
 
 	private List<CommentResponse> comments;
 
 	@Getter
 	@AllArgsConstructor
+	@Builder
 	public static class CommentResponse {
 		private Long commentId;
+
+		private Boolean updatedBefore;
 
 		private String nickName;
 

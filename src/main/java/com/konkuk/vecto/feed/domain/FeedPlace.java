@@ -2,20 +2,12 @@ package com.konkuk.vecto.feed.domain;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest.Place;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,17 +32,30 @@ public class FeedPlace {
 
 	private Long orderNum;
 
-
 	private LocalDateTime enterTime;
+
 	private LocalDateTime endTime;
+
+	//사용자의 위치 평균으로 측정한 방문지 위치
 	private Double lng;
+
 	private Double lat;
+
+	//사용자가 임의로 설정한 방문지 위치
 	private Double lngSet;
+
 	private Double latSet;
+
 	private Integer stayTime;
+
 	private String name;
 
 	private String address;
+
+	@Enumerated(EnumType.STRING)
+	private TransportType transportType;
+
+	private Integer distance;
 
 	public void setFeed(Feed feed) {
 		this.feed = feed;
@@ -66,6 +71,8 @@ public class FeedPlace {
 		this.stayTime = place.getStayTime();
 		this.name = place.getName();
 		this.address = place.getAddress();
+		this.transportType=place.getTransportType();
+		this.distance=place.getDistance();
 	}
 
 }

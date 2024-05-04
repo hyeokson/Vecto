@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.konkuk.vecto.feed.domain.TransportType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,6 +24,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class FeedResponse {
+
+	private Long feedId;
 
 	@Schema(description = "제목은 비울 수 없습니다.")
 	@NotBlank(message = "FEED_TITLE_NOT_BLANK_ERROR")
@@ -103,6 +106,9 @@ public class FeedResponse {
 
 		private String name;
 
+		private TransportType transportType;
+		private Integer distance;
+
 		public Place(FeedPlace feedPlace) {
 			this.enterTime = feedPlace.getEnterTime();
 			this.endTime = feedPlace.getEndTime();
@@ -112,6 +118,8 @@ public class FeedResponse {
 			this.latSet = feedPlace.getLatSet();
 			this.stayTime = feedPlace.getStayTime();
 			this.name = feedPlace.getName();
+			this.transportType=feedPlace.getTransportType();
+			this.distance=feedPlace.getDistance();
 		}
 	}
 

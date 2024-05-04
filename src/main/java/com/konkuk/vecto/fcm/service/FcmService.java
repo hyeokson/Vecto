@@ -34,8 +34,11 @@ public class FcmService {
     public void sendCommentAlarm(Long feedId, String fromUserId) {
         String toUserId = this.feedService.getUserIdFromFeed(feedId);
         if (!fromUserId.equals(toUserId)) {
+
             String fcmToken = this.userService.getFcmToken(toUserId);
             String nickName = this.userService.getNickName(fromUserId);
+            if(fcmToken == null)
+                return;
             Message message = Message.builder()
                     .putData("title", "vecto")
                     .putData("body", nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.")
@@ -46,14 +49,14 @@ public class FcmService {
             User user = userRepository.findByUserId(toUserId).orElseThrow();
             PushNotification pushNotification = PushNotification.builder()
                     .user(user)
+                    .requestedBefore(false)
                     .content(nickName + "님께서 회원님의 게시글에 댓글을 달았습니다.")
                     .feedId(feedId)
                     .fromUserId(fromUserId)
                     .notificationType(NotificationType.COMMENT.getNotificationType())
                     .build();
             pushNotificationRepository.save(pushNotification);
-            if(fcmToken == null)
-                return;
+
             this.sendAlarm(message, toUserId);
         }
     }
@@ -63,7 +66,8 @@ public class FcmService {
     public void sendFollowAlarm(String fromUserId, String toUserId) {
         String fcmToken = this.userService.getFcmToken(toUserId);
         String nickName = this.userService.getNickName(fromUserId);
-
+        if(fcmToken == null)
+            return;
         Message message = Message.builder()
                 .putData("title", "vecto")
                 .putData("body", nickName + "님께서 회원님을 팔로우하기 시작했습니다.")
@@ -73,14 +77,14 @@ public class FcmService {
         User user = userRepository.findByUserId(toUserId).orElseThrow();
         PushNotification pushNotification = PushNotification.builder()
                 .user(user)
+                .requestedBefore(false)
                 .content(nickName + "님께서 회원님을 팔로우하기 시작했습니다.")
                 .feedId((long) -1)
                 .fromUserId(fromUserId)
                 .notificationType(NotificationType.FOLLOW.getNotificationType())
                 .build();
         pushNotificationRepository.save(pushNotification);
-        if(fcmToken == null)
-            return;
+
         this.sendAlarm(message, toUserId);
     }
 
