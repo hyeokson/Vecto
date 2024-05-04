@@ -11,6 +11,8 @@
 |  |  |  | 
 |                            [심준보](https://github.com/Vecto-Konkuk)                            |                           [손찬혁](https://github.com/hyeokson)                           |                          [백종현](https://github.com/jhbaik1501)                          |
 
+개발 기간: 2023.09 ~ 2023.12
+
 ## 📝 프로젝트 소개
 
 Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 있는 SNS입니다.  
@@ -23,15 +25,15 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
 </br>
 
 **<기대 효과>**  
-1) 신뢰할 수 있는 방문지 리뷰  
+**1) 신뢰할 수 있는 방문지 리뷰**  
 사용자의 위치를 GPS로 추적하여 실제로 방문한 장소와 경로만 게시글에 올릴 수 있습니다.  
 따라서 광고성 리뷰 또는 광고료를 받고 작성된 대가성 리뷰는 제공하지 않으므로 사용자들은 신뢰할 수 있는 데이트 경로 정보를 사용할 수 있습니다.    
 
-2) 서로 소통할 수 있는 SNS  
+**2) 서로 소통할 수 있는 SNS**  
 일반적인 SNS처럼 사용자들이 작성한 게시글을 팔로우, 댓글, 좋아요 기능을 통해 서로 소통할 수 있고 게시글의 정보를 평가할 수 있습니다.  
 또한, 질 좋은 정보를 제공하는 사용자는 팔로잉을 많이 받을 수 있고 게시글의 좋아요를 많이 받으므로 다른 사용자들이 질 좋은 정보를 제공할 수 있는 동기부여를 제공할 수 있고, 사용자들이 데이트 코스를 선택하는 기준을 제공해줍니다.    
 
-3) 추천 방문지 및 데이트 경로 제공  
+**3) 추천 방문지 및 데이트 경로 제공**  
 방문지를 검색했을 때, 방문지에 대한 리뷰와 정보뿐만 아니라 인근의 다른 추천 방문지들이 코스로 제공되기 때문에 개별 방문지들을 검색하는 것보다 더 효율적으로 질 좋은 컨텐츠를 제공받을 수 있습니다.    
 
 
@@ -43,8 +45,7 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
 
 **Deploy**  
 
-<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon rds-527FFF?style=for-the-badge&logo=Amazon rds&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon s3-569A31?style=for-the-badge&logo=Amazon s3&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon rds-527FFF?style=for-the-badge&logo=Amazon rds&logoColor=white"/>  
 
 **Frontend(Web)**
 - **Language**
@@ -70,6 +71,8 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
   <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=spring boot&logoColor=white"/>
   <img src="https://img.shields.io/badge/gmail server-EA4335?style=for-the-badge&logo=gmail server&logoColor=white"/>
   <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"/>
+  <img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=spring security&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon s3-569A31?style=for-the-badge&logo=Amazon s3&logoColor=white"/>
   
 - **Database**
 
@@ -168,9 +171,53 @@ Vecto 애플리케이션은 사용자들의 데이트 경로를 공유할 수 �
   <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/ca9eb3a9-c9e3-4888-8e88-ff0349605198"/>  
   <img width="600px;" src="https://github.com/Vecto-Konkuk/spring-backend/assets/127181634/3b84173f-f85c-4146-ae17-9e93d57eab74"/>  
 
+</br>
 
-
+## 💻 Server
+- **[Server API(Swagger)]**: https://vec-to.net/swagger-ui/index.html
   
+- **로그인 및 인증 기능**  
+  애플리케이션을 위한 Restful API 서버를 개발해야하기 때문에 세션, 쿠키가 필요없는 JWT 인증방식을 사용했습니다.  
+  그리고 인증 방식을 쉽고 안전하게 구현하기 위해서 Spring Security를 사용하여 인증체계를 구축했습니다.  
+  Username and Password Authentication Mechanism 을 사용하지 않으므로 JwtAuthenticationFilter를 따로 만들어서 JWT를 인증할 수 있도록 개발했습니다.  
+  로그인을 하게 되면 프론트에 JWT를 반환하고 그 후의 request에서 header에 JWT를 넣으면 서버의 여러 기능들을 사용할 수 있습니다.  
+
+- **게시글 및 댓글 기능**  
+  FeedController를 통해서 게시글과 댓글의 CRUD 기능을 구현했습니다.  
+  애플리케이션의 게시글 탐색 화면에서 게시글을 조회할 때는 Paging을 사용하여 DB에서 정보를 가져왔고, 로그인 상태와 비로그인 상태를 구별해서 게시글 정보를 반환하도록 구현했습니다.  
+  로그인 상태에서는 팔로우를 한 유저의 게시글을 조회하고 나서 팔로우를 하지 않은 유저의 게시글을 조회할 수 있습니다.  
+  비로그인 상태에서는 처음부터 팔로우 여부와 관계없이 시간 순서대로 게시글을 조회할 수 있습니다.  
+
+- **팔로우 및 좋아요 기능**  
+  각각 FollowController, LikesController, CommentLikesController가 CRUD를 담당합니다.  
+  팔로우 및 게시글 좋아요 기능을 사용하게 되면 해당 유저에게 푸쉬알림이 가도록 구현했습니다.  
+  푸쉬알림은 Firebase의 Cloud Messaging 기능을 사용해서 팔로우 및 좋아요 기능을 사용한 직후에 바로 유저의 앱에 알림이 뜨게 됩니다.  
+
+- **이미지 저장 기능**  
+  ImageController에서 게시글 사진과 프로필 사진 저장 및 조회 기능을 담당합니다.  
+  이미지 파일은 용량이 크기 때문에 Amazon S3를 활용하여 이미지를 저장하고, 해당 이미지 URL을 프론트에 보내주게 됩니다.  
+  
+</br>
+
+## 💾 ERD  
+
+- **유저 정보 테이블을 중심으로 한 ERD**
+  
+<img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/4d5c36f3-19c6-4526-874c-941c3b704ea7"/>
+
+- **팔로우 테이블 ERD**
+
+  <img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/5ff787c2-880e-484d-ad5a-625b969c105a"/>
+
+- **게시글 테이블을 중심으로 한 ERD**
+  
+  <img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/0364f80c-299f-4d84-ae3a-cd1c455693b9"/>
+  <img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/c4dafeb5-9a3b-4ffc-866a-1ad79ed9eb5b"/>
+  <img width="600px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/537b1476-81d6-4e19-89b5-b6da0df35544"/>
+  <img width="400px;" src="https://github.com/hyeokson/spring-backend/assets/127181634/826bc286-0ca6-4ec3-b1e1-ed15b4ef9ff3"/>
+
+
+
 
 
   
