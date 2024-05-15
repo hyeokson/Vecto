@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.konkuk.vecto.image.common.dto.Image;
 import com.konkuk.vecto.image.common.s3.BucketName;
 import com.konkuk.vecto.image.common.utils.ImageUtil;
-import com.konkuk.vecto.security.service.UserService;
+import com.konkuk.vecto.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 

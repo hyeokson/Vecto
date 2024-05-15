@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.konkuk.vecto.image.common.dto.ImageUrlResponse;
-import com.konkuk.vecto.security.model.common.codes.ResponseCode;
-import com.konkuk.vecto.security.model.common.codes.SuccessCode;
+import com.konkuk.vecto.user.model.common.codes.ResponseCode;
+import com.konkuk.vecto.user.model.common.codes.SuccessCode;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.konkuk.vecto.image.common.dto.Image;
 import com.konkuk.vecto.image.service.ImageService;
-import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
+import com.konkuk.vecto.global.argumentresolver.UserInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

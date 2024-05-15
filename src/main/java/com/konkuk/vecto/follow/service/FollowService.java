@@ -10,8 +10,8 @@ import com.konkuk.vecto.follow.dto.FollowRelationResponse;
 import com.konkuk.vecto.follow.dto.FollowRelationType;
 import com.konkuk.vecto.follow.dto.FollowRelationWithUserInfoResponse;
 import com.konkuk.vecto.follow.repository.FollowRepository;
-import com.konkuk.vecto.security.domain.User;
-import com.konkuk.vecto.security.repository.UserRepository;
+import com.konkuk.vecto.user.domain.User;
+import com.konkuk.vecto.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor

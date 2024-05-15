@@ -1,8 +1,7 @@
 package com.konkuk.vecto.likes.domain;
 
 import com.konkuk.vecto.feed.domain.Comment;
-import com.konkuk.vecto.feed.domain.Feed;
-import com.konkuk.vecto.security.domain.User;
+import com.konkuk.vecto.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

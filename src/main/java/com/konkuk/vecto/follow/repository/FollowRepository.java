@@ -1,7 +1,7 @@
 package com.konkuk.vecto.follow.repository;
 
 import com.konkuk.vecto.follow.domain.Follow;
-import com.konkuk.vecto.security.domain.User;
+import com.konkuk.vecto.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

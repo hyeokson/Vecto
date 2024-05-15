@@ -55,6 +55,9 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/ca.pjer/logback-awslogs-appender
 	implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
+
+	//redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

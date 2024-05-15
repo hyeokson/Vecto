@@ -2,9 +2,9 @@ package com.konkuk.vecto.fcm.controller;
 
 import com.konkuk.vecto.fcm.dto.PushNotificationResponses;
 import com.konkuk.vecto.fcm.service.PushNotificationService;
-import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
-import com.konkuk.vecto.security.model.common.codes.ResponseCode;
-import com.konkuk.vecto.security.model.common.codes.SuccessCode;
+import com.konkuk.vecto.global.argumentresolver.UserInfo;
+import com.konkuk.vecto.user.model.common.codes.ResponseCode;
+import com.konkuk.vecto.user.model.common.codes.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

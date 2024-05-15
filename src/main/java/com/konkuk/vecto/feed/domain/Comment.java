@@ -49,13 +49,6 @@ public class Comment {
 		this.likeCount = 0;
 	}
 
-	public void increaseLikeCount() {
-		this.likeCount += 1;
-	}
-
-	public void decreaseLikeCount() {
-		this.likeCount -= 1;
-	}
 
 	public void setComment(String comment) {
 		this.comment = comment;

@@ -10,9 +10,9 @@ import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.response.CommentsResponse;
 import com.konkuk.vecto.feed.dto.response.FeedResponse;
 import com.konkuk.vecto.feed.service.FeedService;
-import com.konkuk.vecto.security.config.argumentresolver.UserInfo;
-import com.konkuk.vecto.security.model.common.codes.ResponseCode;
-import com.konkuk.vecto.security.model.common.codes.SuccessCode;
+import com.konkuk.vecto.global.argumentresolver.UserInfo;
+import com.konkuk.vecto.user.model.common.codes.ResponseCode;
+import com.konkuk.vecto.user.model.common.codes.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,8 +21,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController

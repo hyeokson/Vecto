@@ -1,13 +1,10 @@
 package com.konkuk.vecto.likes.service;
 
 import com.konkuk.vecto.feed.domain.Comment;
-import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.repository.CommentRepository;
-import com.konkuk.vecto.feed.repository.FeedRepository;
 import com.konkuk.vecto.likes.domain.CommentLikes;
-import com.konkuk.vecto.likes.domain.Likes;
 import com.konkuk.vecto.likes.repository.CommentLikesRepository;
-import com.konkuk.vecto.security.repository.UserRepository;
+import com.konkuk.vecto.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +20,8 @@ public class CommentLikesService {
 
     @Transactional
     public boolean saveCommentLikes(Long commentId, String userId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("COMMENT_NOT_FOUND_ERROR"));
         if(!isClickedLikes(commentId, userId)){
-            comment.increaseLikeCount();
+            commentRepository.increaseLikeCount(commentId);
             commentLikesRepository.insertCommentLikes(commentId, userRepository.findByUserId(userId).orElseThrow().getId());
             return true;
         }
@@ -35,10 +30,8 @@ public class CommentLikesService {
 
     @Transactional
     public boolean deleteCommentLikes(Long commentId, String userId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("COMMENT_NOT_FOUND_ERROR"));
         if(isClickedLikes(commentId, userId)){
-            comment.decreaseLikeCount();
+            commentRepository.decreaseLikeCount(commentId);
             commentLikesRepository.deleteByCommentIdAndUserId(commentId, userRepository.findByUserId(userId).orElseThrow().getId());
             return true;
         }

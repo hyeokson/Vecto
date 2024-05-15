@@ -1,6 +1,6 @@
 package com.konkuk.vecto.follow.domain;
 
-import com.konkuk.vecto.security.domain.User;
+import com.konkuk.vecto.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

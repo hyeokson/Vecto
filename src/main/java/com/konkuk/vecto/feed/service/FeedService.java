@@ -1,12 +1,10 @@
 package com.konkuk.vecto.feed.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
-import com.konkuk.vecto.fcm.domain.PushNotification;
 import com.konkuk.vecto.feed.domain.FeedQueue;
 import com.konkuk.vecto.feed.dto.response.LoadingFeedsResponse;
 import com.konkuk.vecto.feed.dto.response.PagingFeedsResponse;
@@ -35,9 +33,9 @@ import com.konkuk.vecto.feed.dto.request.CommentRequest;
 import com.konkuk.vecto.feed.dto.request.FeedSaveRequest;
 import com.konkuk.vecto.feed.dto.response.CommentsResponse;
 import com.konkuk.vecto.feed.dto.response.FeedResponse;
-import com.konkuk.vecto.security.dto.UserInfoResponse;
-import com.konkuk.vecto.security.repository.UserRepository;
-import com.konkuk.vecto.security.service.UserService;
+import com.konkuk.vecto.user.dto.UserInfoResponse;
+import com.konkuk.vecto.user.repository.UserRepository;
+import com.konkuk.vecto.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

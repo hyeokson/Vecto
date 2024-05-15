@@ -1,7 +1,6 @@
 package com.konkuk.vecto.fcm.domain;
 
-import com.konkuk.vecto.feed.domain.Feed;
-import com.konkuk.vecto.security.domain.User;
+import com.konkuk.vecto.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
