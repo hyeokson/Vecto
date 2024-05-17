@@ -48,7 +48,7 @@ public class WebSecurityConfig {
                         "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments","/feed",
                         "/feed/user")
                 .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy")
-                .requestMatchers(HttpMethod.GET, "/follow/follower", "/follow/followed");
+                .requestMatchers(HttpMethod.GET, "/follow/follower", "/follow/followed", "/health");
     }
 
     /**
