@@ -109,32 +109,37 @@ public enum ErrorCode {
     USER_NOT_FOUND_ERROR(400, "E020", "사용자 정보가 존재하지 않습니다."),
 
     // JWT 에러
-    JWT_TOKEN_NOT_MATCH_ERROR(403, "E021", "JWT 토큰에 해당하는 사용자 정보가 없습니다."),
-    JWT_TOKEN_INVALID_ERROR(403, "E022", "JWT 토큰이 잘못되었거나 유효기간이 만료되었습니다."),
-    JWT_TOKEN_IS_NULL_ERROR(403, "E023", "JWT 토큰이 존재하지 않습니다."),
+    ACCESS_TOKEN_NOT_MATCH_ERROR(401, "E021", "Access 토큰에 해당하는 사용자 정보가 없습니다."),
+    ACCESS_TOKEN_INVALID_ERROR(401, "E022", "Access 토큰이 잘못되었거나 유효기간이 만료되었습니다. " +
+            "Access 토큰을 갱신해주세요."),
+    ACCESS_TOKEN_IS_NULL_ERROR(401, "E023", "Access 토큰이 존재하지 않습니다."),
+    ACCESS_REFRESH_TOKEN_IS_NULL_ERROR(401, "E024", "Access 또는 Refresh 토큰이 없습니다."),
+    ACCESS_TOKEN_VALID_ERROR(401, "E025", "Access 토큰이 아직 유효합니다."),
+    REFRESH_TOKEN_INVALID_ERROR(401, "E026", "Refresh 토큰이 유효하지 않습니다. 다시 로그인을 해주세요."),
+    REFRESH_TOKEN_NOT_EXIST_ERROR(401, "E027", "Refresh 토큰이 DB에 저장되어 있지 않습니다."),
 
     // 로그인 에러
-    USERID_INVALID_ERROR(401, "E024", "사용자 아이디가 일치하지 않습니다."),
-    USERPW_INVALID_ERROR(401, "E025", "사용자 비밀번호가 일치하지 않습니다."),
+    USERID_INVALID_ERROR(401, "E028", "사용자 아이디가 일치하지 않습니다."),
+    USERPW_INVALID_ERROR(401, "E029", "사용자 비밀번호가 일치하지 않습니다."),
 
     // 인증번호 메일 송신 에러
-    MAIL_SERVICE_ERROR(404, "E026", "인증번호를 보낼 수 없습니다."),
+    MAIL_SERVICE_ERROR(404, "E030", "인증번호를 보낼 수 없습니다."),
 
     // 피드 조회 에러
-    FEED_NOT_FOUND_ERROR(400, "E027", "존재하지 않는 피드입니다."),
+    FEED_NOT_FOUND_ERROR(400, "E031", "존재하지 않는 피드입니다."),
 
     //댓글 not blank 에러
-    COMMENT_NOT_BLANK_ERROR(400, "E028", "댓글을 적어주세요."),
+    COMMENT_NOT_BLANK_ERROR(400, "E032", "댓글을 적어주세요."),
 
     //피드 Id positive 에러
-    FEED_ID_POSITIVE_ERROR(400, "E029", "피드 Id는 양수입니다."),
+    FEED_ID_POSITIVE_ERROR(400, "E033", "피드 Id는 양수입니다."),
 
     //피드 제목 not blank 에러
-    FEED_TITLE_NOT_BLANK_ERROR(400, "E030", "피드 제목을 적어주세요."),
+    FEED_TITLE_NOT_BLANK_ERROR(400, "E034", "피드 제목을 적어주세요."),
     // 피드 조회 에러
-    COMMENT_CANNOT_DELETE_ERROR(400, "E031", "자신의 댓글이 아니라 삭제할 수 없습니다."),
-    COMMENT_NOT_FOUND_ERROR(400, "E032", "존재하지 않는 댓글입니다"),
-    FEED_CANNOT_DELETE_ERROR(400, "E033", "자신의 피드가 아니라 삭제할 수 없습니다.")
+    COMMENT_CANNOT_DELETE_ERROR(400, "E035", "자신의 댓글이 아니라 삭제할 수 없습니다."),
+    COMMENT_NOT_FOUND_ERROR(400, "E036", "존재하지 않는 댓글입니다"),
+    FEED_CANNOT_DELETE_ERROR(400, "E037", "자신의 피드가 아니라 삭제할 수 없습니다.")
 
 
 

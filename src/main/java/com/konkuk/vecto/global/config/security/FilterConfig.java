@@ -1,4 +1,4 @@
-package com.konkuk.vecto.global.config.web;
+package com.konkuk.vecto.global.config.security;
 
 import com.konkuk.vecto.global.filter.JwtAuthenticationFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

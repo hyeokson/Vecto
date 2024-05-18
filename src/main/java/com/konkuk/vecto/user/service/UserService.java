@@ -3,6 +3,7 @@ package com.konkuk.vecto.user.service;
 import com.konkuk.vecto.user.domain.User;
 import com.konkuk.vecto.user.dto.UserInfoResponse;
 import com.konkuk.vecto.user.dto.UserRegisterDto;
+import com.konkuk.vecto.user.dto.UserTokenResponse;
 import com.konkuk.vecto.user.dto.UserUpdateDto;
 
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface UserService {
 
     UserInfoResponse findUser(String userId);
 
-    Optional<String> updateUser(String userId, UserUpdateDto userUpdateDto);
+    Optional<UserTokenResponse> updateUser(String userId, UserUpdateDto userUpdateDto);
     Boolean isRegisterUser(String emailName);
 
 

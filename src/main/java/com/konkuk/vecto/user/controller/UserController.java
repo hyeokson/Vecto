@@ -41,18 +41,19 @@ public class UserController {
     private final MailService mailService;
     private final VerificationCodeService verificationCodeService;
 
-    @Operation(summary = "로그인 처리 및 JWT Token 반환", description = "로그인을 처리하고 JWT Token을 반환합니다.")
+    @Operation(summary = "로그인 처리 및 Access, Refresh Token 반환",
+            description = "로그인을 처리하고 Access, Refresh Token을 반환합니다.")
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<String> login(@RequestBody LoginDto loginDto, BindingResult bindingResult) throws BindException{
+    public ResponseCode<UserTokenResponse> login(@RequestBody LoginDto loginDto, BindingResult bindingResult) throws BindException{
         loginValidator.validate(loginDto, bindingResult);
         if(bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }
 
-        String jwtToken = loginService.login(loginDto);
-        ResponseCode<String> responseCode = new ResponseCode<>(SuccessCode.LOGIN);
-        responseCode.setResult(jwtToken);
+        UserTokenResponse userTokenResponse = loginService.login(loginDto);
+        ResponseCode<UserTokenResponse> responseCode = new ResponseCode<>(SuccessCode.LOGIN);
+        responseCode.setResult(userTokenResponse);
         return responseCode;
     }
 
@@ -88,7 +89,7 @@ public class UserController {
     @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
     @PatchMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseCode<String> updateUserInfo(@Parameter(hidden = true) @UserInfo String userId,
+    public ResponseCode<UserTokenResponse> updateUserInfo(@Parameter(hidden = true) @UserInfo String userId,
                                                        @RequestBody UserUpdateDto userUpdateDto,
                                                        BindingResult bindingResult) throws BindException{
 
@@ -96,12 +97,13 @@ public class UserController {
         if(bindingResult.hasErrors())
             throw new BindException(bindingResult);
 
-        Optional<String> token = userService.updateUser(userId, userUpdateDto);
+        Optional<UserTokenResponse> userTokenResponse = userService.updateUser(userId, userUpdateDto);
 
         // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
-        if(token.isPresent()) {
-            ResponseCode<String> responseCode = new ResponseCode<String>(SuccessCode.USERINFO_UPDATE);
-            responseCode.setResult(token.get());
+        if(userTokenResponse.isPresent()) {
+            ResponseCode<UserTokenResponse> responseCode =
+                    new ResponseCode<>(SuccessCode.USERINFO_UPDATE);
+            responseCode.setResult(userTokenResponse.get());
             return responseCode;
         }
 

@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Slf4j
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
@@ -35,9 +35,10 @@ public class WebSecurityConfig {
                 .requestMatchers("/swagger").requestMatchers("/v3/**")
                 .requestMatchers("/userId/check").requestMatchers("/login")
                 .requestMatchers("/mail")
+                .requestMatchers("/reissue")
                 .requestMatchers(HttpMethod.GET, "/feed/feedList", "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments",
                         "/feed/likes", "/feed")
-                .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy");
+                .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy", "/health", "/");
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -1,8 +1,9 @@
 package com.konkuk.vecto.user.service.impl;
 
+import com.konkuk.vecto.global.util.JwtUtil;
 import com.konkuk.vecto.user.domain.User;
 import com.konkuk.vecto.user.dto.LoginDto;
-import com.konkuk.vecto.global.util.TokenUtils;
+import com.konkuk.vecto.user.dto.UserTokenResponse;
 import com.konkuk.vecto.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,8 @@ public class LoginService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final EntityManager em;
-    public String login(LoginDto loginDto){
+    private final JwtUtil jwtUtil;
+    public UserTokenResponse login(LoginDto loginDto){
 
         String userId = loginDto.getUserId();
         String userPw = loginDto.getUserPw();
@@ -52,7 +54,7 @@ public class LoginService {
         }
 
         // JWT Token 반환
-        return TokenUtils.generateJwtToken(user.get());
+        return jwtUtil.createServiceToken(userId);
     }
 
     public Integer getUserSizeByFcmToken(String fcmToken){

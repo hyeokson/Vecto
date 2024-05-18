@@ -41,9 +41,11 @@ public class SwaggerConfig {
 	@Bean
 	public OpenAPI getOpenApi() {
 		Components components = new Components()
-				.addSecuritySchemes(JWT, getJwtSecurityScheme());
+				.addSecuritySchemes("bearerAuth", getJwtSecurityScheme())
+				.addSecuritySchemes("refreshAuth", getJwtRefreshSecurityScheme());
 		SecurityRequirement securityItem = new SecurityRequirement()
-				.addList(JWT);
+				.addList("bearerAuth")
+				.addList("refreshAuth");
 
 		return new OpenAPI()
 				.components(components)
@@ -54,4 +56,11 @@ public class SwaggerConfig {
 				.type(SecurityScheme.Type.APIKEY)
 				.in(SecurityScheme.In.HEADER)
 				.name("AUTHORIZATION");}
+
+	private SecurityScheme getJwtRefreshSecurityScheme() {
+		return new SecurityScheme()
+				.type(SecurityScheme.Type.APIKEY)
+				.in(SecurityScheme.In.HEADER)
+				.name("AUTHORIZATION-REFRESH");
+	}
 }

@@ -2,11 +2,12 @@ package com.konkuk.vecto.user.service.impl;
 
 import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.repository.FeedRepository;
+import com.konkuk.vecto.global.util.JwtUtil;
 import com.konkuk.vecto.user.domain.User;
 import com.konkuk.vecto.user.dto.UserInfoResponse;
 import com.konkuk.vecto.user.dto.UserRegisterDto;
+import com.konkuk.vecto.user.dto.UserTokenResponse;
 import com.konkuk.vecto.user.dto.UserUpdateDto;
-import com.konkuk.vecto.global.util.TokenUtils;
 import com.konkuk.vecto.user.repository.UserRepository;
 import com.konkuk.vecto.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository repository;
     private final FeedRepository feedRepository;
+    private final JwtUtil jwtUtil;
 
     //user 객체 반환(인증에 사용)
     @Override
@@ -87,7 +89,7 @@ public class UserServiceImpl implements UserService {
     //유저 정보 업데이트
     //회원정보가 존재하지 않으면 exception 발생
     @Override
-    public Optional<String> updateUser(String userId, UserUpdateDto userUpdateDto){
+    public Optional<UserTokenResponse> updateUser(String userId, UserUpdateDto userUpdateDto){
         Optional<User> userTemp = repository.findByUserId(userId);
         boolean isJwtChanged = false;
 
@@ -116,13 +118,12 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isNotBlank(userUpdateDto.getNickName())){
 
             user.setNickName(userUpdateDto.getNickName());
-            isJwtChanged = true;
         }
 
         // Update 필드가 jwt에 들어가는 userId, nickName일 경우, 수정된 token 반환
         if(isJwtChanged) {
-            String token = TokenUtils.generateJwtToken(user);
-            return Optional.of(token);
+            UserTokenResponse userTokenResponse = jwtUtil.createServiceToken(userId);
+            return Optional.of(userTokenResponse);
         }
 
         return Optional.of(null);

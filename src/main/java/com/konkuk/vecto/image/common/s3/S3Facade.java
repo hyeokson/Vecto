@@ -31,7 +31,7 @@ public class S3Facade implements ImageUtil {
 		metadata.setContentType(image.getContentType());
 
 		try {
-			amazonS3Client.putObject(bucketName.getBucketName(), url, image.getInputStream(), metadata);
+			amazonS3Client.putObject("vecto-image", url, image.getInputStream(), metadata);
 			return new Image(url);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
