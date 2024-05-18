@@ -46,13 +46,12 @@ public class JwtUtil {
     }
 
     // refresh token 생성
-    public String createRefreshToken() {
-        return this.createToken(UUID.randomUUID().toString(), jwtProperties.getRefreshExpiration());
+    public String createRefreshToken(String payload) {
+        return this.createToken(payload, jwtProperties.getRefreshExpiration());
 
     }
-
     // access token 으로부터 회원 아이디 추출
-    public String getUserIdFromToken(String token) {
+    public String getUserIdFromAccessToken(String token) {
         try {
             return Jwts.parser()
                     .setSigningKey(jwtProperties.getSecret())
@@ -63,15 +62,27 @@ public class JwtUtil {
             throw new InsufficientAuthenticationException("ACCESS_TOKEN_INVALID_ERROR");
         }
     }
+    // refresh token 으로부터 회원 아이디 추출
+    public String getUserIdFromRefreshToken(String token) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(jwtProperties.getSecret())
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("userId", String.class);
+        } catch (Exception exception) {
+            throw new InsufficientAuthenticationException("REFRESH_TOKEN_INVALID_ERROR");
+        }
+    }
 
     // kakao oauth 로그인 & 일반 로그인 시 jwt 응답 생성 + redis refresh 저장
     public UserTokenResponse createServiceToken(String userId) {
         String accessToken = createAccessToken(userId);
-        String refreshToken = createRefreshToken();
+        String refreshToken = createRefreshToken(userId);
 
         /* 서비스 토큰 생성 */
         UserTokenResponse userTokenResponse = UserTokenResponse.builder()
-                .accessToken(jwtProperties.getBearer() + " " + accessToken)
+                .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .expiredTime(LocalDateTime.now().plusSeconds(jwtProperties.getAccessExpiration() / 1000))
                 .build();

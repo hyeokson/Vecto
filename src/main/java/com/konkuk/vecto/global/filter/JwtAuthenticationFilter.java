@@ -1,6 +1,5 @@
 package com.konkuk.vecto.global.filter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.konkuk.vecto.global.config.properties.JwtProperties;
@@ -9,34 +8,26 @@ import com.konkuk.vecto.global.util.JwtUtil;
 import com.konkuk.vecto.global.util.RedisUtil;
 import com.konkuk.vecto.user.domain.User;
 import com.konkuk.vecto.user.dto.ReissueTokenResponse;
-import com.konkuk.vecto.user.dto.UserDetailsDto;
-import com.konkuk.vecto.user.model.common.codes.AuthConstants;
 import com.konkuk.vecto.user.model.common.codes.ErrorCode;
 import com.konkuk.vecto.user.model.common.codes.ResponseCode;
 import com.konkuk.vecto.user.model.common.codes.SuccessCode;
 import com.konkuk.vecto.user.repository.UserRepository;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -94,8 +85,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          * 3. redis refresh 와 일치 여부 확인
          **/
         checkAllConditions(accessToken, refreshToken);
-        String newAccessToken = jwtUtil.createAccessToken(jwtUtil.getUserIdFromToken(accessToken));
-        String newRefreshToken = reIssueRefreshToken(jwtUtil.getUserIdFromToken(accessToken));
+        String newAccessToken = jwtUtil.createAccessToken(jwtUtil.getUserIdFromRefreshToken(refreshToken));
+        String newRefreshToken = reIssueRefreshToken(jwtUtil.getUserIdFromRefreshToken(refreshToken));
         makeAndSendAccessTokenAndRefreshToken(response, newAccessToken, newRefreshToken);
     }
 
@@ -124,7 +115,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void isRefreshTokenMatch(String refreshToken, String accessToken) {
-        if (!refreshToken.equals(redisUtil.getData(jwtUtil.getUserIdFromToken(accessToken)))) {
+        if (!refreshToken.equals(redisUtil.getData(jwtUtil.getUserIdFromRefreshToken(refreshToken)))) {
             throw new IllegalArgumentException("REFRESH_TOKEN_NOT_EXIST_ERROR");
         }
     }
@@ -136,7 +127,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      **/
     private String reIssueRefreshToken(String userId) {
         redisUtil.deleteData(userId); // 기존 refresh token 삭제
-        String reIssuedRefreshToken = jwtUtil.createRefreshToken();
+        String reIssuedRefreshToken = jwtUtil.createRefreshToken(userId);
         redisUtil.setDataExpire(userId, reIssuedRefreshToken, jwtProperties.getRefreshExpiration()); // refresh token 저장
         return reIssuedRefreshToken;
     }
@@ -187,7 +178,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // jwt header 에 존재하지 않는 경우
             String accessToken = jwtUtil.extractAccessToken(request)
                     .orElseThrow(() -> new InsufficientAuthenticationException("ACCESS_TOKEN_IS_NULL_ERROR"));
-            String userId = jwtUtil.getUserIdFromToken(accessToken);
+            String userId = jwtUtil.getUserIdFromAccessToken(accessToken);
             // accessToken 을 통해 User Payload 가져 오고 회원 조회
             User user = userRepository.findByUserId(userId)
                     .orElseThrow(() -> new UsernameNotFoundException("ACCESS_TOKEN_NOT_MATCH_ERROR"));

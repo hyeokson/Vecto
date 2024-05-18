@@ -1,5 +1,6 @@
 package com.konkuk.vecto.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,12 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class UserTokenResponse {
+
     private String accessToken;
+
     private String refreshToken;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
     private LocalDateTime expiredTime;
+
 }
