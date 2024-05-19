@@ -20,7 +20,7 @@ public class StatusCodeController {
     @GetMapping("/success")
     public ResponseCode<List<SuccessCode.SuccessCodeResponse>> getSuccessCode(){
         List<SuccessCode.SuccessCodeResponse> responses = Arrays.stream(SuccessCode.values())
-                .map(SuccessCode::toJson)
+                .map(SuccessCode::getSuccessCodeResponse)
                 .toList();
         ResponseCode<List<SuccessCode.SuccessCodeResponse>> responseCode
                 = new ResponseCode<>(SuccessCode.SUCCESS_CODE_GET);
@@ -28,11 +28,11 @@ public class StatusCodeController {
         return responseCode;
     }
 
-    @Operation(summary = "Success Code 조회", description = "Error Code Enum을 반환합니다.")
+    @Operation(summary = "Error Code 조회", description = "Error Code Enum을 반환합니다.")
     @GetMapping("/error")
     public ResponseCode<List<ErrorCode.ErrorCodeResponse>> getErrorCode(){
         List<ErrorCode.ErrorCodeResponse> responses = Arrays.stream(ErrorCode.values())
-                .map(ErrorCode::toJson)
+                .map(ErrorCode::getErrorCodeResponse)
                 .toList();
         ResponseCode<List<ErrorCode.ErrorCodeResponse>> responseCode
                 = new ResponseCode<>(SuccessCode.ERROR_CODE_GET);

@@ -1,7 +1,10 @@
 package com.konkuk.vecto.user.model.common.codes;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
+
+import java.io.Serializable;
 
 /**
  * [공통 코드] API 통신에 대한 '에러 코드'를 Enum 형태로 관리를 한다.
@@ -164,8 +167,8 @@ public enum ErrorCode {
         this.message = message;
     }
 
-    @JsonValue
-    public ErrorCodeResponse toJson(){
+
+    public ErrorCodeResponse getErrorCodeResponse(){
         return ErrorCodeResponse.builder()
                 .status(status)
                 .code(code)
@@ -175,9 +178,11 @@ public enum ErrorCode {
 
     @Builder
     @AllArgsConstructor
-    public static class ErrorCodeResponse{
+    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+    public static class ErrorCodeResponse {
         private final int status;
         private final String code;
         private final String message;
     }
+
 }

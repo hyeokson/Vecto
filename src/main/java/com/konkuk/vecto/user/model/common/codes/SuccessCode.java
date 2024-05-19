@@ -1,5 +1,6 @@
 package com.konkuk.vecto.user.model.common.codes;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
 
@@ -137,8 +138,8 @@ public enum SuccessCode {
         this.message = message;
     }
 
-    @JsonValue
-    public SuccessCodeResponse toJson(){
+
+    public SuccessCodeResponse getSuccessCodeResponse(){
         return SuccessCodeResponse.builder()
                 .status(status)
                 .code(code)
@@ -148,6 +149,7 @@ public enum SuccessCode {
 
     @Builder
     @AllArgsConstructor
+    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
     public static class SuccessCodeResponse{
         private final int status;
         private final String code;

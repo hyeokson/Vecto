@@ -37,7 +37,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/mail")
                 .requestMatchers(HttpMethod.GET, "/feed/feedList", "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments",
                         "/feed/likes", "/feed")
-                .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy", "/health", "/");
+                .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy", "/health", "/",
+                        "code/*");
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
