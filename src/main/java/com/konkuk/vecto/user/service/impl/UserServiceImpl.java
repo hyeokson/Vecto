@@ -1,5 +1,6 @@
 package com.konkuk.vecto.user.service.impl;
 
+import com.konkuk.vecto.complaint.repository.ComplaintRepository;
 import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.feed.repository.FeedRepository;
 import com.konkuk.vecto.global.util.JwtUtil;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository repository;
     private final FeedRepository feedRepository;
+    private final ComplaintRepository complaintRepository;
     private final JwtUtil jwtUtil;
 
     //user 객체 반환(인증에 사용)
@@ -134,6 +136,7 @@ public class UserServiceImpl implements UserService {
         User user = repository.findByUserId(userId).orElseThrow(
             () -> new IllegalArgumentException("USER_NOT_FOUND_ERROR"));
         user.updateProfileImageUrl(imageUrl);
+
         return Boolean.TRUE;
     }
     
@@ -160,6 +163,8 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String userId){
         repository.delete(repository.findByUserId(userId).orElseThrow(
                 ()->new IllegalArgumentException("USER_NOT_FOUND_ERROR")));
+        feedRepository.deleteAll(feedRepository.findAllByUserId(userId));
+        complaintRepository.deleteAllByFromUserIdOrToUserId(userId, userId);
     }
 
     @Override

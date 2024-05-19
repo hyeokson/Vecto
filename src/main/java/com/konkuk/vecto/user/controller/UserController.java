@@ -57,6 +57,17 @@ public class UserController {
         return responseCode;
     }
 
+    @Operation(summary = "로그아웃 처리",
+            description = "해당 유저의 Refresh Token을 Redis에서 삭제합니다.")
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCode<Void> logout(@UserInfo String userId){
+
+        loginService.logout(userId);
+        ResponseCode<Void> responseCode = new ResponseCode<>(SuccessCode.LOGOUT);
+        return responseCode;
+    }
+
     @Operation(summary = "회원가입", description = "회원 정보를 저장합니다.")
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)

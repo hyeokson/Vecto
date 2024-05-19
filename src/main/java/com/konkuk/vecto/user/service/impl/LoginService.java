@@ -1,6 +1,7 @@
 package com.konkuk.vecto.user.service.impl;
 
 import com.konkuk.vecto.global.util.JwtUtil;
+import com.konkuk.vecto.global.util.RedisUtil;
 import com.konkuk.vecto.user.domain.User;
 import com.konkuk.vecto.user.dto.LoginDto;
 import com.konkuk.vecto.user.dto.UserTokenResponse;
@@ -25,6 +26,7 @@ public class LoginService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final EntityManager em;
     private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
     public UserTokenResponse login(LoginDto loginDto){
 
         String userId = loginDto.getUserId();
@@ -55,6 +57,10 @@ public class LoginService {
 
         // JWT Token 반환
         return jwtUtil.createServiceToken(userId);
+    }
+
+    public void logout(String userId){
+        redisUtil.deleteData(userId);
     }
 
     public Integer getUserSizeByFcmToken(String fcmToken){

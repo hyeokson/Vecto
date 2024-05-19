@@ -77,6 +77,7 @@ public class JwtUtil {
 
     // kakao oauth 로그인 & 일반 로그인 시 jwt 응답 생성 + redis refresh 저장
     public UserTokenResponse createServiceToken(String userId) {
+        redisUtil.deleteData(userId);
         String accessToken = createAccessToken(userId);
         String refreshToken = createRefreshToken(userId);
 

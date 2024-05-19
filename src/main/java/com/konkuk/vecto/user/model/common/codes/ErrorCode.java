@@ -1,8 +1,7 @@
 package com.konkuk.vecto.user.model.common.codes;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.*;
 
 /**
  * [공통 코드] API 통신에 대한 '에러 코드'를 Enum 형태로 관리를 한다.
@@ -163,5 +162,22 @@ public enum ErrorCode {
         this.status = status;
         this.code = code;
         this.message = message;
+    }
+
+    @JsonValue
+    public ErrorCodeResponse toJson(){
+        return ErrorCodeResponse.builder()
+                .status(status)
+                .code(code)
+                .message(message)
+                .build();
+    }
+
+    @Builder
+    @AllArgsConstructor
+    public static class ErrorCodeResponse{
+        private final int status;
+        private final String code;
+        private final String message;
     }
 }

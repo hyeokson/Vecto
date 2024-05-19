@@ -35,7 +35,6 @@ public class WebSecurityConfig {
                 .requestMatchers("/swagger").requestMatchers("/v3/**")
                 .requestMatchers("/userId/check").requestMatchers("/login")
                 .requestMatchers("/mail")
-                .requestMatchers("/reissue")
                 .requestMatchers(HttpMethod.GET, "/feed/feedList", "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments",
                         "/feed/likes", "/feed")
                 .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy", "/health", "/");

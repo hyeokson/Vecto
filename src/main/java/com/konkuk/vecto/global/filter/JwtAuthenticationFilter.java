@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
                 this.reissueAccessTokenAndRefreshToken(response, accessToken.get(), refreshToken.get());
             } catch (Exception e) {
-                log.warn("Access or Refresh Token 재발급 오류 발생");
+                log.warn("Access or Refresh Token 재발급 오류 발생", e);
                 response.setStatus(HttpStatus.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
@@ -99,7 +99,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          **/
         validateAccessToken(accessToken);
         validateRefreshToken(refreshToken);
-        isRefreshTokenMatch(refreshToken, accessToken);
+        isRefreshTokenMatch(refreshToken);
     }
 
     private void validateAccessToken(String accessToken) {
@@ -114,7 +114,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private void isRefreshTokenMatch(String refreshToken, String accessToken) {
+    private void isRefreshTokenMatch(String refreshToken) {
         if (!refreshToken.equals(redisUtil.getData(jwtUtil.getUserIdFromRefreshToken(refreshToken)))) {
             throw new IllegalArgumentException("REFRESH_TOKEN_NOT_EXIST_ERROR");
         }
@@ -143,7 +143,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         LocalDateTime expireTime = LocalDateTime.now().plusSeconds(this.jwtProperties.getAccessExpiration() / 1000);
         // refresh token, access token 을 응답 본문에 넣어 응답
         ReissueTokenResponse reissueTokenResponse = ReissueTokenResponse.builder()
-                .accessToken(this.jwtProperties.getBearer() + " " + accessToken)
+                .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .expiredTime(expireTime)
                 .build();
@@ -188,8 +188,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             request.setAttribute("UserInfo", userId);
 
-        } catch (AuthenticationException exception) {
-            log.warn("Access Token 오류 발생");
+        } catch (AuthenticationException e) {
+            log.warn("Access Token 오류 발생, ErrorCode", e);
         }
     }
 
