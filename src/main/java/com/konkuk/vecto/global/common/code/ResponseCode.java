@@ -1,4 +1,4 @@
-package com.konkuk.vecto.user.model.common.codes;
+package com.konkuk.vecto.global.common.code;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;

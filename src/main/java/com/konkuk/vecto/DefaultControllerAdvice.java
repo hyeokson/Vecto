@@ -13,8 +13,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.konkuk.vecto.user.model.common.codes.ErrorCode;
-import com.konkuk.vecto.user.model.common.codes.ResponseCode;
+import com.konkuk.vecto.global.common.code.ErrorCode;
+import com.konkuk.vecto.global.common.code.ResponseCode;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -2,13 +2,18 @@ package com.konkuk.vecto.user.domain;
 
 import com.konkuk.vecto.fcm.domain.PushNotification;
 import com.konkuk.vecto.follow.domain.Follow;
+import com.konkuk.vecto.global.common.constant.RoleType;
 import com.konkuk.vecto.likes.domain.CommentLikes;
 import com.konkuk.vecto.likes.domain.Likes;
 import com.konkuk.vecto.user.dto.UserRegisterDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -22,7 +27,7 @@ import java.util.List;
         )
 })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User{
+public class User implements UserDetails {
 
     // 사용자 시퀀스
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +64,10 @@ public class User{
   
     private String fcmToken;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usr_role", nullable = false)
+    private RoleType roleType;
+
     // 유저를 팔로잉 하는 회원리스트
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
     private List<Follow> follower= new ArrayList<>();
@@ -88,9 +97,47 @@ public class User{
         this.userPw= userRegisterDto.getUserPw();
         this.nickName= userRegisterDto.getNickName();
         this.email = userRegisterDto.getEmail();
+        this.roleType = RoleType.ROLE_USER;
     }
 
     public void updateProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(roleType.name()));
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return userId;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package com.konkuk.vecto.user.model.common.codes;
+package com.konkuk.vecto.global.common.code;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -104,7 +104,7 @@ public enum SuccessCode {
     PUSH_NOTIFICATION_GET(200, "S037", "푸쉬 알림 기록 조회 성공"),
     PUSH_NOTIFICATION_END(200, "S038", "푸쉬 알림 기록을 모두 불러왔습니다."),
 
-    COMPLAINT_SAVE(200, "S039", "신고 접수 성공"),
+    COMPLAINT_SAVE(201, "S039", "신고 접수 성공"),
 
     NEW_PUSH_NOTIFICATION(200, "S040", "새로운 알림 기록 여부 조회 성공"),
 
@@ -112,8 +112,13 @@ public enum SuccessCode {
     FOLLOWED_USERID(200, "S042", "팔로우를 받는 userId 조회 성공"),
 
     SUCCESS_CODE_GET(200, "S043", "Success Code 조회 성공"),
-    ERROR_CODE_GET(200, "S044", "Error Code 조회 성공")
+    ERROR_CODE_GET(200, "S044", "Error Code 조회 성공"),
 
+    NOTICE_GET(200, "S045", "공지사항 단건 조회 성공"),
+    NOTICE_GET_ALL(200, "S046", "모든 공지사항 조회 성공"),
+    NOTICE_SAVE(201, "S047", "공지사항 저장 성공"),
+    NOTICE_PATCH(200, "S048", "공지사항 수정 성공"),
+    NOTICE_DELETE(200, "S049", "공지사항 삭제 성공")
 
 
 

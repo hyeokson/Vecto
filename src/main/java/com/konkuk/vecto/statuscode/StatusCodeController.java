@@ -1,8 +1,8 @@
 package com.konkuk.vecto.statuscode;
 
-import com.konkuk.vecto.user.model.common.codes.ErrorCode;
-import com.konkuk.vecto.user.model.common.codes.ResponseCode;
-import com.konkuk.vecto.user.model.common.codes.SuccessCode;
+import com.konkuk.vecto.global.common.code.ErrorCode;
+import com.konkuk.vecto.global.common.code.ResponseCode;
+import com.konkuk.vecto.global.common.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/code")

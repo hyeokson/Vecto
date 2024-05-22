@@ -1,4 +1,4 @@
-package com.konkuk.vecto.user.model.common.codes;
+package com.konkuk.vecto.global.common.code;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -141,7 +141,12 @@ public enum ErrorCode {
     // 피드 조회 에러
     COMMENT_CANNOT_DELETE_ERROR(400, "E035", "자신의 댓글이 아니라 삭제할 수 없습니다."),
     COMMENT_NOT_FOUND_ERROR(400, "E036", "존재하지 않는 댓글입니다"),
-    FEED_CANNOT_DELETE_ERROR(400, "E037", "자신의 피드가 아니라 삭제할 수 없습니다.")
+    FEED_CANNOT_DELETE_ERROR(400, "E037", "자신의 피드가 아니라 삭제할 수 없습니다."),
+
+    NOTICE_NOT_FOUND_ERROR(400, "E038", "공지사항이 DB에 존재하지 않습니다."),
+
+    //접근 권한 에러
+    ACCESS_DENIED_ERROR(403, "E039", "관리자만 접근할 수 있습니다.")
 
 
 

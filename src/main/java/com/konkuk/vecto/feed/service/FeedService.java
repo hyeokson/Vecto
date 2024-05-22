@@ -21,7 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.konkuk.vecto.feed.common.TimeDifferenceCalculator;
+import com.konkuk.vecto.global.util.TimeDifferenceCalculator;
 import com.konkuk.vecto.feed.domain.Comment;
 import com.konkuk.vecto.feed.domain.FeedImage;
 import com.konkuk.vecto.feed.domain.FeedMapImage;

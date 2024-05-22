@@ -1,4 +1,4 @@
-package com.konkuk.vecto.feed.common;
+package com.konkuk.vecto.global.util;
 
 import java.time.Duration;
 import java.time.LocalDate;

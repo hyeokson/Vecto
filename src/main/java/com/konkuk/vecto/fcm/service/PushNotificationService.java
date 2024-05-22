@@ -3,7 +3,7 @@ package com.konkuk.vecto.fcm.service;
 import com.konkuk.vecto.fcm.domain.PushNotification;
 import com.konkuk.vecto.fcm.dto.PushNotificationResponses;
 import com.konkuk.vecto.fcm.repository.PushNotificationRepository;
-import com.konkuk.vecto.feed.common.TimeDifferenceCalculator;
+import com.konkuk.vecto.global.util.TimeDifferenceCalculator;
 import com.konkuk.vecto.user.domain.User;
 import com.konkuk.vecto.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

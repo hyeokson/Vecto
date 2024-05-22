@@ -1,5 +1,6 @@
 package com.konkuk.vecto.global.config.security;
 
+import com.konkuk.vecto.global.filter.JwtAccessDeniedHandler;
 import com.konkuk.vecto.global.filter.JwtAuthenticationEntryPoint;
 import com.konkuk.vecto.global.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -21,10 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -54,12 +58,18 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/user", "/feed/feedList",
                                 "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments",
                                 "/feed/likes", "/feed/user", "code/*",
-                                "follow/follower", "follow/followed").permitAll()
+                                "follow/follower", "follow/followed",
+                                "/notice/**").permitAll()
                         .requestMatchers("/userId/check","/login", "/mail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/notice").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/notice/{noticeId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/notice/{noticeId}").hasRole("ADMIN")
                         .anyRequest().authenticated())
 
                 .exceptionHandling((exceptionHandlingConfigurer)->
-                        exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                        exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(jwtAccessDeniedHandler))
+
 
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 

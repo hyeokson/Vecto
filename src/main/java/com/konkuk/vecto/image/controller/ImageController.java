@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.konkuk.vecto.image.common.dto.ImageUrlResponse;
-import com.konkuk.vecto.user.model.common.codes.ResponseCode;
-import com.konkuk.vecto.user.model.common.codes.SuccessCode;
+import com.konkuk.vecto.global.common.code.ResponseCode;
+import com.konkuk.vecto.global.common.code.SuccessCode;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;

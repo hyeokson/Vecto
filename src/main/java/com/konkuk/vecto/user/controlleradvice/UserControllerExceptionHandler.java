@@ -1,7 +1,7 @@
 package com.konkuk.vecto.user.controlleradvice;
 
-import com.konkuk.vecto.user.model.common.codes.ErrorCode;
-import com.konkuk.vecto.user.model.common.codes.ResponseCode;
+import com.konkuk.vecto.global.common.code.ErrorCode;
+import com.konkuk.vecto.global.common.code.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
