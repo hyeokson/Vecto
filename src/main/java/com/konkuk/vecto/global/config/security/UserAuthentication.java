@@ -36,4 +36,9 @@ public class UserAuthentication extends AbstractAuthenticationToken {
         return userId;
     }
 
+    @Override
+    public boolean isAuthenticated() {
+        return true;
+    }
+
 }

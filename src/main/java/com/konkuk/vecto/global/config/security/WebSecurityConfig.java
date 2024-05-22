@@ -30,15 +30,12 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .and()
-                .ignoring().requestMatchers(HttpMethod.POST,"/user").requestMatchers(HttpMethod.GET, "/user")
+                .ignoring()
+                .requestMatchers("/delete/account")
                 .requestMatchers("/swagger-ui/**")
-                .requestMatchers("/swagger").requestMatchers("/v3/**")
-                .requestMatchers("/userId/check").requestMatchers("/login")
-                .requestMatchers("/mail")
-                .requestMatchers(HttpMethod.GET, "/feed/feedList", "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments",
-                        "/feed/likes", "/feed")
-                .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy", "/health", "/",
-                        "code/*");
+                .requestMatchers("/swagger","/v3/**")
+                .requestMatchers("/error/**")
+                .requestMatchers(HttpMethod.GET, "/introduction.html", "/privacy-policy", "/health", "/");
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,6 +49,14 @@ public class WebSecurityConfig {
 
                 .httpBasic(AbstractHttpConfigurer::disable)
 
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST,"/user").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user", "/feed/feedList",
+                                "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments",
+                                "/feed/likes", "/feed/user", "code/*",
+                                "follow/follower", "follow/followed").permitAll()
+                        .requestMatchers("/userId/check","/login", "/mail").permitAll()
+                        .anyRequest().authenticated())
 
                 .exceptionHandling((exceptionHandlingConfigurer)->
                         exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))

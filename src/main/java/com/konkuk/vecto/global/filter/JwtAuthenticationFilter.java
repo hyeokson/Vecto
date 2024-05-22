@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          * 1. refresh token 유효성 검증
          * 2. access token 유효성 검증(유효하지 않아야 함)
          * 3. redis refresh 와 일치 여부 확인
-         **/
+         */
         checkAllConditions(accessToken, refreshToken);
         String newAccessToken = jwtUtil.createAccessToken(jwtUtil.getUserIdFromRefreshToken(refreshToken));
         String newRefreshToken = reIssueRefreshToken(jwtUtil.getUserIdFromRefreshToken(refreshToken));
@@ -178,6 +178,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // jwt header 에 존재하지 않는 경우
             String accessToken = jwtUtil.extractAccessToken(request)
                     .orElseThrow(() -> new InsufficientAuthenticationException("ACCESS_TOKEN_IS_NULL_ERROR"));
+
             String userId = jwtUtil.getUserIdFromAccessToken(accessToken);
             // accessToken 을 통해 User Payload 가져 오고 회원 조회
             User user = userRepository.findByUserId(userId)
@@ -187,9 +188,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserAuthentication authentication = new UserAuthentication(user);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             request.setAttribute("UserInfo", userId);
-
         } catch (AuthenticationException e) {
-            log.warn("Access Token 오류 발생, ErrorCode", e);
+            request.setAttribute("ErrorMsg", e.getMessage());
+            log.warn("Access Token 오류 발생", e);
         }
     }
 

@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
             return Optional.of(userTokenResponse);
         }
 
-        return Optional.of(null);
+        return Optional.empty();
     }
 
     @Override

@@ -19,14 +19,16 @@ import java.io.OutputStream;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException{
+        log.warn("JwtAuthenticationEntryPoint에서 response 생성중, errorMsg: {}", request.getAttribute("ErrorMsg"));
+
 
         response.setStatus(HttpStatus.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         try (OutputStream os = response.getOutputStream()) {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writeValue(os, new ResponseCode<>(ErrorCode.valueOf(authException.getMessage())));
+            objectMapper.writeValue(os, new ResponseCode<>(ErrorCode.valueOf((String)request.getAttribute("ErrorMsg"))));
             os.flush();
         }
     }

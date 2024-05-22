@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +26,7 @@ public interface PushNotificationRepository extends JpaRepository<PushNotificati
     @Transactional
     @Modifying
     @Query("UPDATE PushNotification p SET p.requestedBefore = true WHERE p.user.id = :userId AND p.requestedBefore = false")
-    void updateRequestedBeforeByUserId(Long userId);
+    void updateRequestedBeforeByUserId(@Param("userId") Long userId);
 
     Long countByUserIdAndRequestedBeforeIsFalse(Long userId);
 }
