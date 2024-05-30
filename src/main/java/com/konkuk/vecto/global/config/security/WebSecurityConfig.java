@@ -55,12 +55,14 @@ public class WebSecurityConfig {
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST,"/user").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user", "/feed/feedList",
-                                "/feed/feeds/search", "/feed/{feedId}", "/feed/{feedId}/comments",
-                                "/feed/likes", "/feed/user", "code/*",
+                        .requestMatchers(HttpMethod.GET, "/user",
+                                "/comment/{feedId}/public",
+                                "/feed/{feedId}/public", "/feed/list/public","/feed/search/public",
+                                "/feed/user/public",
+                                "code/*",
                                 "follow/follower", "follow/followed",
                                 "/notice/**").permitAll()
-                        .requestMatchers("/userId/check","/login", "/mail").permitAll()
+                        .requestMatchers("/userId/check","/login", "/logout", "/mail").permitAll()
                         .requestMatchers(HttpMethod.POST, "/notice").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/notice/{noticeId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/notice/{noticeId}").hasRole("ADMIN")

@@ -116,9 +116,10 @@ public enum SuccessCode {
 
     NOTICE_GET(200, "S045", "공지사항 단건 조회 성공"),
     NOTICE_GET_ALL(200, "S046", "모든 공지사항 조회 성공"),
-    NOTICE_SAVE(201, "S047", "공지사항 저장 성공"),
-    NOTICE_PATCH(200, "S048", "공지사항 수정 성공"),
-    NOTICE_DELETE(200, "S049", "공지사항 삭제 성공")
+    NOTICE_GET_LATEST(200, "S047", "최신 공지사항 조회 성공"),
+    NOTICE_SAVE(201, "S048", "공지사항 저장 성공"),
+    NOTICE_PATCH(200, "S049", "공지사항 수정 성공"),
+    NOTICE_DELETE(200, "S050", "공지사항 삭제 성공")
 
 
 

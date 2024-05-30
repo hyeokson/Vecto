@@ -28,5 +28,6 @@ public class NoticeResponse {
         this.id = notice.getId();
         this.title = notice.getTitle();
         this.content = notice.getContent();
+        this.createdAt = notice.getCreatedAt();
     }
 }

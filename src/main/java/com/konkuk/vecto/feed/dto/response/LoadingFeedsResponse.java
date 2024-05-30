@@ -2,6 +2,7 @@ package com.konkuk.vecto.feed.dto.response;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -10,8 +11,12 @@ import lombok.*;
 @Builder
 public class LoadingFeedsResponse {
 
+
 	boolean isLastPage;
-	boolean isFollowPage;
-	Integer nextPage;
+
+	boolean isNextPageFollowPage;
+
+	Long nextFeedId;
+
 	List<FeedResponse> feeds;
 }

@@ -1,12 +1,14 @@
-package com.konkuk.vecto.feed.domain;
+package com.konkuk.vecto.comment.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.konkuk.vecto.feed.domain.Feed;
 import com.konkuk.vecto.likes.domain.CommentLikes;
 import com.konkuk.vecto.likes.domain.Likes;
 import jakarta.persistence.*;
+import lombok.Builder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -42,6 +44,8 @@ public class Comment {
 	private LocalDateTime createdAt;
 	@LastModifiedDate
 	private LocalDateTime updatedAt;
+
+	@Builder
 	public Comment(Feed feed, String userId, String comment) {
 		this.feed = feed;
 		this.userId = userId;

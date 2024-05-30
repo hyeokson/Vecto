@@ -23,10 +23,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-	@Index(name = "idx_address", columnList = "userId")
+	@Index(name = "idx_followfeed_user_id", columnList = "userId"),
+		@Index(name = "idx_followfeed_created_at", columnList = "createdAt")
 })
 @EntityListeners(AuditingEntityListener.class)
-public class FeedQueue {
+public class FollowFeed {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +43,7 @@ public class FeedQueue {
 	@CreatedDate
 	private LocalDateTime createdAt;
 
-	public FeedQueue(Long userId, Feed feed) {
+	public FollowFeed(Long userId, Feed feed) {
 		this.userId = userId;
 		this.feed = feed;
 	}

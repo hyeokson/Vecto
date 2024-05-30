@@ -1,9 +1,9 @@
 package com.konkuk.vecto.follow.service;
 
 import com.konkuk.vecto.feed.domain.Feed;
-import com.konkuk.vecto.feed.domain.FeedQueue;
-import com.konkuk.vecto.feed.repository.FeedQueueRepository;
+import com.konkuk.vecto.feed.domain.FollowFeed;
 import com.konkuk.vecto.feed.repository.FeedRepository;
+import com.konkuk.vecto.feed.repository.FollowFeedRepository;
 import com.konkuk.vecto.follow.domain.Follow;
 import com.konkuk.vecto.follow.dto.FollowRelationRequest;
 import com.konkuk.vecto.follow.dto.FollowRelationResponse;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FollowService {
     private final FeedRepository feedRepository;
-    private final FeedQueueRepository feedQueueRepository;
+    private final FollowFeedRepository followFeedRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     @Transactional
@@ -52,10 +52,10 @@ public class FollowService {
 
     private void saveAllFeedQueue(Long followerId, String followingUserId){
         List<Feed> feeds = feedRepository.findAllByUserId(followingUserId);
-        List<FeedQueue> feedQueues = feeds.stream()
-                .map((feed) -> new FeedQueue(followerId, feed))
+        List<FollowFeed> followFeeds = feeds.stream()
+                .map((feed) -> new FollowFeed(followerId, feed))
                 .toList();
-        feedQueueRepository.saveAll(feedQueues);
+        followFeedRepository.saveAll(followFeeds);
     }
 
     @Transactional
@@ -79,7 +79,7 @@ public class FollowService {
 
     private void deleteAllFeedQueue(Long followerId, String followingUserId){
         List<Feed> feeds = feedRepository.findAllByUserId(followingUserId);
-        feedQueueRepository.deleteByFeedsAndUserId(feeds, followerId);
+        followFeedRepository.deleteByFeedsAndUserId(feeds, followerId);
     }
 
     // follow_UserId에 해당하는 유저를 본인이 팔로잉 하고 있는지 확인하는 함수

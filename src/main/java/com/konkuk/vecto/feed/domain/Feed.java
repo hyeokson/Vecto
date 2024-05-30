@@ -4,16 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.konkuk.vecto.comment.domain.Comment;
 import com.konkuk.vecto.likes.domain.Likes;
 
+import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +20,11 @@ import lombok.Setter;
 @Getter
 @Setter(value = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = {
+		@Index(name = "idx_feed_like_count", columnList = "likeCount"),
+		@Index(name = "idx_feed_title", columnList = "title"),
+		@Index(name = "idx_feed_user_id", columnList = "userId")
+})
 public class Feed {
 
 	@Id

@@ -1,5 +1,6 @@
 package com.konkuk.vecto.feed.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
@@ -9,7 +10,8 @@ import java.util.List;
 @Builder
 @Getter
 public class PagingFeedsResponse {
+
     boolean isLastPage;
-    Integer nextPage;
+    Long nextFeedId;
     List<FeedResponse> feeds;
 }

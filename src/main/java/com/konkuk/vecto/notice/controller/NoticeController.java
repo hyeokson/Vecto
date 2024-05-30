@@ -39,6 +39,15 @@ public class NoticeController {
         return responseCode;
     }
 
+    @Operation(summary = "공지사항 모두 조회", description = "모든 공지사항을 반환합니다.")
+    @GetMapping("/latest")
+    public ResponseCode<NoticeResponse> getNoticeLatest(){
+        NoticeResponse noticeResponses = noticeService.getNoticeLatest();
+        ResponseCode<NoticeResponse> responseCode = new ResponseCode<>(SuccessCode.NOTICE_GET_LATEST);
+        responseCode.setResult(noticeResponses);
+        return responseCode;
+    }
+
     @Operation(summary = "공지사항 저장", description = "공지사항을 저장합니다.")
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")

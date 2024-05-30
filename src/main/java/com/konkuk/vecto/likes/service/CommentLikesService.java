@@ -1,7 +1,6 @@
 package com.konkuk.vecto.likes.service;
 
-import com.konkuk.vecto.feed.domain.Comment;
-import com.konkuk.vecto.feed.repository.CommentRepository;
+import com.konkuk.vecto.comment.repository.CommentRepository;
 import com.konkuk.vecto.likes.domain.CommentLikes;
 import com.konkuk.vecto.likes.repository.CommentLikesRepository;
 import com.konkuk.vecto.user.repository.UserRepository;

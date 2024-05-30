@@ -1,4 +1,4 @@
-package com.konkuk.vecto.feed.dto.request;
+package com.konkuk.vecto.comment.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

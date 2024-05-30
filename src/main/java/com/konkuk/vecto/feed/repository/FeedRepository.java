@@ -1,5 +1,6 @@
 package com.konkuk.vecto.feed.repository;
 
+import com.konkuk.vecto.feed.repository.querydsl.FeedRepositoryCustom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,30 +11,17 @@ import org.springframework.stereotype.Repository;
 import com.konkuk.vecto.feed.domain.Feed;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface FeedRepository extends JpaRepository<Feed, Long> {
+public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositoryCustom {
 
-	Page<Feed> findAllByOrderByUploadTimeDesc(Pageable pageable);
+
+	long countByUserId(String userId);
+
 
 	List<Feed> findAllByUserId(String userId);
 
-	Page<Feed> findAllByUserId(String userId, Pageable pageable);
 
-	@Query(value = "SELECT DISTINCT f.feed FROM FeedPlace f " +
-			"WHERE f.name LIKE :keyword " +
-			"OR f.address LIKE :keyword " +
-			"OR f.feed.title LIKE :keyword " +
-			"ORDER BY f.feed.likeCount")
-	Page<Feed> findByKeyWord(Pageable pageable, @Param("keyword") String keyword);
 
-	@Query(value = "SELECT DISTINCT l.feed FROM Likes l " +
-			"WHERE l.user.userId = :userId " +
-			"ORDER BY l.feed.uploadTime DESC")
-	Page<Feed> findLikesFeedByUserId(@Param("userId") String userId, Pageable pageable);
-	@Query(value = "SELECT f FROM Feed f " +
-			"WHERE f.id not in " +
-			"(SELECT DISTINCT q.feed.id FROM FeedQueue q WHERE q.userId = :userId) " +
-			"ORDER BY f.uploadTime DESC")
-	Page<Feed> findNotFollowFeed(@Param("userId") Long userId, Pageable pageable);
 }

@@ -1,8 +1,8 @@
 package com.konkuk.vecto.feed.repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+import com.konkuk.vecto.feed.domain.FollowFeed;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,21 +12,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.konkuk.vecto.feed.domain.Feed;
-import com.konkuk.vecto.feed.domain.FeedImage;
-import com.konkuk.vecto.feed.domain.FeedQueue;
 
 @Repository
-public interface FeedQueueRepository extends JpaRepository<FeedQueue, Long> {
+public interface FollowFeedRepository extends JpaRepository<FollowFeed, Long> {
 
-	@Query("SELECT fq.feed.id FROM FeedQueue fq WHERE fq.userId = :userId "
+	@Query("SELECT fq.feed.id FROM FollowFeed fq WHERE fq.userId = :userId "
 		+ "ORDER BY fq.createdAt DESC")
 	Page<Long> findFeedIdByUserId(Pageable pageable, @Param("userId")Long userId);
 
 	@Modifying
-	@Query("DELETE FROM FeedQueue fq WHERE fq.feed = :feed")
+	@Query("DELETE FROM FollowFeed f WHERE f.feed = :feed")
 	void deleteByFeed(@Param("feed") Feed feed);
 
 	@Modifying
-	@Query("DELETE FROM FeedQueue fq WHERE fq.feed IN :feeds AND fq.userId = :userId")
+	@Query("DELETE FROM FollowFeed f WHERE f.feed IN :feeds AND f.userId = :userId")
 	void deleteByFeedsAndUserId(@Param("feeds") List<Feed> feeds, @Param("userId") Long userId);
+
+
 }

@@ -1,4 +1,4 @@
-package com.konkuk.vecto.feed.dto.response;
+package com.konkuk.vecto.comment.dto.response;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class CommentsResponse {
 	boolean isLastPage;
 
-	Integer nextPage;
+	Long nextCommentId;
 
 	private List<CommentResponse> comments;
 

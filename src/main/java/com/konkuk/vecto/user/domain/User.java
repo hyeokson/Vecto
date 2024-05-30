@@ -24,8 +24,11 @@ import java.util.List;
         @UniqueConstraint(
                 name="userinfo_uk",
                 columnNames = {"userId", "email"}
-        )
-})
+        )},
+        indexes = {
+            @Index(name = "idx_user_user_id", columnList = "userId")
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements UserDetails {
 
