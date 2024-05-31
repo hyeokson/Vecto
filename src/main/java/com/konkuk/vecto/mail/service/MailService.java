@@ -3,7 +3,6 @@ package com.konkuk.vecto.mail.service;
 import static com.konkuk.vecto.mail.common.utils.MailContent.*;
 
 import java.io.UnsupportedEncodingException;
-import java.util.concurrent.ThreadLocalRandom;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;

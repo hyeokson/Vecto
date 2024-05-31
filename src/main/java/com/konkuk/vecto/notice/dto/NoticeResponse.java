@@ -21,7 +21,7 @@ public class NoticeResponse {
 
     private String content;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
     public NoticeResponse(Notice notice){

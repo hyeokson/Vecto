@@ -100,9 +100,6 @@ public enum ErrorCode {
 
     FCM_TOKEN_NOT_EMPTY_ERROR(400, "E016", "FCM Token 값을 적어주세요."),
 
-    // 이메일 인증번호 검증 에러
-    CODE_EMAIL_INVALID_ERROR(400, "E017", "인증번호가 만료되었거나 이메일이 존재하지 않습니다."),
-
     // 사용자 정보 중복 에러
     USERID_DUPLICATED_ERROR(400, "E018", "사용자 아이디가 중복입니다."),
     EMAIL_DUPLICATED_ERROR(400, "E019", "사용자 이메일이 중복입니다."),
@@ -146,7 +143,11 @@ public enum ErrorCode {
     NOTICE_NOT_FOUND_ERROR(400, "E038", "공지사항이 DB에 존재하지 않습니다."),
 
     //접근 권한 에러
-    ACCESS_DENIED_ERROR(403, "E039", "관리자만 접근할 수 있습니다.")
+    ACCESS_DENIED_ERROR(403, "E039", "관리자만 접근할 수 있습니다."),
+
+    AUTH_CODE_NOT_EXIST_ERROR(403, "E040", "이메일 인증 코드의 유효 시간이 지났습니다. " +
+            "다시 인증코드를 요청해주세요."),
+    AUTH_CODE_NOT_MATCH_ERROR(403, "E041", "이메일 인증 코드가 일치하지 않습니다.")
 
 
 
