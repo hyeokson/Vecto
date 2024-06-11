@@ -28,6 +28,7 @@ jobs:
         shell: bash
 
   deploy:
+    needs: build
     name: CD pipeline
     runs-on: ubuntu-latest
     steps:
