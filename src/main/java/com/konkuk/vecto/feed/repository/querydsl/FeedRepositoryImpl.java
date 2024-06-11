@@ -87,12 +87,12 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom{
     public List<Feed> findFeedByKeyWord(Long nextFeedId, int limit, String keyword){
         QFeedPlace feedPlace = QFeedPlace.feedPlace;
         return jpaQueryFactory
-                .select(feedPlace.feed)
+                .select(feedPlace.feed).distinct()
                 .from(feedPlace)
                 .where(ltFeedId(feedPlace.feed, nextFeedId)
-                        .and((feedPlace.name.likeIgnoreCase("%"+keyword+"%"))
-                                .or(feedPlace.address.likeIgnoreCase("%"+keyword+"%"))
-                                .or(feedPlace.feed.title.likeIgnoreCase("%"+keyword+"%"))))
+                        .and((feedPlace.name.like("%"+keyword+"%"))
+                                .or(feedPlace.address.like("%"+keyword+"%"))
+                                .or(feedPlace.feed.title.like("%"+keyword+"%"))))
                 .orderBy(feedPlace.feed.likeCount.desc(), feedPlace.feed.id.desc())
                 .limit(limit)
                 .fetch();

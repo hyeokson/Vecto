@@ -61,7 +61,7 @@ public class UserController {
             description = "해당 유저의 Refresh Token을 Redis에서 삭제합니다.")
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCode<Void> logout(@UserInfo String userId){
+    public ResponseCode<Void> logout(@Parameter(hidden = true) @UserInfo String userId){
 
         loginService.logout(userId);
         ResponseCode<Void> responseCode = new ResponseCode<>(SuccessCode.LOGOUT);

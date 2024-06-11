@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -53,8 +54,10 @@ public class WebSecurityConfig {
 
                 .httpBasic(AbstractHttpConfigurer::disable)
 
+                .logout(LogoutConfigurer::disable)
+
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST,"/user").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/user", "/login", "/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user",
                                 "/comment/{feedId}/public",
                                 "/feed/{feedId}/public", "/feed/list/public","/feed/search/public",
@@ -62,7 +65,7 @@ public class WebSecurityConfig {
                                 "code/*",
                                 "follow/follower", "follow/followed",
                                 "/notice/**").permitAll()
-                        .requestMatchers("/userId/check","/login", "/logout", "/mail").permitAll()
+                        .requestMatchers("/userId/check","/mail").permitAll()
                         .requestMatchers(HttpMethod.POST, "/notice").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/notice/{noticeId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/notice/{noticeId}").hasRole("ADMIN")
