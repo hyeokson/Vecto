@@ -36,6 +36,4 @@ src/main/generated/**
 
 ### VS Code ###
 .vscode/
-src/main/resources/firebase
-src/main/resources/firebase/vecto-fc688-firebase-adminsdk-yyxm5-1527aad64c.json
 src/main/resources/logback.xml

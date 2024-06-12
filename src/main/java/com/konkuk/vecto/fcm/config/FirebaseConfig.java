@@ -4,13 +4,20 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @Slf4j
@@ -21,7 +28,6 @@ public class FirebaseConfig {
     // 메시징만 권한 설정
     @Value("${fcm.key.scope}")
     private String fireBaseScope;
-
 
     // fcm 기본 설정 진행
     @PostConstruct
@@ -43,4 +49,5 @@ public class FirebaseConfig {
             throw new RuntimeException(e.getMessage());
         }
     }
+
 }
