@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: CI pipe line
+    name: CI pipeline
     runs-on: ubuntu-latest
     steps:
       - name: checkout java code
@@ -29,7 +29,7 @@ jobs:
 
   deploy:
     needs: build
-    name: CD pipe line
+    name: CD pipeline
     runs-on: ubuntu-latest
     steps:
       - name: checkout java code
@@ -45,7 +45,7 @@ jobs:
       - name: Generate deployment package
         run: |
           mkdir -p deploy
-          cp vecto/build/libs/*-SNAPSHOT.jar deploy/application.jar
+          cp konkuk/build/libs/*-SNAPSHOT.jar deploy/application.jar
           cp Procfile deploy/Procfile
           cp -r .ebextensions deploy/.ebextensions
           cp -r .platform deploy/.platform
