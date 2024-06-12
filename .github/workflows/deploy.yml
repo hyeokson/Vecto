@@ -45,7 +45,7 @@ jobs:
       - name: Generate deployment package
         run: |
           mkdir -p deploy
-          ls -l build/libs
+          sudo find / -name "*.jar"
           cp konkuk/build/libs/*-SNAPSHOT.jar deploy/application.jar
           cp Procfile deploy/Procfile
           cp -r .ebextensions deploy/.ebextensions
