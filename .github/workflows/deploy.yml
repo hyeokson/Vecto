@@ -27,6 +27,13 @@ jobs:
         run: ./gradlew build -x test
         shell: bash
 
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH-mm-ss
+          utcOffset: "+09:00"
+
       - name: Generate deployment package
         run: |
           mkdir -p deploy
