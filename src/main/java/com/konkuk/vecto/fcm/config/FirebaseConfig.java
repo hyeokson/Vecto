@@ -1,5 +1,6 @@
 package com.konkuk.vecto.fcm.config;
 
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -21,9 +22,9 @@ import java.util.Map;
 
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class FirebaseConfig {
-    @Value("${fcm.key.path}")
-    private String FCM_PRIVATE_KEY_PATH;
+    private final S3ForGoogleCredential s3ForGoogleCredential;
 
     // 메시징만 권한 설정
     @Value("${fcm.key.scope}")
@@ -32,17 +33,20 @@ public class FirebaseConfig {
     // fcm 기본 설정 진행
     @PostConstruct
     public void init() {
-        try {
+        try(S3ObjectInputStream s3ObjectInputStream = s3ForGoogleCredential
+                    .getGoogleCredential().getObjectContent()){
+
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(
                             GoogleCredentials
-                                    .fromStream(new ClassPathResource(FCM_PRIVATE_KEY_PATH).getInputStream())
+                                    .fromStream(s3ObjectInputStream)
                                     .createScoped(List.of(fireBaseScope)))
                     .build();
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
                 log.info("Firebase application has been initialized");
             }
+
         } catch (IOException e) {
             log.error(e.getMessage());
             // spring 뜰때 알림 서버가 잘 동작하지 않는 것이므로 바로 죽임
